@@ -2,7 +2,7 @@
 
 ## Status
 
-Current phase: Phase 2 completed — awaiting user approval to continue with Phase 3.
+Current phase: Phase 2 completed; Phase 1a clarified a second time on 2026-09-07 and a technical design exists at `Docs/designs/Vehicle Maintenance Tracker.md`. Business definition complete except for two token-lifetime values. Awaiting those and user approval to continue with Phase 3.
 
 ## Phase 1 — Refined Story
 
@@ -61,6 +61,19 @@ None provided.
 | What specific vehicle-level details should be tracked for each registered vehicle? | Include make, model, year, VIN, license plate, and current mileage. |
 | Confirmed: Phase 1/1a stays scoped to business definition ("what the application will do"), not implementation/technology decisions. | Confirmed — no technology stack discussion in this phase; it is deferred to Phase 3. |
 
+### Questions Asked & Answers — second round (2026-09-07, raised by the technical design)
+
+| Question | Answer |
+| --- | --- |
+| Should a user be able to edit or delete a maintenance record after logging it? | Yes, it should. |
+| Should logging a maintenance record with a higher mileage automatically update the vehicle's current mileage? | Yes, it should. |
+| Are service provider and notes optional, while cost, date performed, and mileage at service are mandatory? | Yes. |
+| Is a single implicit currency acceptable for cost, or must the currency be recorded? | USD only. No other currency is allowed. |
+| Are password reset and email verification needed in this iteration? | Yes, both are required. |
+| Is VIN uniqueness per user acceptable, or must a VIN be unique across all users? | Per user. Two accounts may register the same VIN; no user is blocked by another user's entry. |
+| Must login be blocked until the email is verified? | No. An unverified user can log in; the application prompts them to verify. |
+| Are token lifetimes of 24 hours (verification) and 1 hour (reset) acceptable? | No. Replacement values still to be provided. |
+
 ### Refined Title
 
 Vehicle Maintenance Tracker
@@ -71,7 +84,7 @@ Vehicle owners currently have no dedicated way to track the maintenance history 
 
 ### Refined Solution
 
-Build a multi-user application, gated by authentication, where each user can register one or more vehicles and record maintenance performed on them. Each vehicle carries identifying details: make, model, year, VIN, license plate, and current mileage. For each maintenance entry, the user can log relevant details — cost, date performed, mileage at time of service, service provider, and free-form notes — and can record any type of maintenance or job performed, not limited to a fixed, predefined list.
+Build a multi-user application, gated by authentication, where each user can register one or more vehicles and record maintenance performed on them. Sign-up requires verifying the email address, and a user who forgets their password can reset it through an emailed link. Each vehicle carries identifying details: make, model, year, VIN, license plate, and current mileage. For each maintenance entry, the user can log relevant details — cost in US dollars, date performed, mileage at time of service, service provider, and free-form notes — and can record any type of maintenance or job performed, not limited to a fixed, predefined list. Cost, date performed, and mileage at service are mandatory; service provider and notes are optional. Maintenance entries can be edited and deleted after logging. When an entry's mileage is higher than the vehicle's current mileage, the vehicle's current mileage is updated to match.
 
 ### Refined Acceptance Criteria
 
@@ -80,8 +93,19 @@ Build a multi-user application, gated by authentication, where each user can reg
 - A user can record and view, for each vehicle: make, model, year, VIN, license plate, and current mileage.
 - A user can create a maintenance record associated with one of their vehicles.
 - A user can specify a type/description of the maintenance or job performed, not restricted to a predefined set of categories.
-- A maintenance record captures cost, date performed, mileage at time of service, service provider, and free-form notes.
+- A maintenance record captures cost (mandatory), date performed (mandatory), mileage at time of service (mandatory), service provider (optional), and free-form notes (optional).
 - A user can view the history of maintenance records logged for a given vehicle.
+- After signing up, a user receives a verification email and can verify their email address through its link; an unverified user can still log in and is prompted to verify.
+- A user who has forgotten their password can request a reset email and set a new password through the emailed link.
+- A user can edit and delete a maintenance record on one of their vehicles.
+- When a maintenance record is created or edited with a mileage at service higher than the vehicle's current mileage, the vehicle's current mileage is updated to that value.
+- All costs are recorded in US dollars; no other currency is accepted.
+- A VIN is unique among a single user's vehicles; the same VIN may exist in different users' accounts.
+
+### Remaining Open Questions (business)
+
+- What lifetime should the email-verification link and the password-reset link have? (24 h and 1 h were rejected.)
+- Should any feature be unavailable until the email is verified? (The design gates nothing.)
 
 ## Phase 2 — Code Context
 
@@ -121,11 +145,12 @@ There is no application code. The target repository contains a single one-line R
 Because the repository is empty, every area below must be created rather than modified:
 
 - Project/solution scaffolding and build configuration at the repository root.
-- Authentication: user registration, login, and per-user data isolation.
-- Domain model and persistence for `User`, `Vehicle` (make, model, year, VIN, license plate, current mileage), and `MaintenanceRecord` (type/description, cost, date performed, mileage at service, service provider, notes).
-- Backend endpoints/services for vehicle CRUD and maintenance-record create/list per vehicle, scoped to the authenticated user.
+- Authentication: user registration, email verification, login, password reset, and per-user data isolation.
+- Outbound email for verification and password-reset links, behind an interface with a local console or mailbox sink.
+- Domain model and persistence for `User` (with verified flag), `UserToken` (verification and reset tokens), `Vehicle` (make, model, year, VIN, license plate, current mileage), and `MaintenanceRecord` (type/description, cost in USD, date performed, mileage at service, service provider, notes).
+- Backend endpoints/services for vehicle CRUD and maintenance-record create/list/update/delete per vehicle, scoped to the authenticated user, including the rule that a higher mileage at service advances the vehicle's current mileage.
 - Database schema/migrations for the entities above.
-- A user interface (web/desktop/mobile — not yet decided) for sign-up/login, vehicle management, and maintenance history.
+- A user interface (web/desktop/mobile — not yet decided) for sign-up, email verification, login, password reset, vehicle management, and maintenance history.
 - Automated tests for the above.
 - `README.md` (currently a single heading) — setup and usage instructions.
 
@@ -155,7 +180,7 @@ Because the repository is empty, every area below must be created rather than mo
 
 ## Phase 3 — Working Plan
 
-Pending user approval — reply "continue with Phase 3" to create the working plan.
+Pending user approval — reply "continue with Phase 3" to create the working plan. Phase 3 should consume the technical design at `Docs/designs/Vehicle Maintenance Tracker.md`, which also lists the open technical questions (stack, database, email mechanism, UI shape, repository).
 
 ## Phase 4 — Implementation Verification
 
