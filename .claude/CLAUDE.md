@@ -1,6 +1,6 @@
 # Vehicle Maintenance Tracker — project instructions
 
-This repository is a monorepo. Everything needed to build, run, test, and document the project lives here. The authoritative descriptions are in `docs/`; this file is the short version for working sessions. All 37 implementation slices are done; new work is a new slice appended to the plan's Phase 3.
+This repository is a monorepo. Everything needed to build, run, test, and document the project lives here. The authoritative descriptions are in `docs/`; this file is the short version for working sessions. All 38 implementation slices are done; new work is a new slice appended to the plan's Phase 3.
 
 ## Folder map
 
@@ -9,8 +9,8 @@ apps/api-maintenance/   ASP.NET Core 8 Web API, Clean Architecture: src/Maintena
 apps/web/               Angular 22 client (standalone, zoneless, signals, PrimeNG 21.1.9 MIT via .npmrc legacy-peer-deps, Vitest); generated API client in src/app/api/ (never edit by hand)
 apps/e2e/               Playwright journeys against running apps (Google Chrome via channel: chrome); tests/support/ holds ApiHelper and page objects
 docker/                 docker-compose.yml, .env.example, api-maintenance/Dockerfile, web/Dockerfile + nginx.conf (SPA fallback, CSP, /api proxy)
-docs/                   plans/ (working plan), designs/ (technical design + HTML), implementation/ (stack, layout, slice plan with progress), adr/
-scripts/                setup.sh, dev.sh, test.sh, migrate.sh, generate-api-client.sh, compose-up.sh, compose-down.sh; lib/ holds common.sh and serve-web.mjs
+docs/                   plans/ (working plan), designs/ (technical design + HTML), implementation/ (stack, layout, slice plan with progress), adr/, data/ (test data: .md explains, .json is seeded)
+scripts/                setup.sh, dev.sh, test.sh, seed.sh, migrate.sh, generate-api-client.sh, compose-up.sh, compose-down.sh; lib/ holds common.sh, serve-web.mjs, seed.mjs
 ```
 
 Root files: `global.json` pins the .NET SDK, `.nvmrc` pins Node, `.editorconfig` formats both ecosystems, `.gitignore` covers .NET, Node, Playwright, SQLite, and `.env` files.
@@ -22,6 +22,7 @@ Run from the repository root unless stated.
 - `scripts/setup.sh` once per machine (dotnet on PATH, `nvm install`, restore, `npm ci` for web and e2e, signing key into user secrets, `apps/e2e/.env`)
 - `scripts/dev.sh` runs the API (Development: Swagger and `GET /api/v1/dev/emails` enabled) and `ng serve` together
 - `scripts/test.sh` runs `dotnet test`, `ng test`, then Playwright against a fresh API and a production build served by `scripts/lib/serve-web.mjs`; the API gets `RateLimits__AuthPermitLimit=1000` because every journey logs in from one address. `--no-e2e` skips the browser suite
+- `scripts/seed.sh [api url]` seeds a running API with `docs/data/test-data.json` through the public endpoints; idempotent; `apps/e2e/tests/seed/seed.spec.ts` runs it in the suite
 - `scripts/migrate.sh add <Name>` / `scripts/migrate.sh update` / `scripts/migrate.sh list` for EF Core migrations (run from anywhere)
 - `scripts/generate-api-client.sh` regenerates `apps/web/src/app/api/` from the running API's OpenAPI document (operation ids are `{Controller}_{Action}`, so functions are `vehicleList`, `maintenanceCreate`, …); run it after any API contract change and commit the diff
 - `scripts/compose-up.sh` / `scripts/compose-down.sh [--volumes]` for the container stack; `ASPNETCORE_ENVIRONMENT=Development RateLimits__AuthPermitLimit=1000 scripts/compose-up.sh` prepares it for Playwright with `WEB_BASE_URL` and `API_BASE_URL` pointing at the containers

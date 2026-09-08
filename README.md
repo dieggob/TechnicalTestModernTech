@@ -108,6 +108,14 @@ Any variable in `docker/.env` can be overridden the same way from the shell for 
 
 ### 4. First use: from sign-up to a logged job
 
+To skip the typing, seed the sample data once the API is up:
+
+```bash
+scripts/seed.sh                 # against http://localhost:5000, Option A or B
+```
+
+It creates four accounts, five vehicles, and twelve maintenance records from [docs/data/test-data.json](docs/data/test-data.json), verifies the accounts when the API runs in Development, and can be run again without duplicating anything. Log in as `ana.torres@example.com` / `Garage2026` to see the fullest example; [docs/data/test-data.md](docs/data/test-data.md) lists everything, including invalid inputs to try. Then, or instead:
+
 1. Open http://localhost:4200. You land on the login page; follow **Create an account**. Enter an email address (any syntactically valid address works, nothing is sent) and a password of at least 8 characters containing a letter and a digit, then **Create account**.
 2. Log in with the same credentials. A banner reminds you that the address is not verified; every feature still works.
 3. To verify, find the emailed link. With Option A, or Option B started in Development, open http://localhost:5000/api/v1/dev/emails and copy the `link` of the newest entry for your address. Otherwise read it from the API log, where each email is logged as `Email to <address>: <subject> <link>`. Open the link in the browser. Links expire after 30 minutes; **Resend verification email** in the banner issues a new one.
@@ -186,4 +194,4 @@ Compose adds `API_PORT` and `WEB_PORT` (defaults 5000 and 4200) in `docker/.env`
 - [Technical design](docs/designs/Vehicle%20Maintenance%20Tracker.md): class, database, sequence, state, component, use case, and deployment diagrams; API contract; non-functional requirements; design decisions. A presentation page sits beside it as HTML.
 - [Implementation design](docs/implementation/Vehicle%20Maintenance%20Tracker.md): technology stack with every option presented and the decision taken (Phase 1), monorepo layout (Phase 2), and the 35-slice implementation plan with each slice's status, definition of done, and pattern decisions (Phase 3). Progress is recorded there, one commit per slice on `main`.
 - [Architecture decision records](docs/adr/README.md): decisions made during implementation that reach beyond one slice.
-- [Test data](docs/data/test-data.md): accounts, vehicles, maintenance records, and invalid cases for manual testing, with JSON bodies and a seeding script.
+- [Test data](docs/data/test-data.md): accounts, vehicles, maintenance records, and invalid cases for manual testing; the valid part is in `test-data.json` and seeded by `scripts/seed.sh`.

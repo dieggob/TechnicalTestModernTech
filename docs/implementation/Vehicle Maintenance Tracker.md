@@ -727,7 +727,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 0 pending, 0 in progress, 37 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 0 pending, 0 in progress, 38 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -801,6 +801,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S35 | Complete documentation and Claude configuration | Phase 2 Conventions | S34 | S | done |
 | S36 | Client layout and spacing, and the production stylesheet under CSP | User request 2026-09-08; design Security NFR (CSP) | S35 | S | done |
 | S37 | Stay on PrimeNG 21.1.9 (MIT) instead of licensing PrimeNG 22 | Phase 1 decision 2026-09-08 | S36 | S | done |
+| S38 | Seedable test data | User request 2026-09-08 | S37 | S | done |
 
 ### Milestones
 
@@ -2104,6 +2105,32 @@ None by user decision; the Slice Map is the only ordering.
 - **Definition of done:**
   - [x] All suites pass on PrimeNG 21.1.9 and the screens show no license badge
   - [x] The client image builds with `npm ci`
+- **Status:** done
+
+#### S38 — Seedable test data
+
+- **Goal:** The sample data in `docs/data` loads into any running instance with one command, through the public API, and can be re-run without duplicates.
+- **Source:** User request on 2026-09-08 ("make this data seedable")
+- **Depends on:** S37
+- **Size:** S
+- **In scope:**
+  - `docs/data/test-data.json` as the machine-readable source of the valid data (users, vehicles keyed by VIN, records keyed by description and date); `test-data.md` keeps the explanation and the invalid cases
+  - `scripts/lib/seed.mjs` (plain Node, no dependency) and `scripts/seed.sh`: log in or register each user, verify through the Development-only recorded emails when available, create missing vehicles and records, report a summary; a 429 stops with a clear message
+  - `apps/e2e/tests/seed/seed.spec.ts` runs the seeder twice against the API under test and checks Ana's vehicles and the Corolla history in the UI, and Luis's isolation
+  - README first-use section, scripts README, e2e README, CLAUDE.md
+- **Out of scope:** seeding from inside the API (a Development endpoint or a `--seed` switch) and the invalid cases, which stay manual
+- **Files:**
+  - `docs/data/test-data.json`, `docs/data/test-data.md`, `scripts/lib/seed.mjs`, `scripts/seed.sh`, `apps/e2e/tests/seed/seed.spec.ts`
+- **Steps:**
+  1. Write the journey; write the JSON and the seeder; run the seeder against the compose stack and the test API.
+  2. Document; pass the suites.
+- **Tests:**
+  - `apps/e2e/tests/seed/seed.spec.ts`
+- **Pattern proposals:** none needed
+- **Principle checks:** DRY — the seeder goes through the same endpoints and validators as the client, so no second set of rules; YAGNI — no API-side seeding, no dependency.
+- **Definition of done:**
+  - [x] `scripts/seed.sh` loads the data into a fresh API and a second run reports nothing new
+  - [x] All suites pass, including the seed journey
 - **Status:** done
 
 ### Pattern Proposals Register

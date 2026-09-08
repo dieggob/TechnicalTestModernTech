@@ -1,0 +1,30 @@
+{
+  "$comment": "Valid seed data for the Vehicle Maintenance Tracker. scripts/seed.sh pushes it through the API. docs/data/test-data.md explains it and lists the invalid cases, which are not seeded. Vehicles reference users by email; records reference vehicles by key.",
+  "users": [
+    { "email": "ana.torres@example.com", "password": "Garage2026", "verify": true },
+    { "email": "luis.mendez@example.com", "password": "Wrench2026", "verify": true },
+    { "email": "sam.reyes@example.com", "password": "Spark2026", "verify": false },
+    { "email": "nora.kim@example.com", "password": "Brake2026", "verify": true }
+  ],
+  "vehicles": [
+    { "key": "V1", "owner": "ana.torres@example.com", "make": "Toyota", "model": "Corolla", "year": 2019, "vin": "JTDBR32E720123456", "licensePlate": "ABC-1234", "currentMileage": 58200 },
+    { "key": "V2", "owner": "ana.torres@example.com", "make": "Ford", "model": "F-150", "year": 2016, "vin": "1FTEW1EP5GFA98765", "licensePlate": "TRK-7781", "currentMileage": 121450 },
+    { "key": "V3", "owner": "ana.torres@example.com", "make": "Honda", "model": "CR-V", "year": 2022, "vin": "7FARW2H58NE045678", "licensePlate": "HND-2022", "currentMileage": 14980 },
+    { "key": "V4", "owner": "ana.torres@example.com", "make": "Volkswagen", "model": "Golf", "year": 2014, "vin": "WVWZZZAUZEW112233", "licensePlate": "GLF-0414", "currentMileage": 176300 },
+    { "key": "L1", "owner": "luis.mendez@example.com", "make": "Toyota", "model": "Corolla", "year": 2019, "vin": "JTDBR32E720123456", "licensePlate": "LMZ-9001", "currentMileage": 40100 }
+  ],
+  "records": [
+    { "vehicle": "V1", "description": "Oil and filter change", "costUsd": 74.99, "datePerformed": "2026-02-14", "mileageAtService": 55000, "serviceProvider": "Quick Lube Downtown", "notes": "0W-20 synthetic" },
+    { "vehicle": "V1", "description": "Tire rotation and balance", "costUsd": 49.00, "datePerformed": "2026-05-03", "mileageAtService": 57100, "serviceProvider": "Quick Lube Downtown", "notes": null },
+    { "vehicle": "V1", "description": "Front brake pads and rotors", "costUsd": 412.50, "datePerformed": "2026-08-22", "mileageAtService": 59350, "serviceProvider": "Mendoza Auto Repair", "notes": "Ceramic pads" },
+    { "vehicle": "V1", "description": "Cabin air filter", "costUsd": 28.75, "datePerformed": "2026-09-01", "mileageAtService": 59800, "serviceProvider": null, "notes": "Done at home" },
+    { "vehicle": "V2", "description": "Transmission fluid service", "costUsd": 289.00, "datePerformed": "2025-11-18", "mileageAtService": 118900, "serviceProvider": "Ford Dealer North", "notes": null },
+    { "vehicle": "V2", "description": "Spark plugs (8)", "costUsd": 236.40, "datePerformed": "2026-03-27", "mileageAtService": 120500, "serviceProvider": "Ford Dealer North", "notes": "Iridium" },
+    { "vehicle": "V2", "description": "Battery replacement", "costUsd": 189.99, "datePerformed": "2026-07-09", "mileageAtService": 122010, "serviceProvider": "AutoParts Plus", "notes": "Group 65, 3-year warranty" },
+    { "vehicle": "V3", "description": "First service: oil change and inspection", "costUsd": 0.00, "datePerformed": "2026-01-20", "mileageAtService": 9800, "serviceProvider": "Honda Dealer", "notes": "Covered by warranty" },
+    { "vehicle": "V3", "description": "Windshield chip repair", "costUsd": 65.00, "datePerformed": "2026-06-11", "mileageAtService": 15200, "serviceProvider": "Glass Masters", "notes": "Passenger side" },
+    { "vehicle": "V4", "description": "Timing belt and water pump", "costUsd": 985.00, "datePerformed": "2025-09-30", "mileageAtService": 171000, "serviceProvider": "Euro Werks", "notes": "Includes tensioner" },
+    { "vehicle": "V4", "description": "Alternator replacement", "costUsd": 540.20, "datePerformed": "2026-04-15", "mileageAtService": 175100, "serviceProvider": "Euro Werks", "notes": "Remanufactured unit" },
+    { "vehicle": "V4", "description": "Coolant flush", "costUsd": 119.00, "datePerformed": "2026-08-30", "mileageAtService": 176900, "serviceProvider": null, "notes": null }
+  ]
+}

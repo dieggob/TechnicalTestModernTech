@@ -1,6 +1,6 @@
 # Test data: Vehicle Maintenance Tracker
 
-Hand-typed data for manual testing through the client or the API. Every value respects the validation rules of the API (password of at least 8 characters with a letter and a digit; VIN of up to 17 letters and digits, unique per user; cost of zero or more with at most two decimals; date performed not in the future; mileage of zero or more). Dates are before 2026-09-08.
+Data for manual testing through the client or the API. The valid data in sections 1 to 3 also lives in [test-data.json](test-data.json), which `scripts/seed.sh` pushes through the API into a running instance (`scripts/dev.sh` or the compose stack); the invalid cases and the checks in sections 4 onwards are typed by hand. Keep the two files in step when changing the valid data. Every value respects the validation rules of the API (password of at least 8 characters with a letter and a digit; VIN of up to 17 letters and digits, unique per user; cost of zero or more with at most two decimals; date performed not in the future; mileage of zero or more). Dates are before 2026-09-08.
 
 Where links come from: after registering or requesting a reset, read the emailed link from http://localhost:5000/api/v1/dev/emails (Development only) or from the API log line `Email to <address>: <subject> <link>`.
 
