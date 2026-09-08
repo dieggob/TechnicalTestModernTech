@@ -1,6 +1,7 @@
 import { inject, Injectable, signal } from '@angular/core';
 import { Api } from '../../api/api';
 import { maintenanceCreate } from '../../api/fn/maintenance/maintenance-create';
+import { maintenanceDelete } from '../../api/fn/maintenance/maintenance-delete';
 import { maintenanceList } from '../../api/fn/maintenance/maintenance-list';
 import { maintenanceUpdate } from '../../api/fn/maintenance/maintenance-update';
 import { MaintenanceInput } from '../../api/models/maintenance-input';
@@ -43,6 +44,11 @@ export class MaintenanceFacade {
     const result = await this.api.invoke(maintenanceUpdate, { vehicleId, recordId, body: input });
     this.records.update((list) => sortNewestFirst(list.map((record) => (record.id === recordId ? result.record! : record))));
     return result;
+  }
+
+  async delete(vehicleId: string, recordId: string): Promise<void> {
+    await this.api.invoke(maintenanceDelete, { vehicleId, recordId });
+    this.records.update((list) => list.filter((record) => record.id !== recordId));
   }
 }
 

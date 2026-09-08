@@ -20,6 +20,9 @@
   @if (maintenance.error(); as message) {
     <p-message severity="error" data-testid="history-error">{{ message }}</p-message>
   }
+  @if (actionError(); as message) {
+    <p-message severity="error" data-testid="history-action-error">{{ message }}</p-message>
+  }
 
   <p-table [value]="maintenance.records()" [loading]="maintenance.loading()" dataKey="id" data-testid="history-table">
     <ng-template #header>
@@ -43,6 +46,7 @@
         <td>{{ record.notes ?? '—' }}</td>
         <td class="row-actions">
           <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" ariaLabel="Edit" (onClick)="edit(record)" [attr.data-testid]="'edit-record-' + record.id" />
+          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" ariaLabel="Delete" (onClick)="confirmDelete(record)" [attr.data-testid]="'delete-record-' + record.id" />
         </td>
       </tr>
     </ng-template>
@@ -54,4 +58,21 @@
   </p-table>
 
   <app-maintenance-form [(visible)]="formVisible" [vehicleId]="vehicleId()" [record]="editing()" (saved)="onSaved($event)" />
+
+  <p-dialog
+    [visible]="deleting() !== null"
+    (visibleChange)="$event || keep()"
+    [modal]="true"
+    [draggable]="false"
+    header="Delete maintenance job"
+    [style]="{ width: '28rem', maxWidth: '95vw' }"
+  >
+    @if (deleting(); as record) {
+      <p data-testid="confirm-delete-message">Delete "{{ record.description }}" from {{ record.datePerformed | date: 'mediumDate' }}?</p>
+    }
+    <ng-template #footer>
+      <p-button label="Keep" [text]="true" severity="secondary" (onClick)="keep()" data-testid="confirm-keep" />
+      <p-button label="Delete" severity="danger" [loading]="deletingInProgress()" (onClick)="deleteConfirmed()" data-testid="confirm-delete" />
+    </ng-template>
+  </p-dialog>
 </section>

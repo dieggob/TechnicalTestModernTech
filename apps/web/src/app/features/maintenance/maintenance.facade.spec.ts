@@ -57,4 +57,14 @@ describe('MaintenanceFacade', () => {
     expect(facade.records().map((record) => record.id)).toEqual(['r1', 'r2']);
     expect(facade.records()[0].description).toBe('Moved');
   });
+
+  it('delete removes the record from the list', async () => {
+    facade.records.set([{ id: 'r1' }, { id: 'r2' }]);
+    invoke.mockResolvedValue(undefined);
+
+    await facade.delete('v1', 'r1');
+
+    expect(invoke).toHaveBeenCalledWith(expect.any(Function), { vehicleId: 'v1', recordId: 'r1' });
+    expect(facade.records().map((record) => record.id)).toEqual(['r2']);
+  });
 });

@@ -14,6 +14,7 @@ describe('VehicleDetailComponent', () => {
     load: vi.fn().mockResolvedValue(undefined),
     create: vi.fn(),
     update: vi.fn(),
+    delete: vi.fn(),
   };
   const vehicles = { get: vi.fn() };
   const vehicle = { id: 'v1', make: 'Toyota', model: 'Corolla', year: 2020, vin: 'VIN1', licensePlate: 'ABC-123', currentMileage: 45000 };
@@ -73,6 +74,36 @@ describe('VehicleDetailComponent', () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector('[data-testid="vehicle-mileage"]')?.textContent).toBe('52000');
+  });
+
+  it('deletes a record only after confirmation', async () => {
+    const record = { id: 'r1', description: 'Oil change', datePerformed: '2026-09-01' };
+    maintenance.records.set([record]);
+    maintenance.delete.mockResolvedValue(undefined);
+    const component = fixture.componentInstance;
+
+    component.confirmDelete(record);
+    component.keep();
+    expect(maintenance.delete).not.toHaveBeenCalled();
+
+    component.confirmDelete(record);
+    await component.deleteConfirmed();
+
+    expect(maintenance.delete).toHaveBeenCalledWith('v1', 'r1');
+    expect(component.deleting()).toBeNull();
+  });
+
+  it('reports a failed delete and closes the confirmation', async () => {
+    const record = { id: 'r1', description: 'Oil change' };
+    maintenance.delete.mockRejectedValueOnce(new Error('500'));
+    const component = fixture.componentInstance;
+
+    component.confirmDelete(record);
+    await component.deleteConfirmed();
+    await fixture.whenStable();
+
+    expect(component.deleting()).toBeNull();
+    expect(fixture.nativeElement.querySelector('[data-testid="history-action-error"]')).not.toBeNull();
   });
 
   it('shows an error when the vehicle cannot be loaded', async () => {
