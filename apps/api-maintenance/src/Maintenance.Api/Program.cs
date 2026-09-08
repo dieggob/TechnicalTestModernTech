@@ -78,7 +78,11 @@ builder.Services.AddControllers(options =>
     options.SuppressModelStateInvalidFilter = true;
 });
 builder.Services.AddEndpointsApiExplorer();
-builder.Services.AddSwaggerGen();
+builder.Services.AddSwaggerGen(options =>
+{
+    // Stable operation ids (Auth_Login, Vehicle_Create, ...) so the generated Angular client has predictable method names.
+    options.CustomOperationIds(api => $"{api.ActionDescriptor.RouteValues["controller"]}_{api.ActionDescriptor.RouteValues["action"]}");
+});
 
 var app = builder.Build();
 

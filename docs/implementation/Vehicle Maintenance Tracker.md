@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 20 pending, 0 in progress, 15 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 19 pending, 0 in progress, 16 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -774,7 +774,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S13 | Protect endpoints: bearer authorization, CORS, and the verification flag | AC 1 (isolation), AC "flag can require verification" | S12 | M | done |
 | S14 | Request a password reset (API) | AC 9 (reset link, 30 minutes) | S11, S12 | S | done |
 | S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | done |
-| S16 | Generate the API client and add auth state to the Angular app | Foundation for client slices | S12, S13, S03 | M | pending |
+| S16 | Generate the API client and add auth state to the Angular app | Foundation for client slices | S12, S13, S03 | M | done |
 | S17 | Sign up screen (client) | AC 1, AC 8 | S16, S04 | S | pending |
 | S18 | Log in screen with the verification banner and resend (client) | AC 1, AC 8 ("prompted to verify") | S17 | S | pending |
 | S19 | Verify email page (client) | AC 8 | S18 | S | pending |
@@ -1456,14 +1456,14 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Facade: `AuthState` as the single entry point for auth in the client | `core/auth/auth-state.ts` | Components never touch storage or the generated client directly | One more class | yes | pending (developer) |
-  | Components call the generated `AuthService` and storage directly | features | Fewer files | Session logic duplicated across screens | no | pending (developer) |
+  | Facade: `AuthState` as the single entry point for auth in the client | `core/auth/auth-state.ts` | Components never touch storage or the generated client directly | One more class | yes | adopted (recommended): AuthState signals over TokenStorage; interceptor and guard read it (2026-09-08) |
+  | Components call the generated `AuthService` and storage directly | features | Fewer files | Session logic duplicated across screens | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — the generated client is the only HTTP surface; SOLID — `TokenStorage` isolates `sessionStorage` so specs run without a browser; YAGNI — no refresh, no persistent login.
 - **Definition of done:**
-  - [ ] Specs pass
-  - [ ] `src/app/api/` regenerates cleanly and produces no diff when the contract is unchanged
-- **Status:** pending
+  - [x] Specs pass
+  - [x] `src/app/api/` regenerates cleanly and produces no diff when the contract is unchanged
+- **Status:** done
 
 #### S17 — Sign up screen (client)
 
@@ -2070,8 +2070,8 @@ None by user decision; the Slice Map is the only ordering.
 | S13 | Custom middleware after authentication | `Api/Auth` | no | declined (2026-09-08) |
 | S15 | `IHostedService` start-up sweep | `TokenPurgeOnStartup` | yes | adopted (recommended): TokenPurgeOnStartup with Tokens:PurgeAfter (30 days) (2026-09-08) |
 | S15 | Purge inline during `ResetPasswordAsync` | `AuthService` | no | declined (2026-09-08) |
-| S16 | Facade: `AuthState` as the single entry point for auth in the client | `core/auth/auth-state.ts` | yes | pending (developer) |
-| S16 | Components call the generated `AuthService` and storage directly | features | no | pending (developer) |
+| S16 | Facade: `AuthState` as the single entry point for auth in the client | `core/auth/auth-state.ts` | yes | adopted (recommended): AuthState signals over TokenStorage; interceptor and guard read it (2026-09-08) |
+| S16 | Components call the generated `AuthService` and storage directly | features | no | declined (2026-09-08) |
 | S17 | Shared `problem-details.ts` mapper for server field errors | `shared/` | yes | pending (developer) |
 | S17 | Inline mapping in each component | components | no | pending (developer) |
 | S21 | Mapping entity → DTO with a static `VehicleDto.From(vehicle)` | `VehicleDto` | yes | pending (developer) |

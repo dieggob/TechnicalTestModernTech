@@ -1,4 +1,7 @@
-/** Production build: the client is served by Nginx and reaches the API through the same origin's /api prefix. */
+/**
+ * Production build: served by Nginx on the same origin as the proxied API, so the generated
+ * client's paths (which already start with /api/v1) need no prefix.
+ */
 export const environment = {
-  apiBaseUrl: '/api/v1',
+  apiRootUrl: '',
 };
