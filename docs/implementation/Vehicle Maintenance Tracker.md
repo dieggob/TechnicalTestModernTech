@@ -716,7 +716,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 28 pending, 0 in progress, 7 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 27 pending, 0 in progress, 8 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -760,7 +760,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S05 | Add the repository scripts for setup, dev, and test | Foundation | S02, S03, S04 | S | done |
 | S06 | Wire EF Core with SQLite, start-up migration, and the database health check | Foundation | S02 | M | done |
 | S07 | Establish the error model: ProblemDetails, validation errors, and status mapping | Foundation | S06 | M | done |
-| S08 | Add JSON console logging, request logging, and the metrics meter | Foundation | S07 | S | pending |
+| S08 | Add JSON console logging, request logging, and the metrics meter | Foundation | S07 | S | done |
 | S09 | Sign up creates an account (API) | AC 1 (sign up) | S07, S08 | M | pending |
 | S10 | Sign up issues a verification link and records emails (API) | AC 8 (verification email, 30 minutes) | S09 | M | pending |
 | S11 | Verify email and resend the link (API) | AC 8 | S10 | S | pending |
@@ -1108,14 +1108,14 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Own middleware for request logging | `RequestLoggingMiddleware` | Full control of the fields and of what is redacted | A few dozen lines to own | yes | pending (developer) |
-  | Built-in `HttpLogging` middleware | `Program.cs` | No code | Logs headers and bodies by default; must be restricted carefully to keep tokens out; no latency field | no | pending (developer) |
+  | Own middleware for request logging | `RequestLoggingMiddleware` | Full control of the fields and of what is redacted | A few dozen lines to own | yes | adopted (recommended); metrics split into IMaintenanceMetrics (Application) + MaintenanceMetrics (Infrastructure) so services can count events (2026-09-08) |
+  | Built-in `HttpLogging` middleware | `Program.cs` | No code | Logs headers and bodies by default; must be restricted carefully to keep tokens out; no latency field | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — one middleware logs every request, controllers log nothing about requests; SOLID — `MaintenanceMetrics` is the only type that knows counter names; YAGNI — no exporter, no tracing.
 - **Definition of done:**
-  - [ ] Both tests pass
-  - [ ] A running request prints one JSON line with method, path, status, latency
-- **Status:** pending
+  - [x] Both tests pass
+  - [x] A running request prints one JSON line with method, path, status, latency
+- **Status:** done
 
 #### S09 — Sign up creates an account (API)
 
@@ -2048,8 +2048,8 @@ None by user decision; the Slice Map is the only ordering.
 | S06 | Plain `DbContext` injected into repositories vs an `IUnitOfWork` wrapper | `MaintenanceDbContext` | yes | plain DbContext kept (recommended); revisited in S27 (2026-09-08) |
 | S07 | Single `IExceptionHandler` with a switch on exception type | `ProblemDetailsExceptionHandler` | yes | adopted (recommended): ProblemDetailsExceptionHandler with one switch (2026-09-08) |
 | S07 | Chain of Responsibility: one handler per exception type | `Api/Errors/` | no | declined (2026-09-08) |
-| S08 | Own middleware for request logging | `RequestLoggingMiddleware` | yes | pending (developer) |
-| S08 | Built-in `HttpLogging` middleware | `Program.cs` | no | pending (developer) |
+| S08 | Own middleware for request logging | `RequestLoggingMiddleware` | yes | adopted (recommended); metrics split into IMaintenanceMetrics (Application) + MaintenanceMetrics (Infrastructure) so services can count events (2026-09-08) |
+| S08 | Built-in `HttpLogging` middleware | `Program.cs` | no | declined (2026-09-08) |
 | S09 | Adapter over `PasswordHasher<User>` behind `IPasswordHasher` | `IdentityPasswordHasher` | yes | pending (developer) |
 | S09 | Use `PasswordHasher<User>` directly in `AuthService` | `AuthService` | no | pending (developer) |
 | S09 | Static factory `User.Create` vs public constructor | `User` | yes | pending (developer) |

@@ -1,0 +1,26 @@
+using System.Diagnostics.Metrics;
+using Maintenance.Application.Observability;
+
+namespace Maintenance.Infrastructure.Observability;
+
+/// <summary>
+/// The only type that knows counter names. Built on the BCL meter so counters can be read
+/// locally with dotnet-counters and exported later without code changes.
+/// </summary>
+public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
+{
+    public const string MeterName = "Maintenance";
+
+    private readonly Meter _meter = new(MeterName);
+    private readonly Counter<long> _requests;
+
+    public MaintenanceMetrics()
+    {
+        _requests = _meter.CreateCounter<long>("maintenance.requests", description: "HTTP requests completed, by status code");
+    }
+
+    public void RequestCompleted(int statusCode) =>
+        _requests.Add(1, new KeyValuePair<string, object?>("status", statusCode));
+
+    public void Dispose() => _meter.Dispose();
+}

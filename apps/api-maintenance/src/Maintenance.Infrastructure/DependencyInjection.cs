@@ -1,3 +1,5 @@
+using Maintenance.Application.Observability;
+using Maintenance.Infrastructure.Observability;
 using Maintenance.Infrastructure.Persistence;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
@@ -20,6 +22,7 @@ public static class DependencyInjection
 
         services.AddDbContext<MaintenanceDbContext>(options => options.UseSqlite(connectionString));
         services.AddHealthChecks().AddDbContextCheck<MaintenanceDbContext>(DatabaseHealthCheckName);
+        services.AddSingleton<IMaintenanceMetrics, MaintenanceMetrics>();
 
         return services;
     }
