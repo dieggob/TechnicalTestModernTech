@@ -5,7 +5,7 @@
 Design produced on 2026-09-07, updated the same day after four rounds of product answers; deployment revised to SQLite everywhere once the implementation design fixed the stack. Mermaid validation: validated with Mermaid CLI (mmdc) 11.17.0 — 13 diagrams.
 Codebase grounding: repository `TechnicalTestModernTech` at branch `main`. The repository contains only a one-line `README.md` and no application code, so every element in this design is `new` and the design is effectively greenfield.
 
-Input: `Docs/Vehicle Maintenance Tracker.md`, section "Phase 1a — Clarified Story" including the second clarification round. The technology stack was explicitly deferred by that document to a later phase, so this design describes layers, contracts, and data in stack-neutral terms and records the stack as an open technical question.
+Input: `docs/plans/Vehicle Maintenance Tracker.md`, section "Phase 1a — Clarified Story" including the second clarification round. The technology stack was explicitly deferred by that document to a later phase, so this design describes layers, contracts, and data in stack-neutral terms and records the stack as an open technical question.
 
 ## Overview
 
@@ -885,7 +885,7 @@ All paths are prefixed with `/api/v1`. All endpoints outside `/auth` require `Au
 | Are the assumed token lifetimes (24 h verification, 1 h reset) acceptable? | No. Replaced on the fourth round: both links expire after 30 minutes. |
 | What lifetime should the verification and reset links have? | 30 minutes for both, configurable. Recorded as `stated` in the Security NFR. |
 | Should any feature be unavailable until the email is verified? | No, all features are available without verification. A configuration flag `RequireEmailVerification` (default off) can turn gating on for every endpoint outside `/auth`. |
-| Which stack, database, email mechanism, and UI shape implement this design? | Decided in the implementation design (`Docs/stacks/Vehicle Maintenance Tracker.md`): .NET 8 API, Angular 22 SPA on a separate static host, SQLite everywhere, MailKit over SMTP. The deployment diagram was revised to SQLite on persistent storage. |
+| Which stack, database, email mechanism, and UI shape implement this design? | Decided in the implementation design (`docs/implementation/Vehicle Maintenance Tracker.md`): .NET 8 API, Angular 22 SPA on a separate static host, SQLite everywhere, MailKit over SMTP. The deployment diagram was revised to SQLite on persistent storage. |
 | Is `TechnicalTestModernTech` the intended repository? | Yes; the implementation design's Phase 2 lays out this repository as the monorepo. |
 | Where will the application be hosted? | Nowhere: it runs locally only and is not published to the internet. |
 | Which email sender runs? | Only the log sink behind `EmailSender`; the SMTP adapter was dropped from the implementation design on 2026-09-07. |

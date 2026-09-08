@@ -3,9 +3,9 @@
 ## Status
 
 Current phase: Phase 3 completed — implementation may start; update slice statuses as work lands. No open questions.
-This Phase 3 supersedes the working plan's own "Phase 3 — Working Plan" (`Docs/Vehicle Maintenance Tracker.md`).
+This Phase 3 supersedes the working plan's own "Phase 3 — Working Plan" (`docs/plans/Vehicle Maintenance Tracker.md`).
 Phase 1 manifest paths were revised by Phase 2 on 2026-09-07, and two Phase 1 open questions (Nginx image, Dockerfiles) were closed by Phase 2 decisions.
-Inputs: working plan `Docs/Vehicle Maintenance Tracker.md`; design `Docs/designs/Vehicle Maintenance Tracker.md`. Codebase grounding: repository `TechnicalTestModernTech` at branch `main`, which contains only a one-line `README.md` and the `Docs/` folder; the stack is greenfield and every technology is `new`.
+Inputs: working plan `docs/plans/Vehicle Maintenance Tracker.md`; design `docs/designs/Vehicle Maintenance Tracker.md`. Codebase grounding: repository `TechnicalTestModernTech` at branch `main`, which contains only a one-line `README.md` and the `Docs/` folder; the stack is greenfield and every technology is `new`.
 
 Phase 1 was defined on 2026-09-07. Every technology was chosen by the user in five question rounds; the answers are recorded under its Questions Asked & Answers. Version lookups were made read-only against the NuGet v3 API, the npm registry, angular.dev, endoflife.date, and the .NET support policy page on 2026-09-07. Nothing was installed, restored, or built. Phase 1 was written before the skill's decision protocol required a labelled recommendation per question, so its table marks rounds where none was labelled.
 
@@ -714,7 +714,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 35 pending, 0 in progress, 0 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 34 pending, 0 in progress, 1 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -751,7 +751,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 
 | # | Slice | Source | Depends on | Size | Status |
 |---|---|---|---|---|---|
-| S01 | Lay down the monorepo skeleton | Foundation | none | S | pending |
+| S01 | Lay down the monorepo skeleton | Foundation | none | S | done |
 | S02 | Create the API solution that starts and answers /health | Foundation | S01 | M | pending |
 | S03 | Create the Angular client that renders and runs one spec | Foundation | S01 | S | pending |
 | S04 | Create the Playwright suite with one smoke test | Foundation | S03 | S | pending |
@@ -831,10 +831,10 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — the folder map lives in `CLAUDE.md` and `README.md` links to it rather than repeating it; YAGNI — no workflow, CODEOWNERS, or `packages/` folder; SOLID — not applicable.
 - **Definition of done:**
-  - [ ] `tree -L 2` matches Phase 2 Layout at a Glance for the top level
-  - [ ] `git status` clean after the commit; old `Docs/` gone
-  - [ ] Links inside the three documents resolve
-- **Status:** pending
+  - [x] `tree -L 2` matches Phase 2 Layout at a Glance for the top level
+  - [x] `git status` clean after the commit; old `Docs/` gone
+  - [x] Links inside the three documents resolve
+- **Status:** done
 
 #### S02 — Create the API solution that starts and answers /health
 

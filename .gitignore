@@ -1,0 +1,41 @@
+# .NET
+bin/
+obj/
+*.user
+*.suo
+.vs/
+TestResults/
+coverage/
+*.coverage
+*.trx
+
+# Node / Angular
+node_modules/
+dist/
+.angular/
+*.tsbuildinfo
+npm-debug.log*
+
+# Playwright
+test-results/
+playwright-report/
+blob-report/
+playwright/.cache/
+
+# SQLite
+*.db
+*.db-shm
+*.db-wal
+*.sqlite
+
+# Environment and secrets
+.env
+.env.*
+!.env.example
+docker/.env
+
+# Editors and OS
+.idea/
+*.swp
+.DS_Store
+Thumbs.db

@@ -2,7 +2,7 @@
 
 ## Status
 
-Current phase: Phase 2 completed; Phase 1a clarified a second time on 2026-09-07 and a technical design exists at `Docs/designs/Vehicle Maintenance Tracker.md`. Business definition complete (fourth clarification round on 2026-09-07). Technical stack and monorepo layout are decided in `Docs/stacks/Vehicle Maintenance Tracker.md`. Phase 3 is superseded by the implementation plan in `Docs/stacks/Vehicle Maintenance Tracker.md`; implementation may start from slice S01.
+Current phase: Phase 2 completed; Phase 1a clarified a second time on 2026-09-07 and a technical design exists at `docs/designs/Vehicle Maintenance Tracker.md`. Business definition complete (fourth clarification round on 2026-09-07). Technical stack and monorepo layout are decided in `docs/implementation/Vehicle Maintenance Tracker.md`. Phase 3 is superseded by the implementation plan in `docs/implementation/Vehicle Maintenance Tracker.md`; implementation may start from slice S01.
 
 ## Phase 1 — Refined Story
 
@@ -182,7 +182,7 @@ Because the repository is empty, every area below must be created rather than mo
 
 ## Phase 3 — Working Plan
 
-Superseded on 2026-09-07 by the implementation plan in `Docs/stacks/Vehicle Maintenance Tracker.md`, section "Phase 3 — Implementation Plan" (produced by run-implementation-design). That plan cuts the work into 35 vertical slices with tests, files, pattern proposals, and tracked status; later phases of this document that refer to "the Phase 3 plan" mean that plan.
+Superseded on 2026-09-07 by the implementation plan in `docs/implementation/Vehicle Maintenance Tracker.md`, section "Phase 3 — Implementation Plan" (produced by run-implementation-design). That plan cuts the work into 35 vertical slices with tests, files, pattern proposals, and tracked status; later phases of this document that refer to "the Phase 3 plan" mean that plan.
 
 ## Phase 4 — Implementation Verification
 
