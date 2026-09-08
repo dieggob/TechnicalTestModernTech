@@ -1,10 +1,14 @@
+using Maintenance.Infrastructure;
+
 var builder = WebApplication.CreateBuilder(args);
 
-builder.Services.AddHealthChecks();
+builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
+
+app.Services.MigrateDatabase();
 
 if (app.Environment.IsDevelopment())
 {

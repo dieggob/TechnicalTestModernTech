@@ -714,7 +714,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 30 pending, 0 in progress, 5 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 29 pending, 0 in progress, 6 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -756,7 +756,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S03 | Create the Angular client that renders and runs one spec | Foundation | S01 | S | done |
 | S04 | Create the Playwright suite with one smoke test | Foundation | S03 | S | done |
 | S05 | Add the repository scripts for setup, dev, and test | Foundation | S02, S03, S04 | S | done |
-| S06 | Wire EF Core with SQLite, start-up migration, and the database health check | Foundation | S02 | M | pending |
+| S06 | Wire EF Core with SQLite, start-up migration, and the database health check | Foundation | S02 | M | done |
 | S07 | Establish the error model: ProblemDetails, validation errors, and status mapping | Foundation | S06 | M | pending |
 | S08 | Add JSON console logging, request logging, and the metrics meter | Foundation | S07 | S | pending |
 | S09 | Sign up creates an account (API) | AC 1 (sign up) | S07, S08 | M | pending |
@@ -1027,10 +1027,10 @@ None by user decision; the Slice Map is the only ordering.
 
 - **Principle checks:** DRY — connection handling lives only in `AddInfrastructure`; SOLID — Api depends on the extension method, never on the provider; YAGNI — no entities, no repositories yet.
 - **Definition of done:**
-  - [ ] `dotnet run` creates `maintenance.db` and applies the migration
-  - [ ] GET /health lists the database as healthy
-  - [ ] `scripts/migrate.sh add <Name>` and `scripts/migrate.sh update` work
-- **Status:** pending
+  - [x] `dotnet run` creates `maintenance.db` and applies the migration
+  - [x] GET /health lists the database as healthy
+  - [x] `scripts/migrate.sh add <Name>` and `scripts/migrate.sh update` work
+- **Status:** done
 
 #### S07 — Establish the error model: ProblemDetails, validation errors, and status mapping
 
