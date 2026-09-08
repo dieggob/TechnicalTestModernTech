@@ -228,6 +228,7 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | Microsoft.AspNetCore.Authentication.JwtBearer | 8.0.30 | add | Session tokens |
 | Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore | 8.0.30 | add | Health reporting |
 | FluentValidation | 12.1.1 | add | Input validation |
+| Microsoft.Extensions.DependencyInjection.Abstractions | 8.0.2 | add (implied by FluentValidation registration in `AddApplication`, S07) | Input validation |
 | Swashbuckle.AspNetCore | 10.2.3 | add | API contract documentation |
 | xunit | 2.9.3 | add | API tests |
 | xunit.runner.visualstudio | 3.1.5 | add | API tests |
@@ -248,6 +249,7 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | Package | Version | Change | Serves |
 |---|---|---|---|
 | FluentValidation | 12.1.1 | add | Input validation |
+| Microsoft.Extensions.DependencyInjection.Abstractions | 8.0.2 | add (implied, S07) | Validator registration |
 
 #### `apps/api-maintenance/src/Maintenance.Infrastructure/Maintenance.Infrastructure.csproj`
 
@@ -714,7 +716,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 29 pending, 0 in progress, 6 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 28 pending, 0 in progress, 7 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -757,7 +759,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S04 | Create the Playwright suite with one smoke test | Foundation | S03 | S | done |
 | S05 | Add the repository scripts for setup, dev, and test | Foundation | S02, S03, S04 | S | done |
 | S06 | Wire EF Core with SQLite, start-up migration, and the database health check | Foundation | S02 | M | done |
-| S07 | Establish the error model: ProblemDetails, validation errors, and status mapping | Foundation | S06 | M | pending |
+| S07 | Establish the error model: ProblemDetails, validation errors, and status mapping | Foundation | S06 | M | done |
 | S08 | Add JSON console logging, request logging, and the metrics meter | Foundation | S07 | S | pending |
 | S09 | Sign up creates an account (API) | AC 1 (sign up) | S07, S08 | M | pending |
 | S10 | Sign up issues a verification link and records emails (API) | AC 8 (verification email, 30 minutes) | S09 | M | pending |
@@ -1022,8 +1024,8 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Repository interfaces in Domain implemented in Infrastructure (design-fixed) | later slices | The design draws them; not a proposal | — | yes | pending (developer) |
-  | Plain `DbContext` injected into repositories vs an `IUnitOfWork` wrapper | `MaintenanceDbContext` | The context already is the unit of work; keeping it plain avoids an interface with one implementation | An explicit `IUnitOfWork` reads clearer in services and mocks better; revisit in S27 where the first transaction appears | yes | pending (developer) |
+  | Repository interfaces in Domain implemented in Infrastructure (design-fixed) | later slices | The design draws them; not a proposal | — | yes | design-fixed, implemented from S09 (2026-09-08) |
+  | Plain `DbContext` injected into repositories vs an `IUnitOfWork` wrapper | `MaintenanceDbContext` | The context already is the unit of work; keeping it plain avoids an interface with one implementation | An explicit `IUnitOfWork` reads clearer in services and mocks better; revisit in S27 where the first transaction appears | yes | plain DbContext kept (recommended); revisited in S27 (2026-09-08) |
 
 - **Principle checks:** DRY — connection handling lives only in `AddInfrastructure`; SOLID — Api depends on the extension method, never on the provider; YAGNI — no entities, no repositories yet.
 - **Definition of done:**
@@ -1066,14 +1068,14 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Single `IExceptionHandler` with a switch on exception type | `ProblemDetailsExceptionHandler` | One place, five cases, easy to read | Grows if many exception types appear; unlikely here | yes | pending (developer) |
-  | Chain of Responsibility: one handler per exception type | `Api/Errors/` | Open for extension without editing a switch | Five tiny classes for five cases; more files than behaviour | no | pending (developer) |
+  | Single `IExceptionHandler` with a switch on exception type | `ProblemDetailsExceptionHandler` | One place, five cases, easy to read | Grows if many exception types appear; unlikely here | yes | adopted (recommended): ProblemDetailsExceptionHandler with one switch (2026-09-08) |
+  | Chain of Responsibility: one handler per exception type | `Api/Errors/` | Open for extension without editing a switch | Five tiny classes for five cases; more files than behaviour | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — every service validates through `ValidationRunner`, never inline; SOLID — the handler is the single place that knows HTTP status codes, services know only exceptions; YAGNI — no error codes catalogue beyond `EmailNotVerified` (S13).
 - **Definition of done:**
-  - [ ] All mapping tests pass
-  - [ ] Test-only endpoints exist only in the integration test host, not in `Program.cs`
-- **Status:** pending
+  - [x] All mapping tests pass
+  - [x] Test-only endpoints exist only in the integration test host, not in `Program.cs`
+- **Status:** done
 
 #### S08 — Add JSON console logging, request logging, and the metrics meter
 
@@ -2042,10 +2044,10 @@ None by user decision; the Slice Map is the only ordering.
 
 | Slice | Pattern | Where | Recommended | Decision |
 |---|---|---|---|---|
-| S06 | Repository interfaces in Domain implemented in Infrastructure (design-fixed) | later slices | yes | pending (developer) |
-| S06 | Plain `DbContext` injected into repositories vs an `IUnitOfWork` wrapper | `MaintenanceDbContext` | yes | pending (developer) |
-| S07 | Single `IExceptionHandler` with a switch on exception type | `ProblemDetailsExceptionHandler` | yes | pending (developer) |
-| S07 | Chain of Responsibility: one handler per exception type | `Api/Errors/` | no | pending (developer) |
+| S06 | Repository interfaces in Domain implemented in Infrastructure (design-fixed) | later slices | yes | design-fixed, implemented from S09 (2026-09-08) |
+| S06 | Plain `DbContext` injected into repositories vs an `IUnitOfWork` wrapper | `MaintenanceDbContext` | yes | plain DbContext kept (recommended); revisited in S27 (2026-09-08) |
+| S07 | Single `IExceptionHandler` with a switch on exception type | `ProblemDetailsExceptionHandler` | yes | adopted (recommended): ProblemDetailsExceptionHandler with one switch (2026-09-08) |
+| S07 | Chain of Responsibility: one handler per exception type | `Api/Errors/` | no | declined (2026-09-08) |
 | S08 | Own middleware for request logging | `RequestLoggingMiddleware` | yes | pending (developer) |
 | S08 | Built-in `HttpLogging` middleware | `Program.cs` | no | pending (developer) |
 | S09 | Adapter over `PasswordHasher<User>` behind `IPasswordHasher` | `IdentityPasswordHasher` | yes | pending (developer) |

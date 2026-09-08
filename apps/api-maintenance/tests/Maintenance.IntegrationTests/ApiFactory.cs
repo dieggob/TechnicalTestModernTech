@@ -8,9 +8,9 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Maintenance.IntegrationTests;
 
 /// <summary>
-/// Boots the real API pipeline in-process against a private SQLite in-memory database.
-/// The connection stays open for the factory's lifetime; an in-memory SQLite database
-/// disappears when its last connection closes.
+/// Boots the real API pipeline in-process against a private SQLite in-memory database and
+/// adds the test-only endpoints. The connection stays open for the factory's lifetime; an
+/// in-memory SQLite database disappears when its last connection closes.
 /// </summary>
 public class ApiFactory : WebApplicationFactory<Program>
 {
@@ -25,6 +25,7 @@ public class ApiFactory : WebApplicationFactory<Program>
         {
             services.RemoveAll<DbContextOptions<MaintenanceDbContext>>();
             services.AddDbContext<MaintenanceDbContext>(options => options.UseSqlite(_connection));
+            services.AddTransient<IStartupFilter, TestEndpoints.StartupFilter>();
         });
     }
 

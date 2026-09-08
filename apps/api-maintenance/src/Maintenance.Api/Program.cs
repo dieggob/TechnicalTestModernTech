@@ -1,14 +1,21 @@
+using Maintenance.Api.Errors;
+using Maintenance.Application;
 using Maintenance.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
 
+builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
+builder.Services.AddProblemDetails();
+builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 
 var app = builder.Build();
 
 app.Services.MigrateDatabase();
+
+app.UseExceptionHandler();
 
 if (app.Environment.IsDevelopment())
 {
