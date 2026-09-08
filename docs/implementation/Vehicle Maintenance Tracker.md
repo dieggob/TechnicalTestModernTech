@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 23 pending, 0 in progress, 12 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 22 pending, 0 in progress, 13 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -771,7 +771,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S10 | Sign up issues a verification link and records emails (API) | AC 8 (verification email, 30 minutes) | S09 | M | done |
 | S11 | Verify email and resend the link (API) | AC 8 | S10 | S | done |
 | S12 | Log in with JWT sessions and rate limiting (API) | AC 1 (log in) | S09 | M | done |
-| S13 | Protect endpoints: bearer authorization, CORS, and the verification flag | AC 1 (isolation), AC "flag can require verification" | S12 | M | pending |
+| S13 | Protect endpoints: bearer authorization, CORS, and the verification flag | AC 1 (isolation), AC "flag can require verification" | S12 | M | done |
 | S14 | Request a password reset (API) | AC 9 (reset link, 30 minutes) | S11, S12 | S | pending |
 | S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | pending |
 | S16 | Generate the API client and add auth state to the Angular app | Foundation for client slices | S12, S13, S03 | M | pending |
@@ -1344,14 +1344,14 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | ASP.NET authorization requirement + handler | `EmailVerifiedHandler` | Framework-native, policy composes with `[Authorize]`, testable in isolation | Handler needs a scoped repository lookup per request | yes | pending (developer) |
-  | Custom middleware after authentication | `Api/Auth` | Simple to read | Bypasses the policy system; every future policy must remember the same ordering | no | pending (developer) |
+  | ASP.NET authorization requirement + handler | `EmailVerifiedHandler` | Framework-native, policy composes with `[Authorize]`, testable in isolation | Handler needs a scoped repository lookup per request | yes | adopted (recommended): fallback policy with EmailVerifiedRequirement, ProblemDetails 403 with code EmailNotVerified via IAuthorizationMiddlewareResultHandler (2026-09-08) |
+  | Custom middleware after authentication | `Api/Auth` | Simple to read | Bypasses the policy system; every future policy must remember the same ordering | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — `ICurrentUser` is the only way controllers learn the caller; SOLID — the handler depends on `IUserRepository` and `IOptions<AuthOptions>`, nothing else; YAGNI — no roles or permissions.
 - **Definition of done:**
-  - [ ] Test file passes
-  - [ ] Flag defaults to false in `appsettings.json` and `.env.example`
-- **Status:** pending
+  - [x] Test file passes
+  - [x] Flag defaults to false in `appsettings.json` and `.env.example`
+- **Status:** done
 
 #### S14 — Request a password reset (API)
 
@@ -2066,8 +2066,8 @@ None by user decision; the Slice Map is the only ordering.
 | S11 | Call `DateTime.UtcNow` directly | services | no | declined (2026-09-08) |
 | S12 | Framework rate limiter with one named policy | `AuthRateLimitPolicy` | yes | adopted (recommended); partitioned by client address only, the email partition was dropped because reading the body inside the limiter is costly and local use has one address (2026-09-08) |
 | S12 | Custom middleware counting attempts in memory | `Api/RateLimiting` | no | declined (2026-09-08) |
-| S13 | ASP.NET authorization requirement + handler | `EmailVerifiedHandler` | yes | pending (developer) |
-| S13 | Custom middleware after authentication | `Api/Auth` | no | pending (developer) |
+| S13 | ASP.NET authorization requirement + handler | `EmailVerifiedHandler` | yes | adopted (recommended): fallback policy with EmailVerifiedRequirement, ProblemDetails 403 with code EmailNotVerified via IAuthorizationMiddlewareResultHandler (2026-09-08) |
+| S13 | Custom middleware after authentication | `Api/Auth` | no | declined (2026-09-08) |
 | S15 | `IHostedService` start-up sweep | `TokenPurgeOnStartup` | yes | pending (developer) |
 | S15 | Purge inline during `ResetPasswordAsync` | `AuthService` | no | pending (developer) |
 | S16 | Facade: `AuthState` as the single entry point for auth in the client | `core/auth/auth-state.ts` | yes | pending (developer) |

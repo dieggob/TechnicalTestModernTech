@@ -7,6 +7,8 @@ using Maintenance.Application;
 using Maintenance.Application.Auth;
 using Maintenance.Infrastructure;
 using Microsoft.AspNetCore.Authentication.JwtBearer;
+using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Cors.Infrastructure;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
 using Microsoft.IdentityModel.Tokens;
@@ -27,10 +29,14 @@ builder.Services.Configure<ClientOptions>(builder.Configuration.GetSection(Clien
 builder.Services.Configure<JwtOptions>(builder.Configuration.GetSection(JwtOptions.Section));
 
 builder.Services.Configure<RateLimitOptions>(builder.Configuration.GetSection(RateLimitOptions.Section));
+builder.Services.Configure<AuthOptions>(builder.Configuration.GetSection(AuthOptions.Section));
+builder.Services.Configure<CorsSettings>(builder.Configuration.GetSection(CorsSettings.Section));
 
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddSingleton<ITokenIssuer, JwtTokenIssuer>();
+builder.Services.AddHttpContextAccessor();
+builder.Services.AddScoped<ICurrentUser, CurrentUser>();
 
 // Options are resolved through DI so configuration added late (for example by the test host) is honoured.
 builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer();
@@ -46,7 +52,17 @@ builder.Services.AddOptions<JwtBearerOptions>(JwtBearerDefaults.AuthenticationSc
         ValidateLifetime = true,
         ClockSkew = TimeSpan.FromMinutes(1),
     });
-builder.Services.AddAuthorization();
+// Every endpoint requires an authenticated, and when the flag is on, verified caller unless it opts out with [AllowAnonymous].
+builder.Services.AddAuthorization(options => options.FallbackPolicy = new AuthorizationPolicyBuilder()
+    .RequireAuthenticatedUser()
+    .AddRequirements(new EmailVerifiedRequirement())
+    .Build());
+builder.Services.AddScoped<IAuthorizationHandler, EmailVerifiedHandler>();
+builder.Services.AddSingleton<IAuthorizationMiddlewareResultHandler, ProblemDetailsAuthorizationResultHandler>();
+builder.Services.AddCors();
+builder.Services.AddOptions<CorsOptions>()
+    .Configure<IOptions<CorsSettings>>((options, cors) => options.AddDefaultPolicy(policy =>
+        policy.WithOrigins(cors.Value.ClientOrigin).AllowAnyHeader().AllowAnyMethod()));
 builder.Services.AddRateLimiter(_ => { });
 builder.Services.AddOptions<RateLimiterOptions>()
     .Configure<IOptions<RateLimitOptions>>((options, limits) => AuthRateLimitPolicy.Configure(options, limits.Value));
@@ -78,11 +94,12 @@ if (app.Environment.IsDevelopment())
     app.UseSwaggerUI();
 }
 
+app.UseCors();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseRateLimiter();
 
-app.MapHealthChecks("/health");
+app.MapHealthChecks("/health").AllowAnonymous();
 app.MapControllers();
 
 app.Run();

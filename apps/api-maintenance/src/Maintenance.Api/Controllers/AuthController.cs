@@ -1,6 +1,7 @@
 using Maintenance.Api.Contracts;
 using Maintenance.Api.RateLimiting;
 using Maintenance.Application.Auth;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 
@@ -8,6 +9,7 @@ namespace Maintenance.Api.Controllers;
 
 [ApiController]
 [Route("api/v1/auth")]
+[AllowAnonymous]
 [Produces("application/json")]
 public sealed class AuthController(AuthService auth) : ControllerBase
 {

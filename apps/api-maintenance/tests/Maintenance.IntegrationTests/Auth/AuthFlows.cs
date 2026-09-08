@@ -26,6 +26,21 @@ internal static class AuthFlows
     public static Task<HttpResponseMessage> LoginAsync(this HttpClient client, string email, string password = DefaultPassword) =>
         client.PostAsJsonAsync(LoginUrl, new { email, password });
 
+    /// <summary>Registers (when needed) and logs in, returning the session token.</summary>
+    public static async Task<string> LoginTokenAsync(this HttpClient client, string email, string password = DefaultPassword)
+    {
+        await client.RegisterAsync(email, password);
+        var response = await client.LoginAsync(email, password);
+        response.EnsureSuccessStatusCode();
+        return (await response.Content.ReadFromJsonAsync<Maintenance.Application.Auth.AuthResult>())!.Token;
+    }
+
+    public static HttpClient WithBearer(this HttpClient client, string token)
+    {
+        client.DefaultRequestHeaders.Authorization = new("Bearer", token);
+        return client;
+    }
+
     /// <summary>The token inside the newest recorded email sent to <paramref name="email"/>.</summary>
     public static async Task<string> LatestTokenAsync(this HttpClient client, string email)
     {

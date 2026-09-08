@@ -45,8 +45,11 @@ public class RegisterTests : IClassFixture<ApiFactory>
     [Fact]
     public async Task DevEmails_OutsideDevelopment_DoNotExist()
     {
+        // Authenticated on purpose: the fallback policy answers 401 to any unauthenticated request,
+        // so only a logged-in caller can observe that the route itself is absent in Production.
         using var production = _factory.WithWebHostBuilder(builder => builder.UseEnvironment("Production"));
         using var client = production.CreateClient();
+        client.WithBearer(await client.LoginTokenAsync("prod-caller@example.com"));
 
         var response = await client.GetAsync(DevEmailsUrl);
 

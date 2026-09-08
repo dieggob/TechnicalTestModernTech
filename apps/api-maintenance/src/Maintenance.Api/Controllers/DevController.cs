@@ -1,5 +1,6 @@
 using Maintenance.Api.Hosting;
 using Maintenance.Infrastructure.Email;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Maintenance.Api.Controllers;
@@ -10,6 +11,7 @@ namespace Maintenance.Api.Controllers;
 /// </summary>
 [ApiController]
 [Route("api/v1/dev")]
+[AllowAnonymous]
 [DevelopmentOnly]
 public sealed class DevController(IRecordedEmails emails) : ControllerBase
 {
