@@ -14,17 +14,25 @@ public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
     private readonly Meter _meter = new(MeterName);
     private readonly Counter<long> _requests;
     private readonly Counter<long> _signUps;
+    private readonly Counter<long> _emailsSent;
+    private readonly Counter<long> _emailsFailed;
 
     public MaintenanceMetrics()
     {
         _requests = _meter.CreateCounter<long>("maintenance.requests", description: "HTTP requests completed, by status code");
         _signUps = _meter.CreateCounter<long>("maintenance.sign_ups", description: "Accounts created");
+        _emailsSent = _meter.CreateCounter<long>("maintenance.emails_sent", description: "Emails handed to the sender");
+        _emailsFailed = _meter.CreateCounter<long>("maintenance.emails_failed", description: "Emails the sender rejected");
     }
 
     public void RequestCompleted(int statusCode) =>
         _requests.Add(1, new KeyValuePair<string, object?>("status", statusCode));
 
     public void SignUp() => _signUps.Add(1);
+
+    public void EmailSent() => _emailsSent.Add(1);
+
+    public void EmailFailed() => _emailsFailed.Add(1);
 
     public void Dispose() => _meter.Dispose();
 }

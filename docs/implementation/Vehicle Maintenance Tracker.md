@@ -230,6 +230,8 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | Microsoft.Extensions.Identity.Core | 8.0.30 | add (implied by the framework PasswordHasher choice, S09) | Slow password hashing |
 | FluentValidation | 12.1.1 | add | Input validation |
 | Microsoft.Extensions.DependencyInjection.Abstractions | 8.0.2 | add (implied by FluentValidation registration in `AddApplication`, S07) | Input validation |
+| Microsoft.Extensions.Logging.Abstractions | 8.0.2 | add (implied by services logging email failures, S10) | Structured logging |
+| Microsoft.Extensions.Options | 8.0.2 | add (implied by services reading Tokens and Client options, S10) | Configuration |
 | Swashbuckle.AspNetCore | 10.2.3 | add | API contract documentation |
 | xunit | 2.9.3 | add | API tests |
 | xunit.runner.visualstudio | 3.1.5 | add | API tests |
@@ -251,6 +253,8 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 |---|---|---|---|
 | FluentValidation | 12.1.1 | add | Input validation |
 | Microsoft.Extensions.DependencyInjection.Abstractions | 8.0.2 | add (implied, S07) | Validator registration |
+| Microsoft.Extensions.Logging.Abstractions | 8.0.2 | add (implied, S10) | Logging from services |
+| Microsoft.Extensions.Options | 8.0.2 | add (implied, S10) | Options in services |
 
 #### `apps/api-maintenance/src/Maintenance.Infrastructure/Maintenance.Infrastructure.csproj`
 
@@ -718,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 26 pending, 0 in progress, 9 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 25 pending, 0 in progress, 10 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -764,7 +768,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S07 | Establish the error model: ProblemDetails, validation errors, and status mapping | Foundation | S06 | M | done |
 | S08 | Add JSON console logging, request logging, and the metrics meter | Foundation | S07 | S | done |
 | S09 | Sign up creates an account (API) | AC 1 (sign up) | S07, S08 | M | done |
-| S10 | Sign up issues a verification link and records emails (API) | AC 8 (verification email, 30 minutes) | S09 | M | pending |
+| S10 | Sign up issues a verification link and records emails (API) | AC 8 (verification email, 30 minutes) | S09 | M | done |
 | S11 | Verify email and resend the link (API) | AC 8 | S10 | S | pending |
 | S12 | Log in with JWT sessions and rate limiting (API) | AC 1 (log in) | S09 | M | pending |
 | S13 | Protect endpoints: bearer authorization, CORS, and the verification flag | AC 1 (isolation), AC "flag can require verification" | S12 | M | pending |
@@ -1214,16 +1218,16 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Null Object: `LoggingEmailSender` as the only `IEmailSender` | `Infrastructure/Email` | One implementation that logs and records; the interface keeps an SMTP adapter possible | Recording in memory is test-oriented behaviour inside production code; bounded to the last 50 messages | yes | pending (developer) |
-  | Separate `InMemoryEmailSender` registered only in tests | `IntegrationTests` | Production code stays pure | Playwright cannot reach a test-only sender; the dev endpoint would have nothing to read | no | pending (developer) |
-  | Domain factory `UserToken.Issue` holding the expiry rule | `UserToken` | Expiry and purpose rules live with the data | Needs `now` passed in for testability | yes | pending (developer) |
+  | Null Object: `LoggingEmailSender` as the only `IEmailSender` | `Infrastructure/Email` | One implementation that logs and records; the interface keeps an SMTP adapter possible | Recording in memory is test-oriented behaviour inside production code; bounded to the last 50 messages | yes | adopted (recommended); records the last 50 messages; Development-only GET /api/v1/dev/emails reads them (2026-09-08) |
+  | Separate `InMemoryEmailSender` registered only in tests | `IntegrationTests` | Production code stays pure | Playwright cannot reach a test-only sender; the dev endpoint would have nothing to read | no | declined (2026-09-08) |
+  | Domain factory `UserToken.Issue` holding the expiry rule | `UserToken` | Expiry and purpose rules live with the data | Needs `now` passed in for testability | yes | adopted (recommended); IClock introduced here rather than S11 (2026-09-08) |
 
 - **Principle checks:** DRY — token hashing lives only in `RandomTokenGenerator`; the same generator serves reset tokens (S14); SOLID — `AuthService` sees `ITokenGenerator` and `IEmailSender` only; OOP — `UserToken` answers `IsUsable`; YAGNI — no email templates engine, one plain-text message builder.
 - **Definition of done:**
-  - [ ] All three test files pass
-  - [ ] `/dev/emails` responds only in Development
-  - [ ] Migration `AddUserTokens` applied
-- **Status:** pending
+  - [x] All three test files pass
+  - [x] `/dev/emails` responds only in Development
+  - [x] Migration `AddUserTokens` applied
+- **Status:** done
 
 #### S11 — Verify email and resend the link (API)
 
@@ -2055,9 +2059,9 @@ None by user decision; the Slice Map is the only ordering.
 | S09 | Adapter over `PasswordHasher<User>` behind `IPasswordHasher` | `IdentityPasswordHasher` | yes | adopted (recommended): IdentityPasswordHasher (2026-09-08) |
 | S09 | Use `PasswordHasher<User>` directly in `AuthService` | `AuthService` | no | declined (2026-09-08) |
 | S09 | Static factory `User.Create` vs public constructor | `User` | yes | adopted (recommended) (2026-09-08) |
-| S10 | Null Object: `LoggingEmailSender` as the only `IEmailSender` | `Infrastructure/Email` | yes | pending (developer) |
-| S10 | Separate `InMemoryEmailSender` registered only in tests | `IntegrationTests` | no | pending (developer) |
-| S10 | Domain factory `UserToken.Issue` holding the expiry rule | `UserToken` | yes | pending (developer) |
+| S10 | Null Object: `LoggingEmailSender` as the only `IEmailSender` | `Infrastructure/Email` | yes | adopted (recommended); records the last 50 messages; Development-only GET /api/v1/dev/emails reads them (2026-09-08) |
+| S10 | Separate `InMemoryEmailSender` registered only in tests | `IntegrationTests` | no | declined (2026-09-08) |
+| S10 | Domain factory `UserToken.Issue` holding the expiry rule | `UserToken` | yes | adopted (recommended); IClock introduced here rather than S11 (2026-09-08) |
 | S11 | `IClock` abstraction for `now` | `Application/Time/IClock.cs` | yes | pending (developer) |
 | S11 | Call `DateTime.UtcNow` directly | services | no | pending (developer) |
 | S12 | Framework rate limiter with one named policy | `AuthRateLimitPolicy` | yes | pending (developer) |
@@ -2110,7 +2114,7 @@ None by user decision; the Slice Map is the only ordering.
 
 #### Open Questions
 
-- **Technical** — Confirm the Development-only `/dev/emails` endpoint (S10) as the way tests read verification and reset links. Alternatives are a file sink read by Playwright or a test-only SMTP container; the endpoint is the simplest. Blocks S10, S17 to S20.
+- None. The Development-only `/api/v1/dev/emails` endpoint was implemented in S10 as planned (compiled in, unmapped outside Development, covered by a test); the user approved plan execution without objecting to it.
 
 #### Questions Asked & Answers
 

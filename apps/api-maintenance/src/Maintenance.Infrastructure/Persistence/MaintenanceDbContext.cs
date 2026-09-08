@@ -11,6 +11,8 @@ public class MaintenanceDbContext(DbContextOptions<MaintenanceDbContext> options
 {
     public DbSet<User> Users => Set<User>();
 
+    public DbSet<UserToken> UserTokens => Set<UserToken>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MaintenanceDbContext).Assembly);

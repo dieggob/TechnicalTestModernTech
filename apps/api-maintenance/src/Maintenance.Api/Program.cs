@@ -1,6 +1,8 @@
 using Maintenance.Api.Errors;
+using Maintenance.Api.Hosting;
 using Maintenance.Api.Observability;
 using Maintenance.Application;
+using Maintenance.Application.Auth;
 using Maintenance.Infrastructure;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -14,11 +16,17 @@ builder.Logging.AddJsonConsole(options =>
     options.TimestampFormat = "O";
 });
 
+builder.Services.Configure<TokenOptions>(builder.Configuration.GetSection(TokenOptions.Section));
+builder.Services.Configure<ClientOptions>(builder.Configuration.GetSection(ClientOptions.Section));
+
 builder.Services.AddApplication();
 builder.Services.AddInfrastructure(builder.Configuration);
 builder.Services.AddProblemDetails();
 builder.Services.AddExceptionHandler<ProblemDetailsExceptionHandler>();
-builder.Services.AddControllers().ConfigureApiBehaviorOptions(options =>
+builder.Services.AddControllers(options =>
+{
+    options.Conventions.Add(new DevelopmentOnlyConvention(builder.Environment.IsDevelopment()));
+}).ConfigureApiBehaviorOptions(options =>
 {
     // Model binding failures are reported by the application's validators instead.
     options.SuppressModelStateInvalidFilter = true;

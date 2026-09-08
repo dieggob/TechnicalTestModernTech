@@ -1,6 +1,8 @@
 using System.Net;
 using System.Net.Http.Json;
 using FluentAssertions;
+using Maintenance.Infrastructure.Email;
+using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Maintenance.IntegrationTests.Auth;
@@ -8,10 +10,13 @@ namespace Maintenance.IntegrationTests.Auth;
 public class RegisterTests : IClassFixture<ApiFactory>
 {
     private const string Url = "/api/v1/auth/register";
+    private const string DevEmailsUrl = "/api/v1/dev/emails";
+    private readonly ApiFactory _factory;
     private readonly HttpClient _client;
 
     public RegisterTests(ApiFactory factory)
     {
+        _factory = factory;
         _client = factory.CreateClient();
     }
 
@@ -23,6 +28,29 @@ public class RegisterTests : IClassFixture<ApiFactory>
         response.StatusCode.Should().Be(HttpStatusCode.Created);
         var body = await response.Content.ReadFromJsonAsync<Dictionary<string, string>>();
         body.Should().ContainKey("message");
+    }
+
+    [Fact]
+    public async Task Register_RecordsAVerificationEmailWithALinkToTheClient()
+    {
+        await _client.PostAsJsonAsync(Url, new { email = "verify-me@example.com", password = "Secret123" });
+
+        var emails = await _client.GetFromJsonAsync<List<RecordedEmail>>(DevEmailsUrl);
+
+        var email = emails!.Should().ContainSingle(e => e.To == "verify-me@example.com").Subject;
+        email.Subject.Should().Contain("Verify");
+        email.Link.Should().StartWith("http://localhost:4200/verify?token=").And.MatchRegex("token=[A-Za-z0-9_-]{40,}$");
+    }
+
+    [Fact]
+    public async Task DevEmails_OutsideDevelopment_DoNotExist()
+    {
+        using var production = _factory.WithWebHostBuilder(builder => builder.UseEnvironment("Production"));
+        using var client = production.CreateClient();
+
+        var response = await client.GetAsync(DevEmailsUrl);
+
+        response.StatusCode.Should().Be(HttpStatusCode.NotFound);
     }
 
     [Fact]

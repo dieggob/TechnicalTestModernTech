@@ -9,4 +9,8 @@ public interface IMaintenanceMetrics
     void RequestCompleted(int statusCode);
 
     void SignUp();
+
+    void EmailSent();
+
+    void EmailFailed();
 }

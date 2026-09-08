@@ -16,6 +16,9 @@
     <PackageVersion Include="FluentValidation" Version="12.1.1" />
     <!-- Implied by FluentValidation registration in AddApplication (shared-framework version line). -->
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
+    <!-- Implied by services logging and reading options (S10); shared-framework version line. -->
+    <PackageVersion Include="Microsoft.Extensions.Logging.Abstractions" Version="8.0.2" />
+    <PackageVersion Include="Microsoft.Extensions.Options" Version="8.0.2" />
   </ItemGroup>
 
   <ItemGroup Label="Security">
