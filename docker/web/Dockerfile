@@ -7,7 +7,9 @@ WORKDIR /src
 COPY package.json package-lock.json ./
 RUN npm ci --no-audit --no-fund
 COPY . .
-RUN npx ng build --configuration production
+# PrimeUI license key for PrimeNG, from docker/.env through compose's build args; empty keeps the license badge.
+ARG PRIMEUI_LICENSE=""
+RUN npx ng build --configuration production --define "PRIMEUI_LICENSE='${PRIMEUI_LICENSE}'"
 
 FROM nginx:1.30-alpine
 COPY --from=docker-web nginx.conf /etc/nginx/conf.d/default.conf

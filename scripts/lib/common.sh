@@ -45,15 +45,28 @@ start_api() {
   API_PID=$!
 }
 
+# The PrimeUI license key for PrimeNG: the PRIMEUI_LICENSE variable, else apps/web/.env. Prints the
+# ng serve / ng build argument that embeds it, or nothing when no key is configured.
+web_license_args() {
+  local key="${PRIMEUI_LICENSE:-}"
+  if [ -z "$key" ] && [ -f "$WEB_DIR/.env" ]; then
+    key="$(grep -E '^PRIMEUI_LICENSE=' "$WEB_DIR/.env" | head -1 | cut -d= -f2- | tr -d '[:space:]')"
+  fi
+  if [ -n "$key" ]; then
+    printf -- "--define PRIMEUI_LICENSE='%s'" "$key"
+  fi
+}
+
 # start_web [dev|static]: the dev server for humans, or a production build served statically
 # with an /api proxy (scripts/lib/serve-web.mjs) for deterministic browser tests.
 start_web() {
-  local mode="${1:-dev}"
+  local mode="${1:-dev}" license_args
+  license_args="$(web_license_args)"
   if [ "$mode" = "static" ]; then
-    (cd "$WEB_DIR" && npx ng build >"$LOG_DIR/web-build.log" 2>&1) || { tail -20 "$LOG_DIR/web-build.log" >&2; echo "ng build failed (see $LOG_DIR/web-build.log)" >&2; return 1; }
+    (cd "$WEB_DIR" && eval npx ng build "$license_args" >"$LOG_DIR/web-build.log" 2>&1) || { tail -20 "$LOG_DIR/web-build.log" >&2; echo "ng build failed (see $LOG_DIR/web-build.log)" >&2; return 1; }
     setsid node "$REPO_ROOT/scripts/lib/serve-web.mjs" "$WEB_DIR/dist/web/browser" 4200 "$API_URL" >"$LOG_DIR/web.log" 2>&1 &
   else
-    setsid bash -c "cd '$WEB_DIR' && exec npx ng serve --port 4200" >"$LOG_DIR/web.log" 2>&1 &
+    setsid bash -c "cd '$WEB_DIR' && exec npx ng serve --port 4200 $license_args" >"$LOG_DIR/web.log" 2>&1 &
   fi
   WEB_PID=$!
 }

@@ -4,7 +4,7 @@ Repository-level Bash scripts. Run them from anywhere; each resolves the reposit
 
 | Script | Purpose |
 |---|---|
-| `setup.sh` | One-time machine setup: dotnet on PATH, `nvm install`, restore and `npm ci` for every app, create `apps/e2e/.env` |
+| `setup.sh` | One-time machine setup: dotnet on PATH, `nvm install`, restore and `npm ci` for every app, signing key into user secrets, create `apps/e2e/.env` and `apps/web/.env` |
 | `dev.sh` | Run the API and `ng serve` together; Ctrl+C stops both |
 | `test.sh [--no-e2e]` | `dotnet test`, `ng test`, then Playwright against a fresh API and a production build of the client served by `lib/serve-web.mjs`; the API runs with `RateLimits__AuthPermitLimit=1000` (override with `E2E_AUTH_PERMIT_LIMIT`) because every journey logs in from one address |
 | `migrate.sh` | EF Core migrations (slice S06) |

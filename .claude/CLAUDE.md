@@ -1,6 +1,6 @@
 # Vehicle Maintenance Tracker — project instructions
 
-This repository is a monorepo. Everything needed to build, run, test, and document the project lives here. The authoritative descriptions are in `docs/`; this file is the short version for working sessions. All 36 implementation slices are done; new work is a new slice appended to the plan's Phase 3.
+This repository is a monorepo. Everything needed to build, run, test, and document the project lives here. The authoritative descriptions are in `docs/`; this file is the short version for working sessions. All 37 implementation slices are done; new work is a new slice appended to the plan's Phase 3.
 
 ## Folder map
 
@@ -34,7 +34,7 @@ Run from the repository root unless stated.
 - **Where new code goes:** entities and repository interfaces in `Maintenance.Domain`; services, validators, options, and use-case contracts in `Maintenance.Application`; EF mappings, migrations, and external adapters in `Maintenance.Infrastructure`; controllers in `Maintenance.Api/Controllers`; screens in `apps/web/src/app/features/<domain>/` behind that feature's facade; browser journeys in `apps/e2e/tests/<domain>/`.
 - **Client patterns:** one facade per feature holds signals and is the only caller of the generated client; forms bind server field errors through `shared/problem-details.ts`; dialogs and confirmations are signal-driven (`p-dialog` with `[visible]`), because the app is zoneless; test ids are `data-testid` attributes and Playwright locates through them or labels.
 - **API patterns:** one `IExceptionHandler` maps application exceptions to ProblemDetails; `IClock` is the only source of time; `IUnitOfWork` wraps multi-aggregate writes; the fallback authorization policy carries the email-verification requirement; the auth rate limit is one named policy partitioned by client address.
-- **Configuration and secrets:** each app documents its variables in its own `.env.example`; `docker/.env.example` documents compose's; real `.env` files, SQLite files, and `dotnet user-secrets` content are never committed. Angular reads its API base URL from `src/environments/`.
+- **Configuration and secrets:** each app documents its variables in its own `.env.example`; `docker/.env.example` documents compose's; real `.env` files, SQLite files, and `dotnet user-secrets` content are never committed. Angular reads its API base URL from `src/environments/`; the PrimeUI license key is the one build-time value, read from `apps/web/.env` by the scripts (`--define PRIMEUI_LICENSE`) and from `docker/.env` by the compose build.
 - **Delivery:** one commit per slice on `main`, message prefixed with the slice number (`S07: establish the error model`); tests are written before the production code of each slice; `scripts/test.sh` passes before every commit.
 - **Progress tracking:** slice statuses, definition-of-done checkboxes, and pattern decisions live in `docs/implementation/Vehicle Maintenance Tracker.md`, Phase 3 (Slice Map, per-slice sections, Pattern Proposals Register). Update them when a slice starts or finishes; decisions that reach beyond one slice get a record in `docs/adr/`.
 - **Technology decisions:** are the developer's. Present options with why and why not for each, recommend one, and wait for the choice; never pick a technology, library, or pattern unilaterally.
