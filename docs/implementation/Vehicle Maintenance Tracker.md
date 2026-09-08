@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 24 pending, 0 in progress, 11 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 23 pending, 0 in progress, 12 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -770,7 +770,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S09 | Sign up creates an account (API) | AC 1 (sign up) | S07, S08 | M | done |
 | S10 | Sign up issues a verification link and records emails (API) | AC 8 (verification email, 30 minutes) | S09 | M | done |
 | S11 | Verify email and resend the link (API) | AC 8 | S10 | S | done |
-| S12 | Log in with JWT sessions and rate limiting (API) | AC 1 (log in) | S09 | M | pending |
+| S12 | Log in with JWT sessions and rate limiting (API) | AC 1 (log in) | S09 | M | done |
 | S13 | Protect endpoints: bearer authorization, CORS, and the verification flag | AC 1 (isolation), AC "flag can require verification" | S12 | M | pending |
 | S14 | Request a password reset (API) | AC 9 (reset link, 30 minutes) | S11, S12 | S | pending |
 | S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | pending |
@@ -1304,14 +1304,14 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Framework rate limiter with one named policy | `AuthRateLimitPolicy` | Built-in, declarative per endpoint | Partition key logic needs a small helper to read the email from the body | yes | pending (developer) |
-  | Custom middleware counting attempts in memory | `Api/RateLimiting` | Full control | Reimplements what the framework ships | no | pending (developer) |
+  | Framework rate limiter with one named policy | `AuthRateLimitPolicy` | Built-in, declarative per endpoint | Partition key logic needs a small helper to read the email from the body | yes | adopted (recommended); partitioned by client address only, the email partition was dropped because reading the body inside the limiter is costly and local use has one address (2026-09-08) |
+  | Custom middleware counting attempts in memory | `Api/RateLimiting` | Full control | Reimplements what the framework ships | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — one policy attribute covers all three auth endpoints; SOLID — `JwtTokenIssuer` is the only type that knows signing; YAGNI — no refresh tokens, no revocation list.
 - **Definition of done:**
-  - [ ] All three test files pass
-  - [ ] `Jwt__SigningKey` is read from user secrets locally, never from `appsettings.json`
-- **Status:** pending
+  - [x] All three test files pass
+  - [x] `Jwt__SigningKey` is read from user secrets locally, never from `appsettings.json`
+- **Status:** done
 
 #### S13 — Protect endpoints: bearer authorization, CORS, and the verification flag
 
@@ -2064,8 +2064,8 @@ None by user decision; the Slice Map is the only ordering.
 | S10 | Domain factory `UserToken.Issue` holding the expiry rule | `UserToken` | yes | adopted (recommended); IClock introduced here rather than S11 (2026-09-08) |
 | S11 | `IClock` abstraction for `now` | `Application/Time/IClock.cs` | yes | adopted (recommended); introduced in S10, TestClock in the integration factory (2026-09-08) |
 | S11 | Call `DateTime.UtcNow` directly | services | no | declined (2026-09-08) |
-| S12 | Framework rate limiter with one named policy | `AuthRateLimitPolicy` | yes | pending (developer) |
-| S12 | Custom middleware counting attempts in memory | `Api/RateLimiting` | no | pending (developer) |
+| S12 | Framework rate limiter with one named policy | `AuthRateLimitPolicy` | yes | adopted (recommended); partitioned by client address only, the email partition was dropped because reading the body inside the limiter is costly and local use has one address (2026-09-08) |
+| S12 | Custom middleware counting attempts in memory | `Api/RateLimiting` | no | declined (2026-09-08) |
 | S13 | ASP.NET authorization requirement + handler | `EmailVerifiedHandler` | yes | pending (developer) |
 | S13 | Custom middleware after authentication | `Api/Auth` | no | pending (developer) |
 | S15 | `IHostedService` start-up sweep | `TokenPurgeOnStartup` | yes | pending (developer) |

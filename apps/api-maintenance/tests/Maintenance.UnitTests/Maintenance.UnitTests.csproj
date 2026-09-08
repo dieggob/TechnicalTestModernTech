@@ -8,6 +8,7 @@
   <ItemGroup>
     <ProjectReference Include="../../src/Maintenance.Application/Maintenance.Application.csproj" />
     <ProjectReference Include="../../src/Maintenance.Infrastructure/Maintenance.Infrastructure.csproj" />
+    <ProjectReference Include="../../src/Maintenance.Api/Maintenance.Api.csproj" />
   </ItemGroup>
 
   <ItemGroup>

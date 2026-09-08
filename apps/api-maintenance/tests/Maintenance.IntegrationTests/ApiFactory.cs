@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Maintenance.IntegrationTests;
@@ -24,6 +25,10 @@ public class ApiFactory : WebApplicationFactory<Program>
         _connection.Open();
 
         builder.UseEnvironment("Development");
+        builder.ConfigureAppConfiguration(configuration => configuration.AddInMemoryCollection(new Dictionary<string, string?>
+        {
+            ["Jwt:SigningKey"] = "integration-test-signing-key-with-32-plus-characters",
+        }));
         builder.ConfigureServices(services =>
         {
             services.RemoveAll<DbContextOptions<MaintenanceDbContext>>();

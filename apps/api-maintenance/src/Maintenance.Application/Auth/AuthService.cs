@@ -18,6 +18,7 @@ public sealed class AuthService(
     IUserTokenRepository tokens,
     IPasswordHasher passwordHasher,
     ITokenGenerator tokenGenerator,
+    ITokenIssuer tokenIssuer,
     IEmailSender emailSender,
     IClock clock,
     IOptions<TokenOptions> tokenOptions,
@@ -25,6 +26,7 @@ public sealed class AuthService(
     IValidator<RegisterRequest> registerValidator,
     IValidator<VerifyEmailRequest> verifyValidator,
     IValidator<ResendVerificationRequest> resendValidator,
+    IValidator<LoginRequest> loginValidator,
     IMaintenanceMetrics metrics,
     ILogger<AuthService> logger)
 {
@@ -76,6 +78,26 @@ public sealed class AuthService(
         await users.SaveChangesAsync(cancellationToken);
 
         await SendVerificationAsync(user, verification);
+    }
+
+    /// <summary>
+    /// Verification does not gate login: any account with valid credentials gets a session token
+    /// plus its <c>emailVerified</c> flag. Unknown email and wrong password fail identically.
+    /// </summary>
+    public async Task<AuthResult> LoginAsync(LoginRequest request, CancellationToken cancellationToken)
+    {
+        ValidationRunner.Validate(loginValidator, request);
+
+        var user = await users.FindByEmailAsync(request.Email, cancellationToken);
+        if (user is null || !passwordHasher.Verify(request.Password, user.PasswordHash))
+        {
+            metrics.FailedLogin();
+            throw new UnauthorizedException();
+        }
+
+        var session = tokenIssuer.Issue(user);
+        metrics.Login();
+        return new AuthResult(session.Token, user.Id, user.EmailVerified, session.ExpiresAt);
     }
 
     /// <summary>

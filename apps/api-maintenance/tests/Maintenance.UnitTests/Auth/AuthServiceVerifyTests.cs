@@ -30,10 +30,10 @@ public class AuthServiceVerifyTests
         _tokenGenerator.Generate().Returns(new GeneratedToken("fresh", "hash-of-fresh"));
         _users.FindByIdAsync(_user.Id, Arg.Any<CancellationToken>()).Returns(_user);
         _users.FindByEmailAsync(_user.Email, Arg.Any<CancellationToken>()).Returns(_user);
-        _service = new AuthService(_users, _tokens, Substitute.For<IPasswordHasher>(), _tokenGenerator, _emailSender, _clock,
+        _service = new AuthService(_users, _tokens, Substitute.For<IPasswordHasher>(), _tokenGenerator, Substitute.For<ITokenIssuer>(), _emailSender, _clock,
             Options.Create(new TokenOptions()), Options.Create(new ClientOptions()),
             new RegisterRequestValidator(), new VerifyEmailRequestValidator(), new ResendVerificationRequestValidator(),
-            _metrics, NullLogger<AuthService>.Instance);
+            new LoginRequestValidator(), _metrics, NullLogger<AuthService>.Instance);
     }
 
     private void TokenExists(TokenPurpose purpose, DateTime issuedAt) =>

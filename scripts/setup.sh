@@ -22,6 +22,11 @@ echo "node $(node --version), npm $(npm --version)"
 
 echo "restoring apps/api-maintenance"
 (cd "$API_DIR" && dotnet restore --nologo -v q)
+# Session-token signing key lives in user secrets, never in appsettings.json.
+if ! (cd "$API_DIR/src/Maintenance.Api" && dotnet user-secrets list 2>/dev/null | grep -q '^Jwt:SigningKey'); then
+  (cd "$API_DIR/src/Maintenance.Api" && dotnet user-secrets set Jwt:SigningKey "$(head -c 48 /dev/urandom | base64 | tr -d '\n')" >/dev/null)
+  echo "generated Jwt:SigningKey in dotnet user-secrets"
+fi
 echo "installing apps/web"
 (cd "$WEB_DIR" && npm ci --no-audit --no-fund)
 echo "installing apps/e2e"

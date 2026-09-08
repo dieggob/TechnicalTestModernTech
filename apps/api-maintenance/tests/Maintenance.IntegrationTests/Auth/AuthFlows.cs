@@ -10,6 +10,7 @@ internal static class AuthFlows
     public const string RegisterUrl = "/api/v1/auth/register";
     public const string VerifyUrl = "/api/v1/auth/verify-email";
     public const string ResendUrl = "/api/v1/auth/resend-verification";
+    public const string LoginUrl = "/api/v1/auth/login";
     public const string DevEmailsUrl = "/api/v1/dev/emails";
     public const string DefaultPassword = "Secret123";
 
@@ -21,6 +22,9 @@ internal static class AuthFlows
 
     public static Task<HttpResponseMessage> ResendVerificationAsync(this HttpClient client, string email) =>
         client.PostAsJsonAsync(ResendUrl, new { email });
+
+    public static Task<HttpResponseMessage> LoginAsync(this HttpClient client, string email, string password = DefaultPassword) =>
+        client.PostAsJsonAsync(LoginUrl, new { email, password });
 
     /// <summary>The token inside the newest recorded email sent to <paramref name="email"/>.</summary>
     public static async Task<string> LatestTokenAsync(this HttpClient client, string email)

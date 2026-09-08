@@ -12,6 +12,10 @@ public interface IMaintenanceMetrics
 
     void Verification();
 
+    void Login();
+
+    void FailedLogin();
+
     void EmailSent();
 
     void EmailFailed();

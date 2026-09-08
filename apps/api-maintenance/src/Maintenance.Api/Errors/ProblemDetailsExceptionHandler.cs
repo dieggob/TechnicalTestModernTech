@@ -17,6 +17,7 @@ public sealed class ProblemDetailsExceptionHandler(ILogger<ProblemDetailsExcepti
         {
             NotFoundException notFound => Problem(StatusCodes.Status404NotFound, notFound.Message),
             ConflictException conflict => Problem(StatusCodes.Status409Conflict, conflict.Message),
+            UnauthorizedException unauthorized => Problem(StatusCodes.Status401Unauthorized, unauthorized.Message),
             ValidationException validation => new ValidationProblemDetails(
                 validation.Errors.ToDictionary(error => error.Key, error => error.Value))
             {
