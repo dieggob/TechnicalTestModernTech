@@ -22,6 +22,7 @@ public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
     private readonly Counter<long> _vehiclesCreated;
     private readonly Counter<long> _recordsCreated;
     private readonly Counter<long> _recordsUpdated;
+    private readonly Counter<long> _recordsDeleted;
     private readonly Counter<long> _mileageAdvances;
     private readonly Counter<long> _emailsSent;
     private readonly Counter<long> _emailsFailed;
@@ -38,6 +39,7 @@ public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
         _vehiclesCreated = _meter.CreateCounter<long>("maintenance.vehicles_created", description: "Vehicles registered");
         _recordsCreated = _meter.CreateCounter<long>("maintenance.records_created", description: "Maintenance records logged");
         _recordsUpdated = _meter.CreateCounter<long>("maintenance.records_updated", description: "Maintenance records edited");
+        _recordsDeleted = _meter.CreateCounter<long>("maintenance.records_deleted", description: "Maintenance records deleted");
         _mileageAdvances = _meter.CreateCounter<long>("maintenance.mileage_advances", description: "Vehicle mileage raised by a record");
         _emailsSent = _meter.CreateCounter<long>("maintenance.emails_sent", description: "Emails handed to the sender");
         _emailsFailed = _meter.CreateCounter<long>("maintenance.emails_failed", description: "Emails the sender rejected");
@@ -63,6 +65,8 @@ public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
     public void RecordCreated() => _recordsCreated.Add(1);
 
     public void RecordUpdated() => _recordsUpdated.Add(1);
+
+    public void RecordDeleted() => _recordsDeleted.Add(1);
 
     public void MileageAdvanced() => _mileageAdvances.Add(1);
 

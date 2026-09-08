@@ -37,4 +37,15 @@ public sealed class MaintenanceController(MaintenanceService maintenance) : Cont
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<MaintenanceWriteResult>> Update(Guid vehicleId, Guid recordId, MaintenanceInput input, CancellationToken cancellationToken) =>
         Ok(await maintenance.UpdateAsync(vehicleId, recordId, input, cancellationToken));
+
+    /// <summary>Deletes a record. The vehicle's current mileage is left as it is.</summary>
+    [HttpDelete("{recordId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(Guid vehicleId, Guid recordId, CancellationToken cancellationToken)
+    {
+        await maintenance.DeleteAsync(vehicleId, recordId, cancellationToken);
+        return NoContent();
+    }
 }

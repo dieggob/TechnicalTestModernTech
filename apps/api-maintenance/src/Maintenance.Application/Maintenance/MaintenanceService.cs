@@ -52,6 +52,17 @@ public sealed class MaintenanceService(
         return result;
     }
 
+    /// <summary>Removes a record. The vehicle's mileage is never lowered: the odometer reading was real (design decision).</summary>
+    public async Task DeleteAsync(Guid vehicleId, Guid recordId, CancellationToken cancellationToken)
+    {
+        var vehicle = await RequireOwnedVehicleAsync(vehicleId, cancellationToken);
+        var record = await RequireRecordAsync(vehicle, recordId, cancellationToken);
+
+        records.Remove(record);
+        await unitOfWork.SaveChangesAsync(cancellationToken);
+        metrics.RecordDeleted();
+    }
+
     /// <summary>
     /// The one place a record write and the vehicle's mileage advance are committed together
     /// (design decision: they can never disagree after a partial failure).
