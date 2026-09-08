@@ -11,12 +11,14 @@ describe('VehicleListComponent', () => {
     loading: signal(false),
     error: signal<string | null>(null),
     load: vi.fn().mockResolvedValue(undefined),
+    delete: vi.fn().mockResolvedValue(undefined),
   };
 
   beforeEach(async () => {
     facade.vehicles.set([]);
     facade.error.set(null);
     facade.load.mockClear();
+    facade.delete.mockClear();
     await TestBed.configureTestingModule({
       imports: [VehicleListComponent],
       providers: [provideRouter([]), { provide: VehiclesFacade, useValue: facade }],
@@ -25,16 +27,15 @@ describe('VehicleListComponent', () => {
     await fixture.whenStable();
   });
 
+  const vehicle = { id: '1', make: 'Toyota', model: 'Corolla', year: 2020, vin: 'VIN1', licensePlate: 'ABC-123', currentMileage: 45000 };
+
   it('loads the vehicles on init and shows the empty state', () => {
     expect(facade.load).toHaveBeenCalledTimes(1);
     expect(fixture.nativeElement.querySelector('[data-testid="vehicles-empty"]')).not.toBeNull();
   });
 
   it('renders one row per vehicle', async () => {
-    facade.vehicles.set([
-      { id: '1', make: 'Toyota', model: 'Corolla', year: 2020, vin: 'VIN1', licensePlate: 'ABC-123', currentMileage: 45000 },
-      { id: '2', make: 'Honda', model: 'Civic', year: 2018, vin: 'VIN2', licensePlate: 'XYZ-987', currentMileage: 70000 },
-    ]);
+    facade.vehicles.set([vehicle, { ...vehicle, id: '2', vin: 'VIN2', model: 'Civic' }]);
     await fixture.whenStable();
 
     const rows = fixture.nativeElement.querySelectorAll('[data-testid^="vehicle-row-"]');
@@ -48,5 +49,32 @@ describe('VehicleListComponent', () => {
     await fixture.whenStable();
 
     expect(fixture.nativeElement.querySelector('[data-testid="vehicles-error"]')?.textContent).toContain('could not be loaded');
+  });
+
+  it('asks before deleting, keeps on decline, and deletes on confirm', async () => {
+    const component = fixture.componentInstance;
+
+    component.confirmDelete(vehicle);
+    expect(component.deleting()).toEqual(vehicle);
+    expect(facade.delete).not.toHaveBeenCalled();
+
+    component.keep();
+    expect(component.deleting()).toBeNull();
+
+    component.confirmDelete(vehicle);
+    await component.deleteConfirmed();
+    expect(facade.delete).toHaveBeenCalledWith('1');
+    expect(component.deleting()).toBeNull();
+  });
+
+  it('reports a failed deletion', async () => {
+    facade.delete.mockRejectedValueOnce(new Error('boom'));
+    const component = fixture.componentInstance;
+
+    component.confirmDelete(vehicle);
+    await component.deleteConfirmed();
+
+    expect(component.actionError()).toContain('could not be deleted');
+    expect(component.deleting()).toBeNull();
   });
 });

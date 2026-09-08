@@ -7,6 +7,9 @@
   @if (facade.error(); as message) {
     <p-message severity="error" data-testid="vehicles-error">{{ message }}</p-message>
   }
+  @if (actionError(); as message) {
+    <p-message severity="error" data-testid="vehicles-action-error">{{ message }}</p-message>
+  }
 
   <p-table [value]="facade.vehicles()" [loading]="facade.loading()" dataKey="id" data-testid="vehicles-table">
     <ng-template #header>
@@ -30,6 +33,7 @@
         <td>{{ vehicle.currentMileage }}</td>
         <td class="row-actions">
           <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" ariaLabel="Edit" (onClick)="edit(vehicle)" [attr.data-testid]="'edit-' + vehicle.vin" />
+          <p-button icon="pi pi-trash" [text]="true" [rounded]="true" severity="danger" ariaLabel="Delete" (onClick)="confirmDelete(vehicle)" [attr.data-testid]="'delete-' + vehicle.vin" />
         </td>
       </tr>
     </ng-template>
@@ -41,4 +45,23 @@
   </p-table>
 
   <app-vehicle-form [(visible)]="formVisible" [vehicle]="editing()" />
+
+  <p-dialog
+    [visible]="deleting() !== null"
+    (visibleChange)="$event || keep()"
+    [modal]="true"
+    [draggable]="false"
+    header="Delete vehicle"
+    [style]="{ width: '28rem', maxWidth: '95vw' }"
+  >
+    @if (deleting(); as vehicle) {
+      <p data-testid="confirm-delete-message">
+        Delete {{ vehicle.make }} {{ vehicle.model }} ({{ vehicle.vin }})? Its maintenance history will be deleted with it.
+      </p>
+    }
+    <ng-template #footer>
+      <p-button label="Keep" [text]="true" severity="secondary" (onClick)="keep()" data-testid="confirm-keep" />
+      <p-button label="Delete" severity="danger" [loading]="deletingInProgress()" (onClick)="deleteConfirmed()" data-testid="confirm-delete" />
+    </ng-template>
+  </p-dialog>
 </section>
