@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 9 pending, 0 in progress, 26 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 8 pending, 0 in progress, 27 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -785,7 +785,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S24 | Vehicle list screen (client) | AC 2, AC 3 | S22, S18 | S | done |
 | S25 | Create and edit vehicle form (client) | AC 2, AC 3 | S24, S23 | S | done |
 | S26 | Delete a vehicle with confirmation (client) | AC 2 | S25 | S | done |
-| S27 | Log a maintenance record and advance mileage (API) | AC 4, AC 5, AC 6, AC 11, AC 12 | S23 | M | pending |
+| S27 | Log a maintenance record and advance mileage (API) | AC 4, AC 5, AC 6, AC 11, AC 12 | S23 | M | done |
 | S28 | View maintenance history (API) | AC 7 | S27 | S | pending |
 | S29 | Edit a maintenance record (API) | AC 10, AC 11 | S28 | S | pending |
 | S30 | Delete a maintenance record (API) | AC 10 | S29 | S | pending |
@@ -1813,16 +1813,16 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Domain method `Vehicle.AdvanceMileage` (Tell, Don't Ask) | `Vehicle` | The rule lives with the data; unit-testable without EF | None of substance | yes | pending (developer) |
-  | Rule inside `MaintenanceService` | service | Everything in one place | Anaemic entity; the rule is duplicated on update (S29) | no | pending (developer) |
-  | Explicit `IUnitOfWork.BeginTransactionAsync` abstraction | `Application/Persistence` | Service expresses the transaction without EF types; mockable | One interface with one implementation over `DbContext.Database` | yes | pending (developer) |
-  | Use `DbContext` transaction directly from the service | `MaintenanceService` | No abstraction | Application references EF Core | no | pending (developer) |
+  | Domain method `Vehicle.AdvanceMileage` (Tell, Don't Ask) | `Vehicle` | The rule lives with the data; unit-testable without EF | None of substance | yes | adopted (recommended) (2026-09-08) |
+  | Rule inside `MaintenanceService` | service | Everything in one place | Anaemic entity; the rule is duplicated on update (S29) | no | declined (2026-09-08) |
+  | Explicit `IUnitOfWork.BeginTransactionAsync` abstraction | `Application/Persistence` | Service expresses the transaction without EF types; mockable | One interface with one implementation over `DbContext.Database` | yes | adopted (recommended): IUnitOfWork + IUnitOfWorkTransaction over the DbContext; S06's plain DbContext stays for single-aggregate writes (2026-09-08) |
+  | Use `DbContext` transaction directly from the service | `MaintenanceService` | No abstraction | Application references EF Core | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — `AdvanceMileage` is written once and reused by S29; SOLID — service orchestrates, entity decides; OOP — `MaintenanceRecord.Create` validates its own invariants; YAGNI — no attachments, no categories.
 - **Definition of done:**
-  - [ ] All tests pass, including atomicity
-  - [ ] Migration `AddMaintenanceRecords` applied
-- **Status:** pending
+  - [x] All tests pass, including atomicity
+  - [x] Migration `AddMaintenanceRecords` applied
+- **Status:** done
 
 #### S28 — View maintenance history (API)
 
@@ -2078,10 +2078,10 @@ None by user decision; the Slice Map is the only ordering.
 | S21 | Mapping library (AutoMapper or Mapster) | Application | no | declined (2026-09-08) |
 | S24 | Facade per feature (`VehiclesFacade`) holding signals and calling the generated client | `features/vehicles` | yes | adopted (recommended): VehiclesFacade with signals over the generated functions (2026-09-08) |
 | S24 | Components call the generated client directly | components | no | declined (2026-09-08) |
-| S27 | Domain method `Vehicle.AdvanceMileage` (Tell, Don't Ask) | `Vehicle` | yes | pending (developer) |
-| S27 | Rule inside `MaintenanceService` | service | no | pending (developer) |
-| S27 | Explicit `IUnitOfWork.BeginTransactionAsync` abstraction | `Application/Persistence` | yes | pending (developer) |
-| S27 | Use `DbContext` transaction directly from the service | `MaintenanceService` | no | pending (developer) |
+| S27 | Domain method `Vehicle.AdvanceMileage` (Tell, Don't Ask) | `Vehicle` | yes | adopted (recommended) (2026-09-08) |
+| S27 | Rule inside `MaintenanceService` | service | no | declined (2026-09-08) |
+| S27 | Explicit `IUnitOfWork.BeginTransactionAsync` abstraction | `Application/Persistence` | yes | adopted (recommended): IUnitOfWork + IUnitOfWorkTransaction over the DbContext; S06's plain DbContext stays for single-aggregate writes (2026-09-08) |
+| S27 | Use `DbContext` transaction directly from the service | `MaintenanceService` | no | declined (2026-09-08) |
 
 ### Conventions
 

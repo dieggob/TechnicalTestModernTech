@@ -1,6 +1,8 @@
 using Maintenance.Application.Auth;
 using Maintenance.Application.Observability;
+using Maintenance.Application.Persistence;
 using Maintenance.Application.Time;
+using Maintenance.Domain.Maintenance;
 using Maintenance.Domain.Users;
 using Maintenance.Domain.Vehicles;
 using Maintenance.Infrastructure.Auth;
@@ -35,6 +37,8 @@ public static class DependencyInjection
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<IUserTokenRepository, UserTokenRepository>();
         services.AddScoped<IVehicleRepository, VehicleRepository>();
+        services.AddScoped<IMaintenanceRecordRepository, MaintenanceRecordRepository>();
+        services.AddScoped<IUnitOfWork, UnitOfWork>();
 
         services.AddSingleton<IClock, SystemClock>();
         services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();

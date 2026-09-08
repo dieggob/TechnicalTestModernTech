@@ -1,3 +1,4 @@
+using Maintenance.Domain.Maintenance;
 using Maintenance.Domain.Users;
 using Maintenance.Domain.Vehicles;
 using Microsoft.EntityFrameworkCore;
@@ -15,6 +16,8 @@ public class MaintenanceDbContext(DbContextOptions<MaintenanceDbContext> options
     public DbSet<UserToken> UserTokens => Set<UserToken>();
 
     public DbSet<Vehicle> Vehicles => Set<Vehicle>();
+
+    public DbSet<MaintenanceRecord> MaintenanceRecords => Set<MaintenanceRecord>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

@@ -30,6 +30,23 @@ public sealed class Vehicle
 
     public void Update(VehicleDetails details, DateTime now) => Apply(details, now);
 
+    /// <summary>
+    /// A maintenance record with a higher mileage than the odometer reading known so far raises it
+    /// (product decision). Lower or equal readings never lower it: a back-dated job says nothing
+    /// about today's odometer. Returns whether the mileage changed.
+    /// </summary>
+    public bool AdvanceMileage(int mileageAtService, DateTime now)
+    {
+        if (mileageAtService <= CurrentMileage)
+        {
+            return false;
+        }
+
+        CurrentMileage = mileageAtService;
+        UpdatedAt = now;
+        return true;
+    }
+
     /// <summary>Trimmed and upper-cased, so the per-user unique index sees one form of each VIN.</summary>
     public static string NormalizeVin(string vin) => vin.Trim().ToUpperInvariant();
 
