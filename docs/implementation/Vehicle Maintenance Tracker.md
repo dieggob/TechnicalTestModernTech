@@ -714,7 +714,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 32 pending, 0 in progress, 3 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 31 pending, 0 in progress, 4 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -754,7 +754,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S01 | Lay down the monorepo skeleton | Foundation | none | S | done |
 | S02 | Create the API solution that starts and answers /health | Foundation | S01 | M | done |
 | S03 | Create the Angular client that renders and runs one spec | Foundation | S01 | S | done |
-| S04 | Create the Playwright suite with one smoke test | Foundation | S03 | S | pending |
+| S04 | Create the Playwright suite with one smoke test | Foundation | S03 | S | done |
 | S05 | Add the repository scripts for setup, dev, and test | Foundation | S02, S03, S04 | S | pending |
 | S06 | Wire EF Core with SQLite, start-up migration, and the database health check | Foundation | S02 | M | pending |
 | S07 | Establish the error model: ProblemDetails, validation errors, and status mapping | Foundation | S06 | M | pending |
@@ -947,9 +947,9 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — base URLs are read from `.env` only, never hard-coded in specs; YAGNI — no page objects until two specs share a page (S18).
 - **Definition of done:**
-  - [ ] `npx playwright test` passes against a running client
-  - [ ] `.env` is git-ignored and `.env.example` documents both variables
-- **Status:** pending
+  - [x] `npx playwright test` passes against a running client
+  - [x] `.env` is git-ignored and `.env.example` documents both variables
+- **Status:** done
 
 #### S05 — Add the repository scripts for setup, dev, and test
 
