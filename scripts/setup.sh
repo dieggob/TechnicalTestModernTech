@@ -32,6 +32,5 @@ echo "installing apps/web"
 echo "installing apps/e2e"
 (cd "$E2E_DIR" && npm ci --no-audit --no-fund)
 [ -f "$E2E_DIR/.env" ] || { cp "$E2E_DIR/.env.example" "$E2E_DIR/.env"; echo "created apps/e2e/.env from .env.example"; }
-[ -f "$WEB_DIR/.env" ] || { cp "$WEB_DIR/.env.example" "$WEB_DIR/.env"; echo "created apps/web/.env from .env.example (paste your PrimeUI license key there)"; }
 
 echo "setup complete; run scripts/dev.sh or scripts/test.sh"

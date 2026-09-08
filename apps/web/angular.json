@@ -27,10 +27,7 @@
             "styles": [
               "primeicons/primeicons.css",
               "src/styles.css"
-            ],
-            "define": {
-              "PRIMEUI_LICENSE": "''"
-            }
+            ]
           },
           "configurations": {
             "production": {

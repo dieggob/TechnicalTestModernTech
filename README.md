@@ -56,7 +56,6 @@ Install these once by hand. Everything else is installed by the setup script.
 | nvm | client and browser tests, Option A | `. ~/.nvm/nvm.sh && nvm --version` | Follow https://github.com/nvm-sh/nvm#installing-and-updating, then open a new terminal. The setup script installs the Node version pinned in `.nvmrc` (Node 24) |
 | Google Chrome | browser tests only | `google-chrome --version` | https://www.google.com/chrome/ (the suite drives the installed Chrome; nothing is downloaded) |
 | Docker Engine with the Compose plugin | Option B only | `docker compose version` | https://docs.docker.com/engine/install/ and add your user to the `docker` group, then log out and in again |
-| PrimeUI license key | removing the PrimeNG badge | the app shows no "Invalid PrimeUI License" badge | Free Community license for individuals at https://primeui.dev; paste the key into `apps/web/.env` (Option A) and `docker/.env` (Option B). The app works without it, with the badge in the corner |
 
 ### 2. One-time setup
 
@@ -66,7 +65,7 @@ cd TechnicalTestModernTech
 scripts/setup.sh
 ```
 
-The setup script checks the .NET SDK, installs the pinned Node through nvm, restores the API, runs `npm ci` for the client and the browser tests, generates the session-token signing key into `dotnet user-secrets`, and creates `apps/e2e/.env` and `apps/web/.env` from their examples. It ends with `setup complete`. It is safe to run again. Paste your PrimeUI license key into `apps/web/.env` afterwards; the scripts embed it in every client build.
+The setup script checks the .NET SDK, installs the pinned Node through nvm, restores the API, runs `npm ci` for the client and the browser tests, generates the session-token signing key into `dotnet user-secrets`, and creates `apps/e2e/.env` from its example. It ends with `setup complete`. It is safe to run again.
 
 Option B does not need this step: the images install their own toolchains. It only needs Docker.
 
@@ -158,7 +157,6 @@ The API reads standard ASP.NET Core configuration: `appsettings.json` holds the 
 | `RateLimits__AuthPermitLimit` | `10` | Login, resend-verification, and forgot-password attempts allowed per client address per window |
 | `RateLimits__AuthWindow` | `00:01:00` | The rate-limit window |
 | `ASPNETCORE_ENVIRONMENT` | `Production` in compose, `Development` under `scripts/dev.sh` | Development enables Swagger and `GET /api/v1/dev/emails` |
-| `PRIMEUI_LICENSE` | empty | PrimeUI license key embedded in the client at build time; read from `apps/web/.env` by the scripts and from `docker/.env` by the compose build |
 
 Compose adds `API_PORT` and `WEB_PORT` (defaults 5000 and 4200) in `docker/.env`. The Angular client reads its API base URL from `src/environments/`: empty in both environments, because `ng serve` proxies `/api` through `proxy.conf.json` and Nginx proxies it in the stack. The browser suite reads `WEB_BASE_URL` and `API_BASE_URL` from `apps/e2e/.env`.
 
@@ -174,7 +172,6 @@ Compose adds `API_PORT` and `WEB_PORT` (defaults 5000 and 4200) in `docker/.env`
 | `429` on login during a script or tool run | The auth rate limit (10 per minute per address) was hit. Wait a minute or raise `RateLimits__AuthPermitLimit` for that run |
 | `403` with code `EmailNotVerified` | `Auth__RequireEmailVerification` is `true`; verify the address or set the flag back to `false` |
 | Playwright cannot find a browser | Install Google Chrome; the suite uses `channel: chrome` and does not download browsers |
-| "Invalid PrimeUI License" badge in the corner | No key was embedded in this build. Put the key in `apps/web/.env` (scripts) or `docker/.env` (compose) and rebuild |
 
 ## Documentation
 

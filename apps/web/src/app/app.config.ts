@@ -7,7 +7,6 @@ import Aura from '@primeuix/themes/aura';
 import { environment } from '../environments/environment';
 import { provideApiConfiguration } from './api/api-configuration';
 import { authInterceptor } from './core/auth/auth.interceptor';
-import { primeUiLicense } from './primeui-license';
 import { routes } from './app.routes';
 
 export const appConfig: ApplicationConfig = {
@@ -16,6 +15,6 @@ export const appConfig: ApplicationConfig = {
     provideRouter(routes, withComponentInputBinding()),
     provideHttpClient(withInterceptors([authInterceptor])),
     provideApiConfiguration(environment.apiRootUrl),
-    providePrimeNG({ theme: { preset: Aura }, license: primeUiLicense }),
+    providePrimeNG({ theme: { preset: Aura } }),
   ],
 };

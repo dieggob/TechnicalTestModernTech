@@ -33,8 +33,6 @@ services:
       dockerfile: ../../docker/web/Dockerfile
       additional_contexts:
         docker-web: ./web
-      args:
-        PRIMEUI_LICENSE: ${PRIMEUI_LICENSE:-}
     ports:
       - "${WEB_PORT:-4200}:80"
     depends_on:

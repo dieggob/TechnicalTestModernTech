@@ -74,7 +74,7 @@ Not listed because the inputs do not evidence them: caching, background jobs, me
 | ASP.NET Core CORS (`Microsoft.AspNetCore.Cors`) | 8.0.30 | looked up: shared framework | new | Cross-origin access from the client | Required because the client is served from another origin; allowed origins come from configuration | none | MIT |
 | Angular (`@angular/core`, `@angular/common`, `@angular/router`, `@angular/forms`, `@angular/platform-browser`) | 22.1.5 | looked up: npm registry `@angular/core@latest` | new | Web user interface that calls only the API | User choice; standalone components, signals, reactive forms, `HttpClient` with an interceptor adding the bearer header and reading `emailVerified` for the verification banner | Blazor WebAssembly, Razor Pages, Blazor Server: offered, not chosen | MIT |
 | Angular CLI (`@angular/cli`, `@angular/build`) | 22.1.7 | looked up: npm registry `@angular/cli@latest`; engines `^22.22.3 \|\| ^24.15.0 \|\| >=26.0.0` | new | Angular build and tests | Generates, builds, serves, and tests the client; `ng serve` proxies `/api` to the API locally | none | MIT |
-| PrimeNG | 22.1.0 (peer `@angular/core ^22.1.0`) | looked up: npm registry | new | Web user interface: forms, data table for maintenance history, dialogs | User choice; version tracks the Angular major | Angular Material, Bootstrap, plain CSS: offered, not chosen | PrimeUI license from 22.0.0 (21.x and earlier were MIT): free Community license for individuals, key verified offline and embedded at build time (S37); the package manifest declares "SEE LICENSE IN LICENSE.md", see Constraints |
+| PrimeNG | 21.1.9 (declares peer `@angular/core ^21.0.7`; runs on Angular 22, verified by the full suite in S37; `apps/web/.npmrc` sets `legacy-peer-deps`) | looked up: npm registry | new | Web user interface: forms, data table for maintenance history, dialogs | User choice; 22.1.0 was chosen in Phase 1 and replaced on 2026-09-08 because PrimeNG 22 moved to the PrimeUI license with a key check; 21.1.9 is the last MIT release | Angular Material, Bootstrap, plain CSS: offered, not chosen; PrimeUI Community key: chosen first, then dropped to keep licensing out of the project | MIT per `LICENSE.md` of 21.1.9; the package manifest declares "SEE LICENSE IN LICENSE.md", see Constraints |
 | PrimeIcons | 8.0.0 | looked up: npm registry | new | Web user interface | Icon set PrimeNG components expect | none | MIT per `LICENSE.md`, same note as PrimeNG |
 
 #### Persistence
@@ -299,13 +299,13 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | Package | Version | Change | Serves |
 |---|---|---|---|
 | @angular/core, @angular/common, @angular/router, @angular/forms, @angular/platform-browser (dependencies) | 22.1.5 | add | Web user interface |
-| primeng | 22.1.0 | add | Web user interface |
+| primeng | 21.1.9 (last MIT release; `.npmrc` legacy-peer-deps for Angular 22) | add | Web user interface |
 | primeicons | 8.0.0 | add | Web user interface |
 | @angular/cli, @angular/build (devDependencies) | 22.1.7 | add | Angular build and tests |
 | typescript (devDependency) | 6.0.x as pinned by the CLI | add | Angular client |
 | vitest (devDependency) | 5.0.0 or the patch the CLI pins | add | Client unit tests |
 | ng-openapi-gen (devDependency) | 1.0.5 | add | Generated API client in `src/app/api/` |
-| @primeuix/themes | 3.0.x | add | Aura theme preset PrimeNG 22 requires (implied by primeng; added in S03) |
+| @primeuix/themes | 2.0.3 | add | Aura theme preset for PrimeNG 21 (implied by primeng; added in S03, pinned with the downgrade in S37) |
 | @angular/compiler, @angular/compiler-cli, tslib, jsdom, prettier | as pinned by `ng new` 22.1.7 | add | Scaffolded by the CLI: compiler, Vitest DOM environment, formatter (added in S03) |
 
 #### `apps/e2e/package.json`
@@ -351,7 +351,7 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | Two origins (client host and API) | Misconfigured CORS blocks the client or opens the API too widely | Allowed origins from configuration only; no wildcard; preflight covered by an integration test |
 | Bearer token held in browser storage | Exposed to script injection | `sessionStorage`, short session lifetime, Content Security Policy from the Nginx host, no inline scripts |
 | No continuous integration | Regressions are caught only when a developer runs the suites | Document the three test commands in the README; revisit CI when the user chooses |
-| PrimeNG 22 ships under the PrimeUI license with an offline key check (found 2026-09-08) | An "Invalid PrimeUI License" badge on every screen without a key | Free Community key from primeui.dev, passed at build time through `--define` from git-ignored `.env` files (S37) |
+| PrimeNG 22 ships under the PrimeUI license with an offline key check (found 2026-09-08) | An "Invalid PrimeUI License" badge on every screen without a key | Stay on PrimeNG 21.1.9, the last MIT release (S37); upgrading PrimeNG beyond 21.x needs a licensing decision |
 | Narrow TypeScript range for Angular 22 | A stray `typescript` upgrade breaks the build | Let the Angular CLI own the `typescript` version; do not bump it independently |
 | Microsoft.NET.Test.Sdk 18.9.0 far ahead of the 8.0 SDK | Possible MSBuild incompatibility with SDK 8.0.4xx | The nuspec targets net8.0; fall back to the 17.x line if restore fails and record it |
 | Vitest integration in the Angular CLI is recent | Builder options may change between Angular minors | Pin `@angular/build` and `vitest` together; upgrade in lockstep |
@@ -378,7 +378,8 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | Which ecosystem should the Vehicle Maintenance Tracker be built in? | Java 17 + Maven | .NET 8. |
 | Which .NET runtime should the solution target? | not labelled (round predates the decision protocol) | .NET 8 (installed). |
 | How should the web UI be built? | not labelled (round predates the decision protocol) | Angular. |
-| How should the PrimeNG 22 license notice be resolved? (2026-09-08) | Free Community key | Free Community key from primeui.dev, embedded at build time from git-ignored `.env` files (S37); PrimeNG 21.1.9 (MIT, Angular 21 peers), Angular Material, and leaving the badge were offered and not chosen. |
+| How should the PrimeNG 22 license notice be resolved? (2026-09-08) | Free Community key | Free Community key first (wired in commit f959ef8), then reconsidered the same day: the developer preferred no license machinery. |
+| Which way removes the license concern without license machinery? (2026-09-08) | PrimeNG 21.1.9 (MIT) | PrimeNG 21.1.9 on Angular 22, verified green by the full suite; Angular Material, no UI library, and keeping the badge were offered and not chosen. The key wiring was reverted (S37). |
 | Which database should the application use? | not labelled (round predates the decision protocol) | SQLite everywhere. |
 | How should authentication be implemented? | not labelled (round predates the decision protocol) | Custom per design + JWT. |
 | Which validation approach for the API's input rules? | not labelled (round predates the decision protocol) | FluentValidation 12.1.1. |
@@ -799,7 +800,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S34 | Run the whole stack under docker compose | Phase 1 delivery decision (docker compose) | S33 | M | done |
 | S35 | Complete documentation and Claude configuration | Phase 2 Conventions | S34 | S | done |
 | S36 | Client layout and spacing, and the production stylesheet under CSP | User request 2026-09-08; design Security NFR (CSP) | S35 | S | done |
-| S37 | PrimeUI license key wiring | Phase 1 decision 2026-09-08 (Community key) | S36 | S | done |
+| S37 | Stay on PrimeNG 21.1.9 (MIT) instead of licensing PrimeNG 22 | Phase 1 decision 2026-09-08 | S36 | S | done |
 
 ### Milestones
 
@@ -2080,30 +2081,29 @@ None by user decision; the Slice Map is the only ordering.
   - [x] All suites pass
 - **Status:** done
 
-#### S37 — PrimeUI license key wiring
+#### S37 — Stay on PrimeNG 21.1.9 (MIT) instead of licensing PrimeNG 22
 
-- **Goal:** The PrimeUI Community license key reaches PrimeNG at build time from git-ignored files, so the "Invalid PrimeUI License" badge disappears once the developer pastes the key, and builds without a key still work.
-- **Source:** Phase 1 decision of 2026-09-08 (free Community key); PrimeNG 22 `LICENSE.md`
+- **Goal:** No license notice and no license machinery: the client runs on PrimeNG 21.1.9, the last MIT release, with Angular 22.
+- **Source:** Phase 1 decisions of 2026-09-08 (Community key first, then PrimeNG 21.1.9); PrimeNG `LICENSE.md` of 22.x versus 21.x
 - **Depends on:** S36
 - **Size:** S
 - **In scope:**
-  - `primeui-license.ts` reads the `PRIMEUI_LICENSE` identifier that Angular's `define` option replaces; `providePrimeNG` receives it as `license`
-  - `angular.json` defines it as an empty string by default; `scripts/lib/common.sh` passes `--define` to `ng serve` and `ng build` from `PRIMEUI_LICENSE` or `apps/web/.env`; the client Dockerfile takes it as a build argument that compose fills from `docker/.env`
-  - `apps/web/.env.example`, `docker/.env.example`, `setup.sh` creating `apps/web/.env`, README and CLAUDE.md
-- **Out of scope:** obtaining the key (the developer's account at primeui.dev)
+  - `primeng` 21.1.9 and `@primeuix/themes` 2.0.3 in `apps/web/package.json`; `apps/web/.npmrc` with `legacy-peer-deps=true` because 21.1.9 declares Angular 21 peers; the client Dockerfile copies `.npmrc` before `npm ci`
+  - Reverting the Community-key wiring of commit f959ef8 (define, `.env` examples, script helper, build argument, docs) once the developer chose to keep licensing out of the project
+  - Phase 1 dependency table, manifest, risk register, and Q&A updated
+- **Out of scope:** any newer PrimeNG; upgrading beyond 21.x reopens the licensing decision
 - **Files:**
-  - `apps/web/src/app/primeui-license.ts`, `apps/web/src/app/app.config.ts`, `apps/web/angular.json`, `apps/web/.env.example`
-  - `scripts/lib/common.sh`, `scripts/setup.sh`, `docker/web/Dockerfile`, `docker/docker-compose.yml`, `docker/.env.example`
+  - `apps/web/package.json`, `apps/web/package-lock.json`, `apps/web/.npmrc`, `docker/web/Dockerfile`
 - **Steps:**
-  1. Write the spec for the guard; wire the define; prove a `--define` build embeds the value and a plain build does not.
-  2. Document where the key goes; pass the suites.
+  1. Install 21.1.9; build; run every suite; compare screenshots with S36.
+  2. Revert the key wiring; pass the suites; build the container image.
 - **Tests:**
-  - `apps/web/src/app/primeui-license.spec.ts`; existing suites
+  - Existing suites; `docker compose build web`
 - **Pattern proposals:** none needed
-- **Principle checks:** DRY — one identifier, read once; YAGNI — no runtime fetch of the key.
+- **Principle checks:** YAGNI — no license plumbing for a local-only project; DRY — one place (`.npmrc`) states the peer exception.
 - **Definition of done:**
-  - [x] A build with `--define` embeds the key and a build without it compiles
-  - [x] All suites pass
+  - [x] All suites pass on PrimeNG 21.1.9 and the screens show no license badge
+  - [x] The client image builds with `npm ci`
 - **Status:** done
 
 ### Pattern Proposals Register
