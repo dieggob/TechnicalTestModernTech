@@ -1,11 +1,19 @@
 <p-toolbar>
   <ng-template #start>
-    <span class="app-title" data-testid="app-title">
+    <a class="app-title" routerLink="/" data-testid="app-title">
       <i class="pi pi-car" aria-hidden="true"></i>
       {{ title }}
-    </span>
+    </a>
+  </ng-template>
+  <ng-template #end>
+    @if (auth.isAuthenticated()) {
+      <span class="app-user" data-testid="signed-in-as">{{ auth.email() }}</span>
+      <p-button label="Log out" icon="pi pi-sign-out" [text]="true" (onClick)="logOut()" data-testid="log-out" />
+    }
   </ng-template>
 </p-toolbar>
+
+<app-verification-banner />
 
 <main class="app-main">
   <router-outlet />

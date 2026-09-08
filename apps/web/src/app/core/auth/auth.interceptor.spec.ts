@@ -29,7 +29,7 @@ describe('authInterceptor', () => {
   afterEach(() => backend.verify());
 
   it('adds the bearer header when a session exists', () => {
-    auth.signIn({ token: 'jwt', userId: 'u', emailVerified: true, expiresAt: '' });
+    auth.signIn({ token: 'jwt', userId: 'u', email: 'u@example.com', emailVerified: true, expiresAt: '' });
 
     http.get('/api/v1/vehicles').subscribe();
 
@@ -47,7 +47,7 @@ describe('authInterceptor', () => {
   });
 
   it('ends the session and goes to /login on 401', () => {
-    auth.signIn({ token: 'jwt', userId: 'u', emailVerified: true, expiresAt: '' });
+    auth.signIn({ token: 'jwt', userId: 'u', email: 'u@example.com', emailVerified: true, expiresAt: '' });
 
     http.get('/api/v1/vehicles').subscribe({ error: () => undefined });
     backend.expectOne('/api/v1/vehicles').flush({}, { status: 401, statusText: 'Unauthorized' });
@@ -57,7 +57,7 @@ describe('authInterceptor', () => {
   });
 
   it('goes to /verify on 403 EmailNotVerified and keeps the session', () => {
-    auth.signIn({ token: 'jwt', userId: 'u', emailVerified: false, expiresAt: '' });
+    auth.signIn({ token: 'jwt', userId: 'u', email: 'u@example.com', emailVerified: false, expiresAt: '' });
 
     http.get('/api/v1/vehicles').subscribe({ error: () => undefined });
     backend

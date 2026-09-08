@@ -11,6 +11,7 @@ export class AuthState {
 
   readonly token = computed(() => this.session()?.token ?? null);
   readonly userId = computed(() => this.session()?.userId ?? null);
+  readonly email = computed(() => this.session()?.email ?? null);
   readonly isAuthenticated = computed(() => this.session() !== null);
   readonly emailVerified = computed(() => this.session()?.emailVerified ?? false);
 

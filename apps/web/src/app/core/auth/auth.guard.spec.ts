@@ -15,7 +15,7 @@ describe('authGuard', () => {
   });
 
   it('lets an authenticated user through', () => {
-    TestBed.inject(AuthState).signIn({ token: 'jwt', userId: 'u', emailVerified: false, expiresAt: '' });
+    TestBed.inject(AuthState).signIn({ token: 'jwt', userId: 'u', email: 'u@example.com', emailVerified: false, expiresAt: '' });
 
     expect(run('/vehicles')).toBe(true);
   });

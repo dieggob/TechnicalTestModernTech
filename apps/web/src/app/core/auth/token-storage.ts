@@ -37,6 +37,7 @@ export class TokenStorage {
 export interface StoredSession {
   token: string;
   userId: string;
+  email: string;
   emailVerified: boolean;
   expiresAt: string;
 }

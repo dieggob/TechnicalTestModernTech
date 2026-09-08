@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 18 pending, 0 in progress, 17 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 17 pending, 0 in progress, 18 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -776,7 +776,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | done |
 | S16 | Generate the API client and add auth state to the Angular app | Foundation for client slices | S12, S13, S03 | M | done |
 | S17 | Sign up screen (client) | AC 1, AC 8 | S16, S04 | S | done |
-| S18 | Log in screen with the verification banner and resend (client) | AC 1, AC 8 ("prompted to verify") | S17 | S | pending |
+| S18 | Log in screen with the verification banner and resend (client) | AC 1, AC 8 ("prompted to verify") | S17 | S | done |
 | S19 | Verify email page (client) | AC 8 | S18 | S | pending |
 | S20 | Forgot and reset password screens (client) | AC 9 | S19 | S | pending |
 | S21 | Register a vehicle (API) | AC 2, AC 3, AC "VIN unique per user" | S13 | M | pending |
@@ -1534,8 +1534,8 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — login page object introduced now because S19 to S33 reuse it; SOLID — banner depends on `AuthState` only; YAGNI — no "remember me".
 - **Definition of done:**
-  - [ ] Journeys and specs pass
-- **Status:** pending
+  - [x] Journeys and specs pass
+- **Status:** done
 
 #### S19 — Verify email page (client)
 

@@ -5,6 +5,7 @@ import { StoredSession, TokenStorage } from './token-storage';
 const session: StoredSession = {
   token: 'jwt',
   userId: 'user-1',
+  email: 'user@example.com',
   emailVerified: false,
   expiresAt: '2026-09-09T00:00:00Z',
 };
