@@ -23,18 +23,22 @@ export function applyProblemDetails(form: FormGroup, error: unknown): string | n
   }
 
   const body = (error.error ?? {}) as ProblemDetailsBody;
-  let unbound = false;
+  const unbound: string[] = [];
   for (const [field, messages] of Object.entries(body.errors ?? {})) {
     const control = form.get(field);
     if (control) {
       control.setErrors({ ...(control.errors ?? {}), [SERVER_ERROR]: messages.join(' ') });
       control.markAsTouched();
     } else {
-      unbound = true;
+      unbound.push(...messages);
     }
   }
 
-  if (body.errors && !unbound) {
+  if (unbound.length > 0) {
+    // Field errors with no control on this form (for example an emailed token) are shown as the form message.
+    return unbound.join(' ');
+  }
+  if (body.errors) {
     return null;
   }
   return body.title ?? (error.status === 0 ? 'The server cannot be reached.' : 'Something went wrong. Please try again.');
