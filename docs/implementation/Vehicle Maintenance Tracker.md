@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 8 pending, 0 in progress, 27 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 7 pending, 0 in progress, 28 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -786,7 +786,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S25 | Create and edit vehicle form (client) | AC 2, AC 3 | S24, S23 | S | done |
 | S26 | Delete a vehicle with confirmation (client) | AC 2 | S25 | S | done |
 | S27 | Log a maintenance record and advance mileage (API) | AC 4, AC 5, AC 6, AC 11, AC 12 | S23 | M | done |
-| S28 | View maintenance history (API) | AC 7 | S27 | S | pending |
+| S28 | View maintenance history (API) | AC 7 | S27 | S | done |
 | S29 | Edit a maintenance record (API) | AC 10, AC 11 | S28 | S | pending |
 | S30 | Delete a maintenance record (API) | AC 10 | S29 | S | pending |
 | S31 | Maintenance history table (client) | AC 7, AC 3 | S28, S26 | S | pending |
@@ -1846,8 +1846,8 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — ownership check reuses `FindByIdAndUserIdAsync`; YAGNI — no paging or filters.
 - **Definition of done:**
-  - [ ] Tests pass
-- **Status:** pending
+  - [x] Tests pass
+- **Status:** done
 
 #### S29 — Edit a maintenance record (API)
 

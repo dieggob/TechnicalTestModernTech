@@ -47,6 +47,14 @@ public sealed class MaintenanceService(
         return new MaintenanceWriteResult(MaintenanceRecordDto.From(record), vehicle.CurrentMileage);
     }
 
+    /// <summary>The vehicle's history, newest first. The ownership check happens before the records are read.</summary>
+    public async Task<IReadOnlyList<MaintenanceRecordDto>> ListByVehicleAsync(Guid vehicleId, CancellationToken cancellationToken)
+    {
+        var vehicle = await RequireOwnedVehicleAsync(vehicleId, cancellationToken);
+        var history = await records.FindAllByVehicleIdAsync(vehicle.Id, cancellationToken);
+        return history.Select(MaintenanceRecordDto.From).ToList();
+    }
+
     /// <summary>A vehicle that does not exist and one owned by someone else look the same: 404 (design decision).</summary>
     private async Task<Vehicle> RequireOwnedVehicleAsync(Guid vehicleId, CancellationToken cancellationToken) =>
         await vehicles.FindByIdAndUserIdAsync(vehicleId, currentUser.UserId, cancellationToken)
