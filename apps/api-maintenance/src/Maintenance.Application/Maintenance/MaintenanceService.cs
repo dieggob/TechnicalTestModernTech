@@ -31,14 +31,40 @@ public sealed class MaintenanceService(
 
         var now = clock.UtcNow;
         var record = MaintenanceRecord.Create(vehicle.Id, input.ToDetails(), now);
+        var result = await WriteAndAdvanceAsync(vehicle, record, now,
+            () => records.AddAsync(record, cancellationToken), cancellationToken);
+        metrics.RecordCreated();
+        return result;
+    }
 
+    /// <summary>Editing applies the same validation and the same mileage rule as creation.</summary>
+    public async Task<MaintenanceWriteResult> UpdateAsync(Guid vehicleId, Guid recordId, MaintenanceInput input, CancellationToken cancellationToken)
+    {
+        input = input.Trimmed();
+        var vehicle = await RequireOwnedVehicleAsync(vehicleId, cancellationToken);
+        var record = await RequireRecordAsync(vehicle, recordId, cancellationToken);
+        ValidationRunner.Validate(validator, input);
+
+        var now = clock.UtcNow;
+        record.Update(input.ToDetails(), now);
+        var result = await WriteAndAdvanceAsync(vehicle, record, now, () => Task.CompletedTask, cancellationToken);
+        metrics.RecordUpdated();
+        return result;
+    }
+
+    /// <summary>
+    /// The one place a record write and the vehicle's mileage advance are committed together
+    /// (design decision: they can never disagree after a partial failure).
+    /// </summary>
+    private async Task<MaintenanceWriteResult> WriteAndAdvanceAsync(
+        Vehicle vehicle, MaintenanceRecord record, DateTime now, Func<Task> persistRecord, CancellationToken cancellationToken)
+    {
         await using var transaction = await unitOfWork.BeginTransactionAsync(cancellationToken);
-        await records.AddAsync(record, cancellationToken);
+        await persistRecord();
         var advanced = vehicle.AdvanceMileage(record.MileageAtService, now);
         await unitOfWork.SaveChangesAsync(cancellationToken);
         await transaction.CommitAsync(cancellationToken);
 
-        metrics.RecordCreated();
         if (advanced)
         {
             metrics.MileageAdvanced();
@@ -46,6 +72,11 @@ public sealed class MaintenanceService(
 
         return new MaintenanceWriteResult(MaintenanceRecordDto.From(record), vehicle.CurrentMileage);
     }
+
+    /// <summary>A record is found only under its own vehicle, which was already proven to be the caller's.</summary>
+    private async Task<MaintenanceRecord> RequireRecordAsync(Vehicle vehicle, Guid recordId, CancellationToken cancellationToken) =>
+        await records.FindByIdAndVehicleIdAsync(recordId, vehicle.Id, cancellationToken)
+        ?? throw new NotFoundException("Maintenance record");
 
     /// <summary>The vehicle's history, newest first. The ownership check happens before the records are read.</summary>
     public async Task<IReadOnlyList<MaintenanceRecordDto>> ListByVehicleAsync(Guid vehicleId, CancellationToken cancellationToken)

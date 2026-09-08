@@ -24,6 +24,8 @@ public interface IMaintenanceMetrics
 
     void RecordCreated();
 
+    void RecordUpdated();
+
     void MileageAdvanced();
 
     void EmailSent();

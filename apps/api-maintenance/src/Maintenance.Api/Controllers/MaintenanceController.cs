@@ -28,4 +28,13 @@ public sealed class MaintenanceController(MaintenanceService maintenance) : Cont
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<IReadOnlyList<MaintenanceRecordDto>>> List(Guid vehicleId, CancellationToken cancellationToken) =>
         Ok(await maintenance.ListByVehicleAsync(vehicleId, cancellationToken));
+
+    /// <summary>Edits a record with the same rules as logging one, including the mileage advance.</summary>
+    [HttpPut("{recordId:guid}")]
+    [ProducesResponseType(typeof(MaintenanceWriteResult), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<ActionResult<MaintenanceWriteResult>> Update(Guid vehicleId, Guid recordId, MaintenanceInput input, CancellationToken cancellationToken) =>
+        Ok(await maintenance.UpdateAsync(vehicleId, recordId, input, cancellationToken));
 }

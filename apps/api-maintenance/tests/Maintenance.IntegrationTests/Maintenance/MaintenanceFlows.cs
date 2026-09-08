@@ -8,6 +8,8 @@ internal static class MaintenanceFlows
 {
     public static string RecordsUrl(Guid vehicleId) => $"/api/v1/vehicles/{vehicleId}/maintenance";
 
+    public static string RecordUrl(Guid vehicleId, Guid recordId) => $"{RecordsUrl(vehicleId)}/{recordId}";
+
     public static MaintenanceInput SampleRecord(int mileageAtService = 46000, string description = "Oil change") =>
         new(description, 89.99m, new DateOnly(2026, 9, 1), mileageAtService, "Quick Lube", "Synthetic 5W-30");
 
