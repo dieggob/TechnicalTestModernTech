@@ -11,6 +11,7 @@
           VIN {{ v.vin }} · Plate {{ v.licensePlate }} · <span data-testid="vehicle-mileage">{{ v.currentMileage }}</span> mi
         </p>
       </div>
+      <p-button label="Log maintenance" icon="pi pi-plus" (onClick)="add()" data-testid="add-record" />
     </header>
   }
 
@@ -29,6 +30,7 @@
         <th>Mileage</th>
         <th>Provider</th>
         <th>Notes</th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template #body let-record>
@@ -39,12 +41,17 @@
         <td>{{ record.mileageAtService }}</td>
         <td>{{ record.serviceProvider ?? '—' }}</td>
         <td>{{ record.notes ?? '—' }}</td>
+        <td class="row-actions">
+          <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" ariaLabel="Edit" (onClick)="edit(record)" [attr.data-testid]="'edit-record-' + record.id" />
+        </td>
       </tr>
     </ng-template>
     <ng-template #emptymessage>
       <tr>
-        <td colspan="6" data-testid="history-empty">No maintenance logged for this vehicle yet.</td>
+        <td colspan="7" data-testid="history-empty">No maintenance logged for this vehicle yet.</td>
       </tr>
     </ng-template>
   </p-table>
+
+  <app-maintenance-form [(visible)]="formVisible" [vehicleId]="vehicleId()" [record]="editing()" (saved)="onSaved($event)" />
 </section>

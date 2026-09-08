@@ -12,6 +12,8 @@ describe('VehicleDetailComponent', () => {
     loading: signal(false),
     error: signal<string | null>(null),
     load: vi.fn().mockResolvedValue(undefined),
+    create: vi.fn(),
+    update: vi.fn(),
   };
   const vehicles = { get: vi.fn() };
   const vehicle = { id: 'v1', make: 'Toyota', model: 'Corolla', year: 2020, vin: 'VIN1', licensePlate: 'ABC-123', currentMileage: 45000 };
@@ -48,6 +50,29 @@ describe('VehicleDetailComponent', () => {
     expect(row?.textContent).toContain('$89.99');
     expect(row?.textContent).toContain('Sep 1, 2026');
     expect(row?.textContent).toContain('—');
+  });
+
+  it('opens the dialog blank for a new job and prefilled for an edit', async () => {
+    const record = { id: 'r1', description: 'Oil change' };
+    maintenance.records.set([record]);
+    await fixture.whenStable();
+    const component = fixture.componentInstance;
+
+    component.add();
+    expect(component.formVisible()).toBe(true);
+    expect(component.editing()).toBeNull();
+
+    component.formVisible.set(false);
+    component.edit(record);
+    expect(component.formVisible()).toBe(true);
+    expect(component.editing()).toBe(record);
+  });
+
+  it('applies the vehicle mileage returned by a write', async () => {
+    fixture.componentInstance.onSaved({ record: { id: 'r9' }, vehicleCurrentMileage: 52000 });
+    await fixture.whenStable();
+
+    expect(fixture.nativeElement.querySelector('[data-testid="vehicle-mileage"]')?.textContent).toBe('52000');
   });
 
   it('shows an error when the vehicle cannot be loaded', async () => {
