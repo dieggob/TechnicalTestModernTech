@@ -12,6 +12,10 @@ export const routes: Routes = [
     loadComponent: () => import('./features/auth/login/login.component').then((m) => m.LoginComponent),
   },
   {
+    path: 'verify',
+    loadComponent: () => import('./features/auth/verify/verify.component').then((m) => m.VerifyComponent),
+  },
+  {
     path: 'vehicles',
     canActivate: [authGuard],
     loadComponent: () =>

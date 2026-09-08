@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 17 pending, 0 in progress, 18 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 16 pending, 0 in progress, 19 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -777,7 +777,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S16 | Generate the API client and add auth state to the Angular app | Foundation for client slices | S12, S13, S03 | M | done |
 | S17 | Sign up screen (client) | AC 1, AC 8 | S16, S04 | S | done |
 | S18 | Log in screen with the verification banner and resend (client) | AC 1, AC 8 ("prompted to verify") | S17 | S | done |
-| S19 | Verify email page (client) | AC 8 | S18 | S | pending |
+| S19 | Verify email page (client) | AC 8 | S18 | S | done |
 | S20 | Forgot and reset password screens (client) | AC 9 | S19 | S | pending |
 | S21 | Register a vehicle (API) | AC 2, AC 3, AC "VIN unique per user" | S13 | M | pending |
 | S22 | List and view vehicles (API) | AC 1 (isolation), AC 2, AC 3 | S21 | S | pending |
@@ -1562,8 +1562,8 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — reuses the `api.ts` email helper; YAGNI — no auto-login from the link.
 - **Definition of done:**
-  - [ ] Journey and specs pass
-- **Status:** pending
+  - [x] Journey and specs pass
+- **Status:** done
 
 #### S20 — Forgot and reset password screens (client)
 
