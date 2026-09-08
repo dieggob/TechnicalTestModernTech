@@ -67,4 +67,14 @@ public sealed class AuthController(AuthService auth) : ControllerBase
         await auth.RequestPasswordResetAsync(request, cancellationToken);
         return Accepted(new MessageResponse("If that address is registered, a reset link is on its way."));
     }
+
+    /// <summary>Sets a new password behind an emailed reset link. Each link works once; log in afterwards.</summary>
+    [HttpPost("reset-password")]
+    [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<MessageResponse>> ResetPassword(ResetPasswordRequest request, CancellationToken cancellationToken)
+    {
+        await auth.ResetPasswordAsync(request, cancellationToken);
+        return Ok(new MessageResponse("Password changed. You can log in with it now."));
+    }
 }

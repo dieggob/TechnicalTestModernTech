@@ -41,6 +41,7 @@ public static class DependencyInjection
         services.AddSingleton<IEmailSender>(provider => provider.GetRequiredService<LoggingEmailSender>());
         services.AddSingleton<IRecordedEmails>(provider => provider.GetRequiredService<LoggingEmailSender>());
         services.AddSingleton<IMaintenanceMetrics, MaintenanceMetrics>();
+        services.AddHostedService<TokenPurgeOnStartup>();
 
         return services;
     }

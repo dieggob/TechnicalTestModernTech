@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 20 pending, 1 in progress, 14 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 20 pending, 0 in progress, 15 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -773,7 +773,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S12 | Log in with JWT sessions and rate limiting (API) | AC 1 (log in) | S09 | M | done |
 | S13 | Protect endpoints: bearer authorization, CORS, and the verification flag | AC 1 (isolation), AC "flag can require verification" | S12 | M | done |
 | S14 | Request a password reset (API) | AC 9 (reset link, 30 minutes) | S11, S12 | S | done |
-| S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | in progress |
+| S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | done |
 | S16 | Generate the API client and add auth state to the Angular app | Foundation for client slices | S12, S13, S03 | M | pending |
 | S17 | Sign up screen (client) | AC 1, AC 8 | S16, S04 | S | pending |
 | S18 | Log in screen with the verification banner and resend (client) | AC 1, AC 8 ("prompted to verify") | S17 | S | pending |
@@ -1416,14 +1416,14 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | `IHostedService` start-up sweep | `TokenPurgeOnStartup` | Runs once per process start, no scheduler, matches the design assumption | Long-running processes never purge again; acceptable locally | yes | pending (developer) |
-  | Purge inline during `ResetPasswordAsync` | `AuthService` | No hosted service | Mixes housekeeping into a user request | no | pending (developer) |
+  | `IHostedService` start-up sweep | `TokenPurgeOnStartup` | Runs once per process start, no scheduler, matches the design assumption | Long-running processes never purge again; acceptable locally | yes | adopted (recommended): TokenPurgeOnStartup with Tokens:PurgeAfter (30 days) (2026-09-08) |
+  | Purge inline during `ResetPasswordAsync` | `AuthService` | No hosted service | Mixes housekeeping into a user request | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — password validation rule shared with registration through one `PasswordRules` validator; SOLID — purge is its own class with one reason to change; YAGNI — no periodic timer.
 - **Definition of done:**
-  - [ ] Both tests pass
-  - [ ] Start-up log line reports purged count
-- **Status:** in progress
+  - [x] Both tests pass
+  - [x] Start-up log line reports purged count
+- **Status:** done
 
 #### S16 — Generate the API client and add auth state to the Angular app
 
@@ -2068,8 +2068,8 @@ None by user decision; the Slice Map is the only ordering.
 | S12 | Custom middleware counting attempts in memory | `Api/RateLimiting` | no | declined (2026-09-08) |
 | S13 | ASP.NET authorization requirement + handler | `EmailVerifiedHandler` | yes | adopted (recommended): fallback policy with EmailVerifiedRequirement, ProblemDetails 403 with code EmailNotVerified via IAuthorizationMiddlewareResultHandler (2026-09-08) |
 | S13 | Custom middleware after authentication | `Api/Auth` | no | declined (2026-09-08) |
-| S15 | `IHostedService` start-up sweep | `TokenPurgeOnStartup` | yes | pending (developer) |
-| S15 | Purge inline during `ResetPasswordAsync` | `AuthService` | no | pending (developer) |
+| S15 | `IHostedService` start-up sweep | `TokenPurgeOnStartup` | yes | adopted (recommended): TokenPurgeOnStartup with Tokens:PurgeAfter (30 days) (2026-09-08) |
+| S15 | Purge inline during `ResetPasswordAsync` | `AuthService` | no | declined (2026-09-08) |
 | S16 | Facade: `AuthState` as the single entry point for auth in the client | `core/auth/auth-state.ts` | yes | pending (developer) |
 | S16 | Components call the generated `AuthService` and storage directly | features | no | pending (developer) |
 | S17 | Shared `problem-details.ts` mapper for server field errors | `shared/` | yes | pending (developer) |

@@ -11,6 +11,9 @@ public sealed class UserTokenRepository(MaintenanceDbContext context) : IUserTok
     public async Task AddAsync(UserToken token, CancellationToken cancellationToken) =>
         await context.UserTokens.AddAsync(token, cancellationToken);
 
+    public Task<int> DeleteCreatedBeforeAsync(DateTime cutoff, CancellationToken cancellationToken) =>
+        context.UserTokens.Where(token => token.CreatedAt < cutoff).ExecuteDeleteAsync(cancellationToken);
+
     public async Task SupersedeAsync(Guid userId, TokenPurpose purpose, DateTime now, CancellationToken cancellationToken)
     {
         var usable = await context.UserTokens

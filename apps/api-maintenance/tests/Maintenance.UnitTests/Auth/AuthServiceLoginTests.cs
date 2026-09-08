@@ -31,7 +31,7 @@ public class AuthServiceLoginTests
         _service = new AuthService(_users, Substitute.For<IUserTokenRepository>(), _hasher, Substitute.For<ITokenGenerator>(),
             _issuer, Substitute.For<IEmailSender>(), clock, Options.Create(new TokenOptions()), Options.Create(new ClientOptions()),
             new RegisterRequestValidator(), new VerifyEmailRequestValidator(), new ResendVerificationRequestValidator(),
-            new LoginRequestValidator(), new ForgotPasswordRequestValidator(), _metrics, NullLogger<AuthService>.Instance);
+            new LoginRequestValidator(), new ForgotPasswordRequestValidator(), new ResetPasswordRequestValidator(), _metrics, NullLogger<AuthService>.Instance);
     }
 
     [Fact]

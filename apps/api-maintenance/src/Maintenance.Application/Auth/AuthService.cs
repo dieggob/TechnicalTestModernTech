@@ -28,6 +28,7 @@ public sealed class AuthService(
     IValidator<ResendVerificationRequest> resendValidator,
     IValidator<LoginRequest> loginValidator,
     IValidator<ForgotPasswordRequest> forgotPasswordValidator,
+    IValidator<ResetPasswordRequest> resetPasswordValidator,
     IMaintenanceMetrics metrics,
     ILogger<AuthService> logger)
 {
@@ -120,6 +121,20 @@ public sealed class AuthService(
         metrics.ResetRequest();
 
         await SendAsync(() => emailSender.SendPasswordResetAsync(user.Email, clientOptions.Value.ResetPasswordLink(reset.Raw), CancellationToken.None), user.Email);
+    }
+
+    /// <summary>Replaces the password behind a usable reset link. Does not log the user in.</summary>
+    public async Task ResetPasswordAsync(ResetPasswordRequest request, CancellationToken cancellationToken)
+    {
+        ValidationRunner.Validate(resetPasswordValidator, request);
+
+        var token = await ConsumeTokenAsync(request.Token, TokenPurpose.PasswordReset, cancellationToken);
+        var user = await users.FindByIdAsync(token.UserId, cancellationToken)
+            ?? throw new NotFoundException("User");
+
+        user.ChangePassword(passwordHasher.Hash(request.NewPassword));
+        await users.SaveChangesAsync(cancellationToken);
+        metrics.Reset();
     }
 
     /// <summary>

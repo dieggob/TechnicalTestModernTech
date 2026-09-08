@@ -30,4 +30,6 @@ public sealed class User
 
     /// <summary>Verification happens once; there is no transition back.</summary>
     public void MarkEmailVerified() => EmailVerified = true;
+
+    public void ChangePassword(string newPasswordHash) => PasswordHash = newPasswordHash;
 }

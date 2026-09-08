@@ -18,6 +18,8 @@ public interface IMaintenanceMetrics
 
     void ResetRequest();
 
+    void Reset();
+
     void EmailSent();
 
     void EmailFailed();

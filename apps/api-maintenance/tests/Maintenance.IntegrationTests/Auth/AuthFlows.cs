@@ -12,6 +12,7 @@ internal static class AuthFlows
     public const string ResendUrl = "/api/v1/auth/resend-verification";
     public const string LoginUrl = "/api/v1/auth/login";
     public const string ForgotPasswordUrl = "/api/v1/auth/forgot-password";
+    public const string ResetPasswordUrl = "/api/v1/auth/reset-password";
     public const string DevEmailsUrl = "/api/v1/dev/emails";
     public const string DefaultPassword = "Secret123";
 
@@ -29,6 +30,9 @@ internal static class AuthFlows
 
     public static Task<HttpResponseMessage> ForgotPasswordAsync(this HttpClient client, string email) =>
         client.PostAsJsonAsync(ForgotPasswordUrl, new { email });
+
+    public static Task<HttpResponseMessage> ResetPasswordAsync(this HttpClient client, string token, string newPassword) =>
+        client.PostAsJsonAsync(ResetPasswordUrl, new { token, newPassword });
 
     /// <summary>Registers (when needed) and logs in, returning the session token.</summary>
     public static async Task<string> LoginTokenAsync(this HttpClient client, string email, string password = DefaultPassword)

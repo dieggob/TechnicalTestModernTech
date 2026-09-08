@@ -33,7 +33,7 @@ public class AuthServiceVerifyTests
         _service = new AuthService(_users, _tokens, Substitute.For<IPasswordHasher>(), _tokenGenerator, Substitute.For<ITokenIssuer>(), _emailSender, _clock,
             Options.Create(new TokenOptions()), Options.Create(new ClientOptions()),
             new RegisterRequestValidator(), new VerifyEmailRequestValidator(), new ResendVerificationRequestValidator(),
-            new LoginRequestValidator(), new ForgotPasswordRequestValidator(), _metrics, NullLogger<AuthService>.Instance);
+            new LoginRequestValidator(), new ForgotPasswordRequestValidator(), new ResetPasswordRequestValidator(), _metrics, NullLogger<AuthService>.Instance);
     }
 
     private void TokenExists(TokenPurpose purpose, DateTime issuedAt) =>

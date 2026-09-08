@@ -8,4 +8,7 @@ public interface IUserTokenRepository
 
     /// <summary>Marks every still-usable token of the user and purpose as used at <paramref name="now"/>.</summary>
     Task SupersedeAsync(Guid userId, TokenPurpose purpose, DateTime now, CancellationToken cancellationToken);
+
+    /// <summary>Removes tokens created before <paramref name="cutoff"/>, applied immediately; returns how many.</summary>
+    Task<int> DeleteCreatedBeforeAsync(DateTime cutoff, CancellationToken cancellationToken);
 }

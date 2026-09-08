@@ -32,7 +32,7 @@ public class AuthServiceRegisterTests
             Options.Create(new TokenOptions { Lifetime = TimeSpan.FromMinutes(30) }),
             Options.Create(new ClientOptions { BaseUrl = "http://client.test" }),
             new RegisterRequestValidator(), new VerifyEmailRequestValidator(), new ResendVerificationRequestValidator(),
-            new LoginRequestValidator(), new ForgotPasswordRequestValidator(), _metrics, NullLogger<AuthService>.Instance);
+            new LoginRequestValidator(), new ForgotPasswordRequestValidator(), new ResetPasswordRequestValidator(), _metrics, NullLogger<AuthService>.Instance);
     }
 
     [Fact]
