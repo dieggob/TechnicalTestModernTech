@@ -227,6 +227,7 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | Microsoft.EntityFrameworkCore.Design | 8.0.30 | add | Schema migrations |
 | Microsoft.AspNetCore.Authentication.JwtBearer | 8.0.30 | add | Session tokens |
 | Microsoft.Extensions.Diagnostics.HealthChecks.EntityFrameworkCore | 8.0.30 | add | Health reporting |
+| Microsoft.Extensions.Identity.Core | 8.0.30 | add (implied by the framework PasswordHasher choice, S09) | Slow password hashing |
 | FluentValidation | 12.1.1 | add | Input validation |
 | Microsoft.Extensions.DependencyInjection.Abstractions | 8.0.2 | add (implied by FluentValidation registration in `AddApplication`, S07) | Input validation |
 | Swashbuckle.AspNetCore | 10.2.3 | add | API contract documentation |
@@ -256,6 +257,7 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | Package | Version | Change | Serves |
 |---|---|---|---|
 | Microsoft.EntityFrameworkCore.Sqlite | 8.0.30 | add | Relational persistence |
+| Microsoft.Extensions.Identity.Core | 8.0.30 | add (implied, S09) | Slow password hashing |
 
 #### `apps/api-maintenance/src/Maintenance.Api/Maintenance.Api.csproj`
 
@@ -716,7 +718,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 27 pending, 0 in progress, 8 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 26 pending, 0 in progress, 9 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -761,7 +763,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S06 | Wire EF Core with SQLite, start-up migration, and the database health check | Foundation | S02 | M | done |
 | S07 | Establish the error model: ProblemDetails, validation errors, and status mapping | Foundation | S06 | M | done |
 | S08 | Add JSON console logging, request logging, and the metrics meter | Foundation | S07 | S | done |
-| S09 | Sign up creates an account (API) | AC 1 (sign up) | S07, S08 | M | pending |
+| S09 | Sign up creates an account (API) | AC 1 (sign up) | S07, S08 | M | done |
 | S10 | Sign up issues a verification link and records emails (API) | AC 8 (verification email, 30 minutes) | S09 | M | pending |
 | S11 | Verify email and resend the link (API) | AC 8 | S10 | S | pending |
 | S12 | Log in with JWT sessions and rate limiting (API) | AC 1 (log in) | S09 | M | pending |
@@ -1158,16 +1160,16 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Adapter over `PasswordHasher<User>` behind `IPasswordHasher` | `IdentityPasswordHasher` | Keeps Application free of Identity types; swap to Argon2 later is one class | One extra class for a one-line delegation | yes | pending (developer) |
-  | Use `PasswordHasher<User>` directly in `AuthService` | `AuthService` | No adapter | Application would reference `Microsoft.Extensions.Identity.Core`; harder to mock | no | pending (developer) |
-  | Static factory `User.Create` vs public constructor | `User` | Enforces invariants (lower-cased email, verified false) in one place | Slightly more ceremony than a constructor | yes | pending (developer) |
+  | Adapter over `PasswordHasher<User>` behind `IPasswordHasher` | `IdentityPasswordHasher` | Keeps Application free of Identity types; swap to Argon2 later is one class | One extra class for a one-line delegation | yes | adopted (recommended): IdentityPasswordHasher (2026-09-08) |
+  | Use `PasswordHasher<User>` directly in `AuthService` | `AuthService` | No adapter | Application would reference `Microsoft.Extensions.Identity.Core`; harder to mock | no | declined (2026-09-08) |
+  | Static factory `User.Create` vs public constructor | `User` | Enforces invariants (lower-cased email, verified false) in one place | Slightly more ceremony than a constructor | yes | adopted (recommended) (2026-09-08) |
 
 - **Principle checks:** DRY — email normalisation happens once in `User.Create`; SOLID — `AuthService` depends on `IUserRepository` and `IPasswordHasher` only; OOP — `User` owns its creation invariants; YAGNI — no roles, no profile fields.
 - **Definition of done:**
-  - [ ] Both test files pass
-  - [ ] Migration `AddUsers` applied at start-up
-  - [ ] `sign_ups` counter increments
-- **Status:** pending
+  - [x] Both test files pass
+  - [x] Migration `AddUsers` applied at start-up
+  - [x] `sign_ups` counter increments
+- **Status:** done
 
 #### S10 — Sign up issues a verification link and records emails (API)
 
@@ -2050,9 +2052,9 @@ None by user decision; the Slice Map is the only ordering.
 | S07 | Chain of Responsibility: one handler per exception type | `Api/Errors/` | no | declined (2026-09-08) |
 | S08 | Own middleware for request logging | `RequestLoggingMiddleware` | yes | adopted (recommended); metrics split into IMaintenanceMetrics (Application) + MaintenanceMetrics (Infrastructure) so services can count events (2026-09-08) |
 | S08 | Built-in `HttpLogging` middleware | `Program.cs` | no | declined (2026-09-08) |
-| S09 | Adapter over `PasswordHasher<User>` behind `IPasswordHasher` | `IdentityPasswordHasher` | yes | pending (developer) |
-| S09 | Use `PasswordHasher<User>` directly in `AuthService` | `AuthService` | no | pending (developer) |
-| S09 | Static factory `User.Create` vs public constructor | `User` | yes | pending (developer) |
+| S09 | Adapter over `PasswordHasher<User>` behind `IPasswordHasher` | `IdentityPasswordHasher` | yes | adopted (recommended): IdentityPasswordHasher (2026-09-08) |
+| S09 | Use `PasswordHasher<User>` directly in `AuthService` | `AuthService` | no | declined (2026-09-08) |
+| S09 | Static factory `User.Create` vs public constructor | `User` | yes | adopted (recommended) (2026-09-08) |
 | S10 | Null Object: `LoggingEmailSender` as the only `IEmailSender` | `Infrastructure/Email` | yes | pending (developer) |
 | S10 | Separate `InMemoryEmailSender` registered only in tests | `IntegrationTests` | no | pending (developer) |
 | S10 | Domain factory `UserToken.Issue` holding the expiry rule | `UserToken` | yes | pending (developer) |

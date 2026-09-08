@@ -1,6 +1,10 @@
+using Maintenance.Application.Auth;
 using Maintenance.Application.Observability;
+using Maintenance.Domain.Users;
+using Maintenance.Infrastructure.Auth;
 using Maintenance.Infrastructure.Observability;
 using Maintenance.Infrastructure.Persistence;
+using Maintenance.Infrastructure.Persistence.Repositories;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
@@ -12,8 +16,9 @@ public static class DependencyInjection
     public const string DatabaseHealthCheckName = "database";
 
     /// <summary>
-    /// Registers persistence and its health check. The API host calls this once;
-    /// tests replace the database connection through <see cref="MaintenanceDbContext"/> options.
+    /// Registers persistence, repositories, security adapters, metrics, and the database health check.
+    /// The API host calls this once; tests replace the database connection through
+    /// <see cref="MaintenanceDbContext"/> options.
     /// </summary>
     public static IServiceCollection AddInfrastructure(this IServiceCollection services, IConfiguration configuration)
     {
@@ -22,6 +27,9 @@ public static class DependencyInjection
 
         services.AddDbContext<MaintenanceDbContext>(options => options.UseSqlite(connectionString));
         services.AddHealthChecks().AddDbContextCheck<MaintenanceDbContext>(DatabaseHealthCheckName);
+
+        services.AddScoped<IUserRepository, UserRepository>();
+        services.AddSingleton<IPasswordHasher, IdentityPasswordHasher>();
         services.AddSingleton<IMaintenanceMetrics, MaintenanceMetrics>();
 
         return services;

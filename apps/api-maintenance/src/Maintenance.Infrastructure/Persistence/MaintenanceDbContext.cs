@@ -1,3 +1,4 @@
+using Maintenance.Domain.Users;
 using Microsoft.EntityFrameworkCore;
 
 namespace Maintenance.Infrastructure.Persistence;
@@ -8,6 +9,8 @@ namespace Maintenance.Infrastructure.Persistence;
 /// </summary>
 public class MaintenanceDbContext(DbContextOptions<MaintenanceDbContext> options) : DbContext(options)
 {
+    public DbSet<User> Users => Set<User>();
+
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(MaintenanceDbContext).Assembly);

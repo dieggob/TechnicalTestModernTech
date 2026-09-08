@@ -13,14 +13,18 @@ public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
 
     private readonly Meter _meter = new(MeterName);
     private readonly Counter<long> _requests;
+    private readonly Counter<long> _signUps;
 
     public MaintenanceMetrics()
     {
         _requests = _meter.CreateCounter<long>("maintenance.requests", description: "HTTP requests completed, by status code");
+        _signUps = _meter.CreateCounter<long>("maintenance.sign_ups", description: "Accounts created");
     }
 
     public void RequestCompleted(int statusCode) =>
         _requests.Add(1, new KeyValuePair<string, object?>("status", statusCode));
+
+    public void SignUp() => _signUps.Add(1);
 
     public void Dispose() => _meter.Dispose();
 }

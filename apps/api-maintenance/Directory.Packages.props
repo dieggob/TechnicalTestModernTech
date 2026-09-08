@@ -18,6 +18,11 @@
     <PackageVersion Include="Microsoft.Extensions.DependencyInjection.Abstractions" Version="8.0.2" />
   </ItemGroup>
 
+  <ItemGroup Label="Security">
+    <!-- Implied by the framework PasswordHasher choice (S09); same version line as the shared framework. -->
+    <PackageVersion Include="Microsoft.Extensions.Identity.Core" Version="8.0.30" />
+  </ItemGroup>
+
   <ItemGroup Label="Api">
     <PackageVersion Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.30" />
     <PackageVersion Include="Swashbuckle.AspNetCore" Version="10.2.3" />

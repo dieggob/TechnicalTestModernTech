@@ -7,4 +7,6 @@ namespace Maintenance.Application.Observability;
 public interface IMaintenanceMetrics
 {
     void RequestCompleted(int statusCode);
+
+    void SignUp();
 }
