@@ -1,0 +1,7 @@
+<Project Sdk="Microsoft.NET.Sdk">
+
+  <ItemGroup>
+    <ProjectReference Include="../Maintenance.Application/Maintenance.Application.csproj" />
+  </ItemGroup>
+
+</Project>

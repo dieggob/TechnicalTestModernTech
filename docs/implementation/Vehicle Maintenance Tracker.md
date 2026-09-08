@@ -714,7 +714,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 34 pending, 0 in progress, 1 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 33 pending, 0 in progress, 2 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -752,7 +752,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | # | Slice | Source | Depends on | Size | Status |
 |---|---|---|---|---|---|
 | S01 | Lay down the monorepo skeleton | Foundation | none | S | done |
-| S02 | Create the API solution that starts and answers /health | Foundation | S01 | M | pending |
+| S02 | Create the API solution that starts and answers /health | Foundation | S01 | M | done |
 | S03 | Create the Angular client that renders and runs one spec | Foundation | S01 | S | pending |
 | S04 | Create the Playwright suite with one smoke test | Foundation | S03 | S | pending |
 | S05 | Add the repository scripts for setup, dev, and test | Foundation | S02, S03, S04 | S | pending |
@@ -877,10 +877,10 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — versions live only in `Directory.Packages.props`; SOLID — project references enforce Api → Application → Domain and Infrastructure → Application → Domain; YAGNI — no controllers, no DbContext, no auth yet.
 - **Definition of done:**
-  - [ ] `dotnet build` and `dotnet test` succeed in `apps/api-maintenance`
-  - [ ] GET /health returns 200 from `dotnet run`
-  - [ ] Swagger UI opens in Development
-- **Status:** pending
+  - [x] `dotnet build` and `dotnet test` succeed in `apps/api-maintenance`
+  - [x] GET /health returns 200 from `dotnet run`
+  - [x] Swagger UI opens in Development
+- **Status:** done
 
 #### S03 — Create the Angular client that renders and runs one spec
 
