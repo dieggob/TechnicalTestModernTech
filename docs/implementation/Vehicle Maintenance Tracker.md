@@ -714,7 +714,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 33 pending, 0 in progress, 2 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 32 pending, 0 in progress, 3 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -753,7 +753,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 |---|---|---|---|---|---|
 | S01 | Lay down the monorepo skeleton | Foundation | none | S | done |
 | S02 | Create the API solution that starts and answers /health | Foundation | S01 | M | done |
-| S03 | Create the Angular client that renders and runs one spec | Foundation | S01 | S | pending |
+| S03 | Create the Angular client that renders and runs one spec | Foundation | S01 | S | done |
 | S04 | Create the Playwright suite with one smoke test | Foundation | S03 | S | pending |
 | S05 | Add the repository scripts for setup, dev, and test | Foundation | S02, S03, S04 | S | pending |
 | S06 | Wire EF Core with SQLite, start-up migration, and the database health check | Foundation | S02 | M | pending |
@@ -915,10 +915,10 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — `apiBaseUrl` is read from `environments/` only; YAGNI — no state management library, no feature folders beyond placeholders; SOLID — not applicable yet.
 - **Definition of done:**
-  - [ ] `ng test` passes
-  - [ ] `ng serve` renders the shell with PrimeNG styling
-  - [ ] `ng build` succeeds
-- **Status:** pending
+  - [x] `ng test` passes
+  - [x] `ng serve` renders the shell with PrimeNG styling
+  - [x] `ng build` succeeds
+- **Status:** done
 
 #### S04 — Create the Playwright suite with one smoke test
 

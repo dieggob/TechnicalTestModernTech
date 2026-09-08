@@ -1,0 +1,10 @@
+.app-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+  font-weight: 600;
+}
+
+.app-main {
+  padding: 1rem;
+}
