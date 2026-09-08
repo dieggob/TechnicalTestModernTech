@@ -2,7 +2,7 @@
 
 ## Status
 
-Current phase: Phase 2 completed; Phase 1a clarified a second time on 2026-09-07 and a technical design exists at `Docs/designs/Vehicle Maintenance Tracker.md`. Business definition complete except for two token-lifetime values. Awaiting those and user approval to continue with Phase 3.
+Current phase: Phase 2 completed; Phase 1a clarified a second time on 2026-09-07 and a technical design exists at `Docs/designs/Vehicle Maintenance Tracker.md`. Business definition complete (fourth clarification round on 2026-09-07). Technical stack and monorepo layout are decided in `Docs/stacks/Vehicle Maintenance Tracker.md`. Phase 3 is superseded by the implementation plan in `Docs/stacks/Vehicle Maintenance Tracker.md`; implementation may start from slice S01.
 
 ## Phase 1 — Refined Story
 
@@ -72,7 +72,8 @@ None provided.
 | Are password reset and email verification needed in this iteration? | Yes, both are required. |
 | Is VIN uniqueness per user acceptable, or must a VIN be unique across all users? | Per user. Two accounts may register the same VIN; no user is blocked by another user's entry. |
 | Must login be blocked until the email is verified? | No. An unverified user can log in; the application prompts them to verify. |
-| Are token lifetimes of 24 hours (verification) and 1 hour (reset) acceptable? | No. Replacement values still to be provided. |
+| Are token lifetimes of 24 hours (verification) and 1 hour (reset) acceptable? | No. Both links expire after 30 minutes. |
+| Should any feature be unavailable until the email is verified? | No. All features are available without verification, with a flag to enable or disable that behaviour as wanted. |
 
 ### Refined Title
 
@@ -95,7 +96,9 @@ Build a multi-user application, gated by authentication, where each user can reg
 - A user can specify a type/description of the maintenance or job performed, not restricted to a predefined set of categories.
 - A maintenance record captures cost (mandatory), date performed (mandatory), mileage at time of service (mandatory), service provider (optional), and free-form notes (optional).
 - A user can view the history of maintenance records logged for a given vehicle.
-- After signing up, a user receives a verification email and can verify their email address through its link; an unverified user can still log in and is prompted to verify.
+- After signing up, a user receives a verification email whose link is valid for 30 minutes; an unverified user can still log in and is prompted to verify.
+- All features are available without email verification by default; a configuration flag can require verification for every feature, and it can be turned on or off without a code change.
+- A password-reset link is valid for 30 minutes.
 - A user who has forgotten their password can request a reset email and set a new password through the emailed link.
 - A user can edit and delete a maintenance record on one of their vehicles.
 - When a maintenance record is created or edited with a mileage at service higher than the vehicle's current mileage, the vehicle's current mileage is updated to that value.
@@ -104,8 +107,7 @@ Build a multi-user application, gated by authentication, where each user can reg
 
 ### Remaining Open Questions (business)
 
-- What lifetime should the email-verification link and the password-reset link have? (24 h and 1 h were rejected.)
-- Should any feature be unavailable until the email is verified? (The design gates nothing.)
+None.
 
 ## Phase 2 — Code Context
 
@@ -180,7 +182,7 @@ Because the repository is empty, every area below must be created rather than mo
 
 ## Phase 3 — Working Plan
 
-Pending user approval — reply "continue with Phase 3" to create the working plan. Phase 3 should consume the technical design at `Docs/designs/Vehicle Maintenance Tracker.md`, which also lists the open technical questions (stack, database, email mechanism, UI shape, repository).
+Superseded on 2026-09-07 by the implementation plan in `Docs/stacks/Vehicle Maintenance Tracker.md`, section "Phase 3 — Implementation Plan" (produced by run-implementation-design). That plan cuts the work into 35 vertical slices with tests, files, pattern proposals, and tracked status; later phases of this document that refer to "the Phase 3 plan" mean that plan.
 
 ## Phase 4 — Implementation Verification
 

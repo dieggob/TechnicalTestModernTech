@@ -2,7 +2,7 @@
 
 ## Status
 
-Design produced on 2026-09-07, updated the same day after three rounds of product answers. Mermaid validation: validated with Mermaid CLI (mmdc) 11.17.0 — 13 diagrams.
+Design produced on 2026-09-07, updated the same day after four rounds of product answers; deployment revised to SQLite everywhere once the implementation design fixed the stack. Mermaid validation: validated with Mermaid CLI (mmdc) 11.17.0 — 13 diagrams.
 Codebase grounding: repository `TechnicalTestModernTech` at branch `main`. The repository contains only a one-line `README.md` and no application code, so every element in this design is `new` and the design is effectively greenfield.
 
 Input: `Docs/Vehicle Maintenance Tracker.md`, section "Phase 1a — Clarified Story" including the second clarification round. The technology stack was explicitly deferred by that document to a later phase, so this design describes layers, contracts, and data in stack-neutral terms and records the stack as an open technical question.
@@ -443,6 +443,9 @@ sequenceDiagram
   alt token missing or invalid
     Auth-->>UI: 401 Unauthorized
   else token valid
+    opt RequireEmailVerification flag on and email not verified
+      Auth-->>UI: 403 Forbidden (EmailNotVerified)
+    end
     Auth->>VC: request with userId
     VC->>VS: create(userId, VehicleInput)
     alt validation fails (year out of range, negative mileage, VIN duplicate for user)
@@ -476,7 +479,7 @@ sequenceDiagram
   end
 ```
 
-The token filter turns the bearer token into a `userId` before any controller runs; the controller never trusts a user identifier from the request body or path. Update and delete follow the same `findByIdAndUserId` pattern as the read shown here and are not drawn separately. A vehicle that belongs to another user produces the same 404 as a vehicle that does not exist. All participants are `new`.
+The token filter turns the bearer token into a `userId` before any controller runs; the controller never trusts a user identifier from the request body or path. When the `RequireEmailVerification` flag is on, the filter also looks up the account's `emailVerified` value and rejects unverified accounts on every endpoint outside `/auth` with 403, so a user who verifies mid-session gains access without logging in again. The flag is off by default, so all features are available without verification. Update and delete follow the same `findByIdAndUserId` pattern as the read shown here and are not drawn separately. A vehicle that belongs to another user produces the same 404 as a vehicle that does not exist. All participants are `new`.
 
 ### Record a maintenance job and advance mileage (AC 4, AC 5, AC 6, AC 11)
 
@@ -674,7 +677,7 @@ flowchart LR
   subgraph Data["Relational database (new)"]
     db[("USERS, USER_TOKENS, VEHICLES, MAINTENANCE_RECORDS")]
   end
-  subgraph Ext["Email provider (external, new dependency)"]
+  subgraph Ext["Email provider (external, not in scope: local only)"]
     smtp["SMTP or transactional email API"]
   end
   person -->|browser| pages
@@ -741,11 +744,11 @@ flowchart TB
     api1 --> mail1
     cfg1 -.-> api1
   end
-  subgraph Server["Hosted environment (new, assumed)"]
+  subgraph Server["Hosted environment (not in scope: local only)"]
     api2["Maintenance Tracker API instance"]
     ui2["Web UI"]
-    db2[("Relational database server")]
-    mail2["Email provider (external)"]
+    db2[("SQLite database file on persistent storage")]
+    mail2["Email provider (external, not in scope)"]
     cfg2["Secrets: token signing key, DB connection string, email provider credentials, public UI base URL"]
     ui2 --> api2
     api2 --> db2
@@ -754,24 +757,24 @@ flowchart TB
   end
 ```
 
-Locally, the API runs as one process against an embedded database file and writes emails to the console or a local mailbox sink, because neither a database server, Docker, nor an email account is available on the observed machine. A hosted environment swaps both for a database server and a real email provider through configuration only. The public UI base URL is configuration because it is embedded in the emailed links. Secrets must never be committed. The hosted environment is an assumption, since the input does not ask for deployment.
+Locally, the API runs as one process against a SQLite database file and writes emails to the console or a local mailbox sink. SQLite is the database in every environment (decided in the implementation design); a hosted environment differs only in keeping the file on persistent storage and in using a real email provider, both through configuration. The public UI base URL is configuration because it is embedded in the emailed links. Secrets must never be committed. The user decided on 2026-09-07 that the project runs locally only and is not published to the internet; the hosted subgraph is kept to show what would change, nothing more.
 
 ## Non-Functional Requirements
 
 - **Performance** — Vehicle list, vehicle detail, and maintenance history respond within 300 ms at the 95th percentile for a user with up to 20 vehicles and 500 records per vehicle; create, update, and delete operations within 500 ms excluding email delivery. Registration and forgot-password respond within 1 s including the synchronous email hand-off. Source: `assumed: single-user interactive use with indexed lookups; no numbers in the input`.
 - **Scalability** — Data volume is small per user (tens of vehicles, hundreds of records each). The API is stateless because authentication is token-based, so instances scale horizontally behind the database; the database is the single shared component. Source: `derived: token-based authentication chosen in Design Decisions makes the API stateless`.
 - **Availability and resilience** — No uptime target is stated. Every write is a single transaction: record insert or update together with the optional vehicle mileage update, so the two can never disagree. Email hand-off failure does not fail registration or forgot-password; the user can trigger a resend. Database connection failures return 503 with no partial writes. Source: `derived: AC 11 requires record and vehicle mileage to stay consistent` for the transaction; `assumed: no availability requirement in the input` for the rest.
-- **Security** — Passwords are stored only as salted hashes from a slow algorithm such as bcrypt or Argon2id. Verification and reset tokens are at least 32 random bytes, stored only as a SHA-256 hash, single-use, and expire after a configurable lifetime per purpose whose values are an open product question. Forgot-password and login responses do not reveal whether an email is registered. Every non-auth endpoint requires a valid session token; every query on vehicles and records is scoped by the caller's `userId`; resources owned by others return 404. All inputs are validated server-side (length limits, non-negative numbers, year range, non-blank description, password strength). Login and forgot-password are rate-limited per email and per client address. Source: `stated` for authentication, verification, reset, and isolation; `derived: per-user privacy requires server-side scoping` for the 404 behaviour and validation; `assumed` for rate limits; token lifetime values pending.
+- **Security** — Passwords are stored only as salted hashes from a slow algorithm such as bcrypt or Argon2id. Verification and reset tokens are at least 32 random bytes, stored only as a SHA-256 hash, single-use, and expire 30 minutes after issue for both purposes (configurable). Forgot-password and login responses do not reveal whether an email is registered. Every non-auth endpoint requires a valid session token; every query on vehicles and records is scoped by the caller's `userId`; resources owned by others return 404. All inputs are validated server-side (length limits, non-negative numbers, year range, non-blank description, password strength). Login and forgot-password are rate-limited per email and per client address. Source: `stated` for authentication, verification, reset, and isolation; `derived: per-user privacy requires server-side scoping` for the 404 behaviour and validation; `stated` for the 30-minute token lifetime; `assumed` for rate limits.
 - **Data** — Referential integrity through foreign keys with cascade delete from user to tokens, vehicles, and records; check constraints keep cost and mileage non-negative; VIN unique per user. Cost is always USD, stored as `decimal(12,2)`. Data is retained until the owner deletes it; used and expired tokens may be purged after 30 days. Backup is the responsibility of the hosting environment. Source: `stated` for USD and per-user VIN uniqueness; `derived: multi-vehicle and per-vehicle history requirements` for keys; `assumed: no retention rule in the input` for retention and purge.
 - **Observability** — Structured request logs with method, path, status, latency, and `userId` (never the session token, verification token, or password); counters for sign-ups, verifications, logins, failed logins, reset requests, resets, emails sent and failed, vehicles created, records created, updated, and deleted, and mileage advances; an error log entry for every 5xx and every email failure. Source: `assumed: minimum needed to operate an authenticated API with an email dependency`.
 - **Compatibility** — Greenfield; no existing clients. The API is versioned by path prefix (`/api/v1`) from the start so future changes do not break the first client. Source: `assumed: low-cost convention for a new API`.
 - **Maintainability and testability** — Services depend on repository, hasher, token, and email interfaces so business rules, ownership checks, the mileage-advance rule, and token validity are unit-testable with in-memory fakes; endpoints are integration-tested against the embedded database with a fake email sink; the README documents setup, run, and test commands. Source: `derived: Phase 2 lists automated tests and an empty README as affected areas`.
 - **Compliance and privacy** — Email address, VIN, and license plate are personal data. They are visible only to the owning user and are removed by cascade when the user account is deleted. Verification and reset emails contain no personal data beyond the recipient address. No regulatory regime is named in the input. Source: `derived: per-user privacy requirement`; regime `assumed` absent.
-- **Operations** — Configuration by environment variables: database location or connection string, session token signing secret and lifetime, verification and reset token lifetimes, email provider credentials or local sink, public UI base URL for emailed links. Migrations run automatically at API start-up on an empty schema. No feature flags. Rollback is redeploying the previous version and dropping the four tables if needed. Source: `assumed: simplest operating model for a new service`.
+- **Operations** — Configuration by environment variables: database location or connection string, session token signing secret and lifetime, verification and reset token lifetimes, email provider credentials or local sink, public UI base URL for emailed links. Migrations run automatically at API start-up on an empty schema. One feature flag, `RequireEmailVerification` (default off): when on, every endpoint outside `/auth` returns 403 for an account whose email is not verified. Rollback is redeploying the previous version and dropping the four tables if needed. Source: `assumed: simplest operating model for a new service`.
 
 ## API Contract
 
-All paths are prefixed with `/api/v1`. All endpoints outside `/auth` require `Authorization: Bearer <token>` and return 401 when it is missing or invalid. Monetary values are USD with two decimals.
+All paths are prefixed with `/api/v1`. All endpoints outside `/auth` require `Authorization: Bearer <token>` and return 401 when it is missing or invalid; when the `RequireEmailVerification` flag is on they also return 403 `EmailNotVerified` for unverified accounts. Monetary values are USD with two decimals.
 
 | Operation | Method and path | Request | Response | Errors | Change |
 |---|---|---|---|---|---|
@@ -821,9 +824,9 @@ All paths are prefixed with `/api/v1`. All endpoints outside `/auth` require `Au
 
 ### Email verification prompts but does not block login
 
-- **Decision:** Login succeeds for verified and unverified accounts alike and returns an `emailVerified` flag; the Web UI shows a persistent banner with a resend action until the address is verified. No API operation checks the flag.
+- **Decision:** Login succeeds for verified and unverified accounts alike and returns an `emailVerified` flag; the Web UI shows a persistent banner with a resend action until the address is verified. All features are available without verification by default. A configuration flag, `RequireEmailVerification` (default off), switches that: when on, the token filter rejects unverified accounts on every endpoint outside `/auth` with 403, checking the account's current `emailVerified` value on each request rather than a claim in the token.
 - **Alternatives considered:** Blocking login until verified (rejected by the product: a user who never receives the email would be locked out); allowing login but gating selected features (no feature was named to gate; can be added later by checking the flag in the relevant service).
-- **Consequences:** Verification is a nudge, not a guarantee, so the email address on an account may be wrong until the user acts. Password reset still works only for the address on file. If a feature should later require verification, the check belongs in the application service, next to the ownership check.
+- **Consequences:** With the flag off, verification is a nudge, so the email address on an account may be wrong until the user acts. With the flag on, one indexed lookup per request is added and the Web UI must route a 403 `EmailNotVerified` to the verification screen. Because the flag is global, there is no per-feature gating; adding one later means a policy in the application service next to the ownership check.
 
 ### Stateless token-based session authentication
 
@@ -855,8 +858,8 @@ All paths are prefixed with `/api/v1`. All endpoints outside `/auth` require `Au
 
 - Vehicle "manage" (AC 2) includes editing and deleting a vehicle, not only creating and listing it. The Update and Delete vehicle endpoints depend on this.
 - License plate is not unique; only VIN carries a uniqueness rule, and that rule is per user as decided.
-- No feature is unavailable to an unverified account; verification only drives the banner. The Log in sequence diagram and the verification design decision depend on this.
-- Verification and reset token lifetimes are configuration values; the product will supply them. The session token lasts 24 hours; login, resend, and forgot-password are rate-limited.
+- The `RequireEmailVerification` flag ships off; turning it on is an operational decision, not a code change.
+- Verification and reset links both expire after 30 minutes (stated); the value stays configurable. The session token lasts 24 hours; login, resend, and forgot-password are rate-limited.
 - Registration and forgot-password succeed even when the email provider rejects the message; the user recovers through resend.
 - A successful password reset does not log the user in.
 - Deleting a maintenance record does not lower the vehicle's current mileage; a lower-mileage record never lowers it either.
@@ -867,13 +870,6 @@ All paths are prefixed with `/api/v1`. All endpoints outside `/auth` require `Au
 
 ### Open Questions
 
-- **Product** — What lifetime should an email-verification link have, and what lifetime should a password-reset link have? The proposed 24 hours and 1 hour were rejected; the design needs the replacement values.
-- **Product** — Should any feature be unavailable until the email is verified? The design currently gates nothing.
-- **Technical** — Which stack should implement this design: Java 17 with Maven (matches the tools on PATH and the author's sibling repository), .NET 8 (SDK present but not on PATH), or another stack requiring installation?
-- **Technical** — Which relational database is acceptable: an embedded file database for local development and tests, a server such as PostgreSQL for hosting, or only one of them?
-- **Technical** — Which email delivery mechanism is acceptable for hosting: SMTP relay or a transactional email API? Local development will use a console or mailbox sink either way.
-- **Technical** — Should the Web UI be server-rendered by the API process or a separate single-page application? The design supports both.
-- **Technical** — Is `TechnicalTestModernTech` the intended repository for the implementation? Phase 2 inferred it.
 
 ### Questions Asked & Answers
 
@@ -886,4 +882,10 @@ All paths are prefixed with `/api/v1`. All endpoints outside `/auth` require `Au
 | Are password reset and email verification needed in this iteration? | Yes, required. Added `USER_TOKENS`, `USERS.email_verified`, the `EmailSender` boundary, four auth endpoints, two sequence diagrams, the state diagram, and AC 8 and AC 9. |
 | Is VIN uniqueness per user acceptable, or must a VIN be unique across all users? | Per user. Unique index `ux_vehicles_user_vin` on `(user_id, vin)` is final; recorded as `stated`. |
 | Must login be blocked until the email is verified? | No. Login always succeeds with valid credentials and returns `emailVerified`; the Web UI shows a verification banner. The 403 branch and the blocking design decision were removed. |
-| Are the assumed token lifetimes (24 h verification, 1 h reset) acceptable? | No. Lifetimes remain configuration values; the replacement numbers are an open question. |
+| Are the assumed token lifetimes (24 h verification, 1 h reset) acceptable? | No. Replaced on the fourth round: both links expire after 30 minutes. |
+| What lifetime should the verification and reset links have? | 30 minutes for both, configurable. Recorded as `stated` in the Security NFR. |
+| Should any feature be unavailable until the email is verified? | No, all features are available without verification. A configuration flag `RequireEmailVerification` (default off) can turn gating on for every endpoint outside `/auth`. |
+| Which stack, database, email mechanism, and UI shape implement this design? | Decided in the implementation design (`Docs/stacks/Vehicle Maintenance Tracker.md`): .NET 8 API, Angular 22 SPA on a separate static host, SQLite everywhere, MailKit over SMTP. The deployment diagram was revised to SQLite on persistent storage. |
+| Is `TechnicalTestModernTech` the intended repository? | Yes; the implementation design's Phase 2 lays out this repository as the monorepo. |
+| Where will the application be hosted? | Nowhere: it runs locally only and is not published to the internet. |
+| Which email sender runs? | Only the log sink behind `EmailSender`; the SMTP adapter was dropped from the implementation design on 2026-09-07. |
