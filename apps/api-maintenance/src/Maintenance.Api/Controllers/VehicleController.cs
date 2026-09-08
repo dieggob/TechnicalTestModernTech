@@ -35,4 +35,25 @@ public sealed class VehicleController(VehicleService vehicles) : ControllerBase
     [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
     public async Task<ActionResult<VehicleDto>> Get(Guid vehicleId, CancellationToken cancellationToken) =>
         Ok(await vehicles.GetAsync(vehicleId, cancellationToken));
+
+    /// <summary>Replaces the vehicle's details with the same rules as registration.</summary>
+    [HttpPut("{vehicleId:guid}")]
+    [ProducesResponseType(typeof(VehicleDto), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status409Conflict)]
+    public async Task<ActionResult<VehicleDto>> Update(Guid vehicleId, VehicleInput input, CancellationToken cancellationToken) =>
+        Ok(await vehicles.UpdateAsync(vehicleId, input, cancellationToken));
+
+    /// <summary>Deletes the vehicle and, by cascade, its maintenance records.</summary>
+    [HttpDelete("{vehicleId:guid}")]
+    [ProducesResponseType(StatusCodes.Status204NoContent)]
+    [ProducesResponseType(StatusCodes.Status401Unauthorized)]
+    [ProducesResponseType(typeof(ProblemDetails), StatusCodes.Status404NotFound)]
+    public async Task<IActionResult> Delete(Guid vehicleId, CancellationToken cancellationToken)
+    {
+        await vehicles.DeleteAsync(vehicleId, cancellationToken);
+        return NoContent();
+    }
 }

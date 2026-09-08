@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 12 pending, 1 in progress, 22 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 12 pending, 0 in progress, 23 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -781,7 +781,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S20 | Forgot and reset password screens (client) | AC 9 | S19 | S | done |
 | S21 | Register a vehicle (API) | AC 2, AC 3, AC "VIN unique per user" | S13 | M | done |
 | S22 | List and view vehicles (API) | AC 1 (isolation), AC 2, AC 3 | S21 | S | done |
-| S23 | Update and delete a vehicle (API) | AC 2 ("manage") | S22 | S | in progress |
+| S23 | Update and delete a vehicle (API) | AC 2 ("manage") | S22 | S | done |
 | S24 | Vehicle list screen (client) | AC 2, AC 3 | S22, S18 | S | pending |
 | S25 | Create and edit vehicle form (client) | AC 2, AC 3 | S24, S23 | S | pending |
 | S26 | Delete a vehicle with confirmation (client) | AC 2 | S25 | S | pending |
@@ -1683,8 +1683,8 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — `VehicleInputValidator` reused; OOP — `Vehicle.Update` keeps invariants; YAGNI — no soft delete.
 - **Definition of done:**
-  - [ ] Tests pass
-- **Status:** in progress
+  - [x] Tests pass
+- **Status:** done
 
 #### S24 — Vehicle list screen (client)
 

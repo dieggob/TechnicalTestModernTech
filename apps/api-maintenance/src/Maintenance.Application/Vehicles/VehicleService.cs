@@ -45,6 +45,27 @@ public sealed class VehicleService(
     public async Task<VehicleDto> GetAsync(Guid vehicleId, CancellationToken cancellationToken) =>
         VehicleDto.From(await RequireOwnedAsync(vehicleId, cancellationToken));
 
+    public async Task<VehicleDto> UpdateAsync(Guid vehicleId, VehicleInput input, CancellationToken cancellationToken)
+    {
+        input = input.Trimmed();
+        ValidationRunner.Validate(validator, input);
+
+        var vehicle = await RequireOwnedAsync(vehicleId, cancellationToken);
+        await EnsureVinIsFreeAsync(vehicle.UserId, input.Vin, excludingVehicleId: vehicle.Id, cancellationToken);
+
+        vehicle.Update(input.ToDetails(), clock.UtcNow);
+        await vehicles.SaveChangesAsync(cancellationToken);
+        return VehicleDto.From(vehicle);
+    }
+
+    /// <summary>Removes the vehicle; its maintenance records go with it by cascade (design decision).</summary>
+    public async Task DeleteAsync(Guid vehicleId, CancellationToken cancellationToken)
+    {
+        var vehicle = await RequireOwnedAsync(vehicleId, cancellationToken);
+        vehicles.Remove(vehicle);
+        await vehicles.SaveChangesAsync(cancellationToken);
+    }
+
     /// <summary>A vehicle that does not exist and one owned by someone else look the same: 404 (design decision).</summary>
     private async Task<Vehicle> RequireOwnedAsync(Guid vehicleId, CancellationToken cancellationToken) =>
         await vehicles.FindByIdAndUserIdAsync(vehicleId, currentUser.UserId, cancellationToken)
