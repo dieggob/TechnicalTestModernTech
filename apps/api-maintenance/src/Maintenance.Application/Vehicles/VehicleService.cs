@@ -36,6 +36,20 @@ public sealed class VehicleService(
         return VehicleDto.From(vehicle);
     }
 
+    public async Task<IReadOnlyList<VehicleDto>> ListAsync(CancellationToken cancellationToken)
+    {
+        var owned = await vehicles.FindAllByUserIdAsync(currentUser.UserId, cancellationToken);
+        return owned.Select(VehicleDto.From).ToList();
+    }
+
+    public async Task<VehicleDto> GetAsync(Guid vehicleId, CancellationToken cancellationToken) =>
+        VehicleDto.From(await RequireOwnedAsync(vehicleId, cancellationToken));
+
+    /// <summary>A vehicle that does not exist and one owned by someone else look the same: 404 (design decision).</summary>
+    private async Task<Vehicle> RequireOwnedAsync(Guid vehicleId, CancellationToken cancellationToken) =>
+        await vehicles.FindByIdAndUserIdAsync(vehicleId, currentUser.UserId, cancellationToken)
+        ?? throw new NotFoundException("Vehicle");
+
     private async Task EnsureVinIsFreeAsync(Guid userId, string vin, Guid? excludingVehicleId, CancellationToken cancellationToken)
     {
         if (await vehicles.ExistsVinAsync(userId, Vehicle.NormalizeVin(vin), excludingVehicleId, cancellationToken))

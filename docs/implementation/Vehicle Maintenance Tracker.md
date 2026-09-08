@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 14 pending, 0 in progress, 21 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 12 pending, 1 in progress, 22 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -780,8 +780,8 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S19 | Verify email page (client) | AC 8 | S18 | S | done |
 | S20 | Forgot and reset password screens (client) | AC 9 | S19 | S | done |
 | S21 | Register a vehicle (API) | AC 2, AC 3, AC "VIN unique per user" | S13 | M | done |
-| S22 | List and view vehicles (API) | AC 1 (isolation), AC 2, AC 3 | S21 | S | pending |
-| S23 | Update and delete a vehicle (API) | AC 2 ("manage") | S22 | S | pending |
+| S22 | List and view vehicles (API) | AC 1 (isolation), AC 2, AC 3 | S21 | S | done |
+| S23 | Update and delete a vehicle (API) | AC 2 ("manage") | S22 | S | in progress |
 | S24 | Vehicle list screen (client) | AC 2, AC 3 | S22, S18 | S | pending |
 | S25 | Create and edit vehicle form (client) | AC 2, AC 3 | S24, S23 | S | pending |
 | S26 | Delete a vehicle with confirmation (client) | AC 2 | S25 | S | pending |
@@ -1657,8 +1657,8 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — `FindByIdAndUserIdAsync` is the only single-vehicle lookup; SOLID — no new dependencies; YAGNI — no paging (design volume is tens of vehicles).
 - **Definition of done:**
-  - [ ] Tests pass
-- **Status:** pending
+  - [x] Tests pass
+- **Status:** done
 
 #### S23 — Update and delete a vehicle (API)
 
@@ -1684,7 +1684,7 @@ None by user decision; the Slice Map is the only ordering.
 - **Principle checks:** DRY — `VehicleInputValidator` reused; OOP — `Vehicle.Update` keeps invariants; YAGNI — no soft delete.
 - **Definition of done:**
   - [ ] Tests pass
-- **Status:** pending
+- **Status:** in progress
 
 #### S24 — Vehicle list screen (client)
 
