@@ -11,6 +11,7 @@
     <p-message severity="error" data-testid="vehicles-action-error">{{ message }}</p-message>
   }
 
+  <div class="table-card">
   <p-table [value]="facade.vehicles()" [loading]="facade.loading()" dataKey="id" data-testid="vehicles-table">
     <ng-template #header>
       <tr>
@@ -39,10 +40,11 @@
     </ng-template>
     <ng-template #emptymessage>
       <tr>
-        <td colspan="7" data-testid="vehicles-empty">You have no vehicles yet.</td>
+        <td colspan="7" class="empty" data-testid="vehicles-empty">You have no vehicles yet. Add your first one to start logging maintenance.</td>
       </tr>
     </ng-template>
   </p-table>
+  </div>
 
   <app-vehicle-form [(visible)]="formVisible" [vehicle]="editing()" />
 

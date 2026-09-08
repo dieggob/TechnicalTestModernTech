@@ -2,11 +2,11 @@
   [(visible)]="visible"
   [modal]="true"
   [draggable]="false"
-  [style]="{ width: '32rem', maxWidth: '95vw' }"
+  [style]="{ width: '38rem', maxWidth: '95vw' }"
   [header]="editing ? 'Edit vehicle' : 'Add a vehicle'"
   data-testid="vehicle-dialog"
 >
-  <form [formGroup]="form" (ngSubmit)="submit()" novalidate id="vehicle-form">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate id="vehicle-form" class="form-grid">
     <div class="field">
       <label for="make">Make</label>
       <input pInputText id="make" formControlName="make" />
@@ -16,7 +16,6 @@
         <small class="error" data-testid="make-error">{{ message }}</small>
       }
     </div>
-
     <div class="field">
       <label for="model">Model</label>
       <input pInputText id="model" formControlName="model" />
@@ -26,7 +25,6 @@
         <small class="error" data-testid="model-error">{{ message }}</small>
       }
     </div>
-
     <div class="field">
       <label for="year">Year</label>
       <input pInputText id="year" type="number" formControlName="year" />
@@ -36,17 +34,6 @@
         <small class="error" data-testid="year-error">{{ message }}</small>
       }
     </div>
-
-    <div class="field">
-      <label for="vin">VIN</label>
-      <input pInputText id="vin" formControlName="vin" autocapitalize="characters" />
-      @if (hasClientError('vin')) {
-        <small class="error" data-testid="vin-error">VIN is required: letters and digits, up to 17 characters.</small>
-      } @else if (serverError('vin'); as message) {
-        <small class="error" data-testid="vin-error">{{ message }}</small>
-      }
-    </div>
-
     <div class="field">
       <label for="licensePlate">License plate</label>
       <input pInputText id="licensePlate" formControlName="licensePlate" />
@@ -56,7 +43,15 @@
         <small class="error" data-testid="licensePlate-error">{{ message }}</small>
       }
     </div>
-
+    <div class="field span-2">
+      <label for="vin">VIN</label>
+      <input pInputText id="vin" formControlName="vin" autocapitalize="characters" />
+      @if (hasClientError('vin')) {
+        <small class="error" data-testid="vin-error">VIN is required: letters and digits, up to 17 characters.</small>
+      } @else if (serverError('vin'); as message) {
+        <small class="error" data-testid="vin-error">{{ message }}</small>
+      }
+    </div>
     <div class="field">
       <label for="currentMileage">Current mileage</label>
       <input pInputText id="currentMileage" type="number" formControlName="currentMileage" min="0" />

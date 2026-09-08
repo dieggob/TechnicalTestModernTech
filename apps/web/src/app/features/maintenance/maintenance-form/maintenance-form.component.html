@@ -2,12 +2,12 @@
   [(visible)]="visible"
   [modal]="true"
   [draggable]="false"
-  [style]="{ width: '32rem', maxWidth: '95vw' }"
+  [style]="{ width: '38rem', maxWidth: '95vw' }"
   [header]="editing ? 'Edit maintenance job' : 'Log a maintenance job'"
   data-testid="record-dialog"
 >
-  <form [formGroup]="form" (ngSubmit)="submit()" novalidate id="maintenance-form">
-    <div class="field">
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate id="maintenance-form" class="form-grid">
+    <div class="field span-2">
       <label for="description">Description</label>
       <input pInputText id="description" formControlName="description" />
       @if (hasClientError('description')) {
@@ -57,7 +57,7 @@
       }
     </div>
 
-    <div class="field">
+    <div class="field span-2">
       <label for="notes">Notes</label>
       <textarea pTextarea id="notes" formControlName="notes" rows="3"></textarea>
       @if (hasClientError('notes')) {

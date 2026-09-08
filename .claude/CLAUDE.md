@@ -1,6 +1,6 @@
 # Vehicle Maintenance Tracker — project instructions
 
-This repository is a monorepo. Everything needed to build, run, test, and document the project lives here. The authoritative descriptions are in `docs/`; this file is the short version for working sessions. All 35 implementation slices are done; new work is a new slice appended to the plan's Phase 3.
+This repository is a monorepo. Everything needed to build, run, test, and document the project lives here. The authoritative descriptions are in `docs/`; this file is the short version for working sessions. All 36 implementation slices are done; new work is a new slice appended to the plan's Phase 3.
 
 ## Folder map
 

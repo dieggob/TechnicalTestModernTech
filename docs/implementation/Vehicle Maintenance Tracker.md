@@ -725,7 +725,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 0 pending, 0 in progress, 35 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 0 pending, 0 in progress, 36 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -797,6 +797,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S33 | Delete a maintenance record (client) | AC 10 | S32, S30 | S | done |
 | S34 | Run the whole stack under docker compose | Phase 1 delivery decision (docker compose) | S33 | M | done |
 | S35 | Complete documentation and Claude configuration | Phase 2 Conventions | S34 | S | done |
+| S36 | Client layout and spacing, and the production stylesheet under CSP | User request 2026-09-08; design Security NFR (CSP) | S35 | S | done |
 
 ### Milestones
 
@@ -2047,6 +2048,34 @@ None by user decision; the Slice Map is the only ordering.
 - **Principle checks:** DRY — README links to this document for decisions instead of repeating them; YAGNI — no wiki.
 - **Definition of done:**
   - [x] A clean clone reaches a passing `scripts/test.sh` by following the README alone
+- **Status:** done
+
+#### S36 — Client layout and spacing, and the production stylesheet under CSP
+
+- **Goal:** Controls and sections of every screen have consistent spacing and alignment, and the global stylesheet applies in production builds served with the Content Security Policy.
+- **Source:** User request on 2026-09-08 ("spaces between controls are poor"); design Security NFR (CSP from the Nginx host)
+- **Depends on:** S35
+- **Size:** S
+- **In scope:**
+  - Root cause: Angular's critical-CSS inlining emits the stylesheet link as `media="print"` with an inline `onload` handler, which the CSP (`script-src 'self'`) blocks, so `styles.css` never applied under Nginx. `inlineCritical` is disabled in the production configuration.
+  - Global rhythm in `styles.css`: spacing tokens, page grid, page and section headers, `.field` stack, `.form-grid` two-column dialog forms, `.table-card`, `.meta` facts row, auth card with full-width action
+  - Templates: vehicle and record dialogs on the grid, tables on cards, detail header with facts and the action beside the section title
+  - Shell: toolbar user label truncation and hidden on narrow screens, banner wrapping
+- **Out of scope:** any change of component library or theme; the PrimeNG 22 license notice (a separate decision for the developer)
+- **Files:**
+  - `apps/web/angular.json` — production `optimization.styles.inlineCritical: false`
+  - `apps/web/src/styles.css`, `apps/web/src/app/app.css` — layout rhythm
+  - `apps/web/src/app/features/**/**.html` — grid and card wrappers, detail header
+- **Steps:**
+  1. Screenshot every screen against a production build; identify the stylesheet root cause.
+  2. Fix the build setting; restyle; screenshot again; pass the suites.
+- **Tests:**
+  - Existing unit specs and Playwright journeys (locators are labels and test ids, unchanged)
+- **Pattern proposals:** none needed
+- **Principle checks:** DRY — one set of layout classes shared by cards and dialogs; YAGNI — no design system, no extra library.
+- **Definition of done:**
+  - [x] Global stylesheet applies in a production build served with the CSP
+  - [x] All suites pass
 - **Status:** done
 
 ### Pattern Proposals Register

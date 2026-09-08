@@ -1,5 +1,5 @@
 <section class="page">
-  <p><a routerLink="/vehicles" data-testid="back-to-vehicles">← All vehicles</a></p>
+  <p class="back"><a routerLink="/vehicles" data-testid="back-to-vehicles">← All vehicles</a></p>
 
   @if (vehicleError(); as message) {
     <p-message severity="error" data-testid="vehicle-error">{{ message }}</p-message>
@@ -7,15 +7,21 @@
     <header class="page-header">
       <div>
         <h1 data-testid="vehicle-title">{{ v.make }} {{ v.model }} <span class="muted">{{ v.year }}</span></h1>
-        <p class="muted" data-testid="vehicle-summary">
-          VIN {{ v.vin }} · Plate {{ v.licensePlate }} · <span data-testid="vehicle-mileage">{{ v.currentMileage }}</span> mi
-        </p>
+        <ul class="meta" data-testid="vehicle-summary">
+          <li>VIN <strong>{{ v.vin }}</strong></li>
+          <li>Plate <strong>{{ v.licensePlate }}</strong></li>
+          <li>Mileage <strong><span data-testid="vehicle-mileage">{{ v.currentMileage }}</span> mi</strong></li>
+        </ul>
       </div>
-      <p-button label="Log maintenance" icon="pi pi-plus" (onClick)="add()" data-testid="add-record" />
     </header>
   }
 
-  <h2>Maintenance history</h2>
+  <div class="section-header">
+    <h2>Maintenance history</h2>
+    @if (vehicle()) {
+      <p-button label="Log maintenance" icon="pi pi-plus" (onClick)="add()" data-testid="add-record" />
+    }
+  </div>
 
   @if (maintenance.error(); as message) {
     <p-message severity="error" data-testid="history-error">{{ message }}</p-message>
@@ -24,6 +30,7 @@
     <p-message severity="error" data-testid="history-action-error">{{ message }}</p-message>
   }
 
+  <div class="table-card">
   <p-table [value]="maintenance.records()" [loading]="maintenance.loading()" dataKey="id" data-testid="history-table">
     <ng-template #header>
       <tr>
@@ -52,10 +59,11 @@
     </ng-template>
     <ng-template #emptymessage>
       <tr>
-        <td colspan="7" data-testid="history-empty">No maintenance logged for this vehicle yet.</td>
+        <td colspan="7" class="empty" data-testid="history-empty">No maintenance logged for this vehicle yet.</td>
       </tr>
     </ng-template>
   </p-table>
+  </div>
 
   <app-maintenance-form [(visible)]="formVisible" [vehicleId]="vehicleId()" [record]="editing()" (saved)="onSaved($event)" />
 
