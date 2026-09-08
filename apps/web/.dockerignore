@@ -1,0 +1,5 @@
+# Keep installed and built output out of the image build context; the image installs and builds itself.
+node_modules/
+dist/
+.angular/
+.env

@@ -673,7 +673,7 @@ apps/e2e/
 | Risk | Impact | Mitigation |
 |---|---|---|
 | Moving `Docs/` to `docs/` on a case-insensitive checkout | Git may treat the rename as a no-op or conflict on Windows or macOS | Rename in two steps (`Docs` → `docs-tmp` → `docs`) and update links in the same commit |
-| Dockerfiles in `docker/<app>/` with build contexts in `apps/` | A wrong context path breaks image builds | Compose declares `context: ../apps/<app>` and `dockerfile: ../docker/<app>/Dockerfile` explicitly; verified by `docker compose build` once the files exist |
+| Dockerfiles in `docker/<app>/` with build contexts in `apps/` | A wrong context path breaks image builds | Compose declares `context: ../apps/<app>` and `dockerfile: ../../docker/<app>/Dockerfile` (relative to the context) explicitly; verified by `docker compose build` in S34 on 2026-09-08 |
 | Bash-only scripts | Windows contributors cannot run `scripts/` natively | Document WSL or Git Bash in the README; revisit twins if a Windows contributor joins |
 | Generated client committed in `apps/web/src/app/api/` | Stale client after an API change compiles but calls the wrong contract | `scripts/generate-api-client.sh` is part of the definition of done for API changes; CLAUDE.md says so |
 | `CLAUDE.md` drift from the layout | Sessions follow outdated instructions | Update `CLAUDE.md` in the same change as any folder move |
@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 2 pending, 0 in progress, 33 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 1 pending, 0 in progress, 34 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -792,7 +792,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S31 | Maintenance history table (client) | AC 7, AC 3 | S28, S26 | S | done |
 | S32 | Add and edit maintenance record form (client) | AC 4, AC 5, AC 6, AC 10, AC 11, AC 12 | S31, S29 | S | done |
 | S33 | Delete a maintenance record (client) | AC 10 | S32, S30 | S | done |
-| S34 | Run the whole stack under docker compose | Phase 1 delivery decision (docker compose) | S33 | M | pending |
+| S34 | Run the whole stack under docker compose | Phase 1 delivery decision (docker compose) | S33 | M | done |
 | S35 | Complete documentation and Claude configuration | Phase 2 Conventions | S34 | S | pending |
 
 ### Milestones
@@ -2014,11 +2014,11 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — the same `.env.example` variable names as the apps; YAGNI — no CI, no registry push.
 - **Definition of done:**
-  - [ ] `docker compose up --build` succeeds
-  - [ ] `/health` healthy from the container
-  - [ ] Playwright suite passes against compose
-  - [ ] SQLite data survives `compose down` and `up`
-- **Status:** pending
+  - [x] `docker compose up --build` succeeds
+  - [x] `/health` healthy from the container
+  - [x] Playwright suite passes against compose
+  - [x] SQLite data survives `compose down` and `up`
+- **Status:** done
 
 #### S35 — Complete documentation and Claude configuration
 

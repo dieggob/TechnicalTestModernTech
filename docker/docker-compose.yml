@@ -1,0 +1,44 @@
+# Local container stack: the API with its SQLite file on a named volume, and the Angular build
+# served by Nginx, which proxies /api to the API. Variables come from docker/.env (copy
+# .env.example); the shell environment overrides the file. Start with scripts/compose-up.sh.
+name: vehicle-maintenance-tracker
+
+services:
+  api-maintenance:
+    build:
+      context: ../apps/api-maintenance
+      dockerfile: ../../docker/api-maintenance/Dockerfile
+    environment:
+      ASPNETCORE_ENVIRONMENT: ${ASPNETCORE_ENVIRONMENT:-Production}
+      Jwt__SigningKey: ${Jwt__SigningKey:?set Jwt__SigningKey in docker/.env (scripts/compose-up.sh generates one)}
+      Client__BaseUrl: http://localhost:${WEB_PORT:-4200}
+      Cors__ClientOrigin: http://localhost:${WEB_PORT:-4200}
+      Auth__RequireEmailVerification: ${Auth__RequireEmailVerification:-false}
+      RateLimits__AuthPermitLimit: ${RateLimits__AuthPermitLimit:-10}
+    volumes:
+      - maintenance-data:/data
+    ports:
+      - "${API_PORT:-5000}:8080"
+    healthcheck:
+      # The runtime image has no curl; bash's /dev/tcp asks /health directly.
+      test: ["CMD", "bash", "-c", "exec 3<>/dev/tcp/127.0.0.1/8080 && printf 'GET /health HTTP/1.0\\r\\n\\r\\n' >&3 && grep -q '200 OK' <&3"]
+      interval: 5s
+      timeout: 3s
+      retries: 12
+      start_period: 10s
+
+  web:
+    build:
+      context: ../apps/web
+      dockerfile: ../../docker/web/Dockerfile
+      additional_contexts:
+        docker-web: ./web
+    ports:
+      - "${WEB_PORT:-4200}:80"
+    depends_on:
+      api-maintenance:
+        condition: service_healthy
+
+volumes:
+  # Survives `docker compose down`; remove with scripts/compose-down.sh --volumes.
+  maintenance-data:

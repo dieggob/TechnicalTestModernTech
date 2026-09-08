@@ -1,0 +1,7 @@
+# Keep build outputs and local data out of the image build context.
+**/bin/
+**/obj/
+**/*.db
+**/*.db-shm
+**/*.db-wal
+.env
