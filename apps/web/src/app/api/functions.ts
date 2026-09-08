@@ -17,6 +17,14 @@ export type { DevEmails$Plain$Params as DevEmails$Plain$Params } from './fn/dev/
 export { devEmails$Plain as devEmails$Plain } from './fn/dev/dev-emails-plain';
 export type { DevEmails$Params as DevEmails$Params } from './fn/dev/dev-emails';
 export { devEmails as devEmails } from './fn/dev/dev-emails';
+export type { MaintenanceList$Params as MaintenanceList$Params } from './fn/maintenance/maintenance-list';
+export { maintenanceList as maintenanceList } from './fn/maintenance/maintenance-list';
+export type { MaintenanceCreate$Params as MaintenanceCreate$Params } from './fn/maintenance/maintenance-create';
+export { maintenanceCreate as maintenanceCreate } from './fn/maintenance/maintenance-create';
+export type { MaintenanceUpdate$Params as MaintenanceUpdate$Params } from './fn/maintenance/maintenance-update';
+export { maintenanceUpdate as maintenanceUpdate } from './fn/maintenance/maintenance-update';
+export type { MaintenanceDelete$Params as MaintenanceDelete$Params } from './fn/maintenance/maintenance-delete';
+export { maintenanceDelete as maintenanceDelete } from './fn/maintenance/maintenance-delete';
 export type { VehicleList$Params as VehicleList$Params } from './fn/vehicle/vehicle-list';
 export { vehicleList as vehicleList } from './fn/vehicle/vehicle-list';
 export type { VehicleCreate$Params as VehicleCreate$Params } from './fn/vehicle/vehicle-create';

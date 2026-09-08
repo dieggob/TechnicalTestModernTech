@@ -47,3 +47,8 @@ body {
   white-space: nowrap;
   text-align: right;
 }
+
+.muted {
+  color: var(--p-text-muted-color, #6b7280);
+  font-weight: 400;
+}

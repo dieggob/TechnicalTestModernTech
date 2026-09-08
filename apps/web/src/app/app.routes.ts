@@ -31,4 +31,10 @@ export const routes: Routes = [
     loadComponent: () =>
       import('./features/vehicles/vehicle-list/vehicle-list.component').then((m) => m.VehicleListComponent),
   },
+  {
+    path: 'vehicles/:vehicleId',
+    canActivate: [authGuard],
+    loadComponent: () =>
+      import('./features/vehicles/vehicle-detail/vehicle-detail.component').then((m) => m.VehicleDetailComponent),
+  },
 ];

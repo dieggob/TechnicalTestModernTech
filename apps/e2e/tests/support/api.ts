@@ -1,6 +1,15 @@
 import { APIRequestContext, expect } from '@playwright/test';
 import { apiBaseUrl } from '../../playwright.config';
 
+export interface MaintenanceInput {
+  description: string;
+  costUsd: number;
+  datePerformed: string;
+  mileageAtService: number;
+  serviceProvider: string | null;
+  notes: string | null;
+}
+
 export interface VehicleInput {
   make: string;
   model: string;
@@ -49,6 +58,29 @@ export class ApiHelper {
       headers: { Authorization: `Bearer ${token}` },
     });
     expect(response.status(), 'create vehicle').toBe(201);
+    return response.json();
+  }
+
+  /** Logs a maintenance record for a vehicle of the account whose token is given. */
+  async createRecord(
+    token: string,
+    vehicleId: string,
+    record: Partial<MaintenanceInput> = {},
+  ): Promise<{ record: { id: string; description: string }; vehicleCurrentMileage: number }> {
+    const data: MaintenanceInput = {
+      description: 'Oil change',
+      costUsd: 89.99,
+      datePerformed: '2026-09-01',
+      mileageAtService: 46000,
+      serviceProvider: 'Quick Lube',
+      notes: null,
+      ...record,
+    };
+    const response = await this.request.post(`${apiBaseUrl}/api/v1/vehicles/${vehicleId}/maintenance`, {
+      data,
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    expect(response.status(), 'create record').toBe(201);
     return response.json();
   }
 

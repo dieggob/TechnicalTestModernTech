@@ -8,7 +8,7 @@ test.describe('log in', () => {
     const email = ApiHelper.uniqueEmail('wrongpw');
     await api.register(email);
 
-    await new LoginPage(page).login(email, 'Wrong99999');
+    await new LoginPage(page).attempt(email, 'Wrong99999');
 
     await expect(page.getByTestId('form-error')).toContainText('Invalid email or password');
     await expect(page).toHaveURL(/\/login/);

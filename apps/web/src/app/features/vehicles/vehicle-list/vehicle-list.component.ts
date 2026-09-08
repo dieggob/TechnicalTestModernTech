@@ -1,4 +1,5 @@
 import { Component, inject, OnInit, signal } from '@angular/core';
+import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { DialogModule } from 'primeng/dialog';
 import { MessageModule } from 'primeng/message';
@@ -14,7 +15,7 @@ import { VehiclesFacade } from '../vehicles.facade';
  */
 @Component({
   selector: 'app-vehicle-list',
-  imports: [ButtonModule, DialogModule, MessageModule, TableModule, VehicleFormComponent],
+  imports: [RouterLink, ButtonModule, DialogModule, MessageModule, TableModule, VehicleFormComponent],
   templateUrl: './vehicle-list.component.html',
 })
 export class VehicleListComponent implements OnInit {

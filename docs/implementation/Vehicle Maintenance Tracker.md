@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 5 pending, 0 in progress, 30 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 4 pending, 0 in progress, 31 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -789,7 +789,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S28 | View maintenance history (API) | AC 7 | S27 | S | done |
 | S29 | Edit a maintenance record (API) | AC 10, AC 11 | S28 | S | done |
 | S30 | Delete a maintenance record (API) | AC 10 | S29 | S | done |
-| S31 | Maintenance history table (client) | AC 7, AC 3 | S28, S26 | S | pending |
+| S31 | Maintenance history table (client) | AC 7, AC 3 | S28, S26 | S | done |
 | S32 | Add and edit maintenance record form (client) | AC 4, AC 5, AC 6, AC 10, AC 11, AC 12 | S31, S29 | S | pending |
 | S33 | Delete a maintenance record (client) | AC 10 | S32, S30 | S | pending |
 | S34 | Run the whole stack under docker compose | Phase 1 delivery decision (docker compose) | S33 | M | pending |
@@ -1929,8 +1929,8 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — same facade pattern as S24; YAGNI — no totals or charts.
 - **Definition of done:**
-  - [ ] Journey and specs pass
-- **Status:** pending
+  - [x] Journey and specs pass
+- **Status:** done
 
 #### S32 — Add and edit maintenance record form (client)
 

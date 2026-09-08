@@ -4,6 +4,9 @@
 export type { AuthResult } from './models/auth-result';
 export type { ForgotPasswordRequest } from './models/forgot-password-request';
 export type { LoginRequest } from './models/login-request';
+export type { MaintenanceInput } from './models/maintenance-input';
+export type { MaintenanceRecordDto } from './models/maintenance-record-dto';
+export type { MaintenanceWriteResult } from './models/maintenance-write-result';
 export type { MessageResponse } from './models/message-response';
 export type { ProblemDetails } from './models/problem-details';
 export type { RecordedEmail } from './models/recorded-email';
