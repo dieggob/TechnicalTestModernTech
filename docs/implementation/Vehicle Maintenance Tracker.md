@@ -2,7 +2,7 @@
 
 ## Status
 
-Current phase: Phase 3 completed — implementation may start; update slice statuses as work lands. No open questions.
+Current phase: Phase 3 executed — all 35 slices are done and committed on `main` (S02 to S35, 2026-09-08); the definition of done of every slice is ticked below. New work is a new slice appended to Phase 3. No open questions.
 This Phase 3 supersedes the working plan's own "Phase 3 — Working Plan" (`docs/plans/Vehicle Maintenance Tracker.md`).
 Phase 1 manifest paths were revised by Phase 2 on 2026-09-07, and two Phase 1 open questions (Nginx image, Dockerfiles) were closed by Phase 2 decisions.
 Inputs: working plan `docs/plans/Vehicle Maintenance Tracker.md`; design `docs/designs/Vehicle Maintenance Tracker.md`. Codebase grounding: repository `TechnicalTestModernTech` at branch `main`, which contains only a one-line `README.md` and the `Docs/` folder; the stack is greenfield and every technology is `new`.
@@ -305,12 +305,15 @@ Paths are final: Phase 2 fixed the monorepo layout on 2026-09-07 (see Phase 2, P
 | typescript (devDependency) | 6.0.x as pinned by the CLI | add | Angular client |
 | vitest (devDependency) | 5.0.0 or the patch the CLI pins | add | Client unit tests |
 | ng-openapi-gen (devDependency) | 1.0.5 | add | Generated API client in `src/app/api/` |
+| @primeuix/themes | 3.0.x | add | Aura theme preset PrimeNG 22 requires (implied by primeng; added in S03) |
+| @angular/compiler, @angular/compiler-cli, tslib, jsdom, prettier | as pinned by `ng new` 22.1.7 | add | Scaffolded by the CLI: compiler, Vitest DOM environment, formatter (added in S03) |
 
 #### `apps/e2e/package.json`
 
 | Package | Version | Change | Serves |
 |---|---|---|---|
 | @playwright/test (devDependency) | 1.63.0 | add | End-to-end tests |
+| @types/node (devDependency) | 24.x | add | Node typings for the support code (added in S04) |
 
 #### `docker/docker-compose.yml`, `docker/api-maintenance/Dockerfile`, `docker/web/Dockerfile`
 

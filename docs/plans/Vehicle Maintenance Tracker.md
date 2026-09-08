@@ -2,7 +2,7 @@
 
 ## Status
 
-Current phase: Phase 2 completed; Phase 1a clarified a second time on 2026-09-07 and a technical design exists at `docs/designs/Vehicle Maintenance Tracker.md`. Business definition complete (fourth clarification round on 2026-09-07). Technical stack and monorepo layout are decided in `docs/implementation/Vehicle Maintenance Tracker.md`. Phase 3 is superseded by the implementation plan in `docs/implementation/Vehicle Maintenance Tracker.md`; implementation may start from slice S01.
+Implementation finished on 2026-09-08: the 35 slices of the implementation design's Phase 3 are done and committed on `main`. Current phase: Phase 2 completed; Phase 1a clarified a second time on 2026-09-07 and a technical design exists at `docs/designs/Vehicle Maintenance Tracker.md`. Business definition complete (fourth clarification round on 2026-09-07). Technical stack and monorepo layout are decided in `docs/implementation/Vehicle Maintenance Tracker.md`. Phase 3 is superseded by the implementation plan in `docs/implementation/Vehicle Maintenance Tracker.md`; implementation may start from slice S01.
 
 ## Phase 1 — Refined Story
 

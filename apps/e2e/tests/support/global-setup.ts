@@ -3,9 +3,10 @@ import { apiBaseUrl, webBaseUrl } from '../../playwright.config';
 import { ApiHelper } from './api';
 
 /**
- * Warms the client before the suite: the Angular dev server optimises dependencies of lazy
- * routes on first use and reloads the page when it does, which breaks journeys running in
- * parallel. One login that reaches the vehicles page triggers that once, up front.
+ * Warms the client before the suite with one login that reaches the vehicles page and opens a
+ * dialog. Against a production build (scripts/test.sh, the compose stack) this only primes the
+ * lazy chunks; against `ng serve` it also triggers the dev server's one-time dependency
+ * optimisation, which reloads the page and would break journeys running in parallel.
  */
 export default async function globalSetup(): Promise<void> {
   const request = await playwrightRequest.newContext();

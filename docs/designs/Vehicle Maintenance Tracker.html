@@ -713,7 +713,7 @@ stateDiagram-v2
   }
 ```
 
-A user account is created pending verification and becomes verified exactly once; there is no transition back, and no account deletion or deactivation is in scope. Both states can log in; verification is prompted, not enforced. A token is consumed by a single successful use, dies silently at its expiry time, or is superseded when the user asks for a new one of the same purpose; the `Superseded` state is implemented as setting `used_at` on the older rows, so it needs no extra column. The input does not define resend limits (assumed) or token lifetimes (open question). All states are `new`.
+A user account is created pending verification and becomes verified exactly once; there is no transition back, and no account deletion or deactivation is in scope. Both states can log in; verification is prompted, not enforced. A token is consumed by a single successful use, dies silently at its expiry time, or is superseded when the user asks for a new one of the same purpose; the `Superseded` state is implemented as setting `used_at` on the older rows, so it needs no extra column. The input does not define resend limits (assumed); token lifetimes were decided on the fourth clarification round: 30 minutes for both links. All states are `new`.
 
 ## Component Diagram
 
