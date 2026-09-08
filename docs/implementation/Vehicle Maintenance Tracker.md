@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 15 pending, 0 in progress, 20 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 14 pending, 0 in progress, 21 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -779,7 +779,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S18 | Log in screen with the verification banner and resend (client) | AC 1, AC 8 ("prompted to verify") | S17 | S | done |
 | S19 | Verify email page (client) | AC 8 | S18 | S | done |
 | S20 | Forgot and reset password screens (client) | AC 9 | S19 | S | done |
-| S21 | Register a vehicle (API) | AC 2, AC 3, AC "VIN unique per user" | S13 | M | pending |
+| S21 | Register a vehicle (API) | AC 2, AC 3, AC "VIN unique per user" | S13 | M | done |
 | S22 | List and view vehicles (API) | AC 1 (isolation), AC 2, AC 3 | S21 | S | pending |
 | S23 | Update and delete a vehicle (API) | AC 2 ("manage") | S22 | S | pending |
 | S24 | Vehicle list screen (client) | AC 2, AC 3 | S22, S18 | S | pending |
@@ -1626,14 +1626,14 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Mapping entity → DTO with a static `VehicleDto.From(vehicle)` | `VehicleDto` | Explicit, no reflection, one place | Hand-written for each DTO | yes | pending (developer) |
-  | Mapping library (AutoMapper or Mapster) | Application | Less boilerplate | A dependency Phase 1 did not choose; hides mapping errors until runtime | no | pending (developer) |
+  | Mapping entity → DTO with a static `VehicleDto.From(vehicle)` | `VehicleDto` | Explicit, no reflection, one place | Hand-written for each DTO | yes | adopted (recommended): VehicleDto.From (2026-09-08) |
+  | Mapping library (AutoMapper or Mapster) | Application | Less boilerplate | A dependency Phase 1 did not choose; hides mapping errors until runtime | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — VIN normalisation (upper-case, trimmed) in `Vehicle.Create` only; SOLID — `VehicleService` depends on `IVehicleRepository` and `ICurrentUser`-supplied `userId`, never on `HttpContext`; OOP — `Vehicle` guards its own invariants; YAGNI — no vehicle photos, no make/model catalogue.
 - **Definition of done:**
-  - [ ] All tests pass
-  - [ ] Migration `AddVehicles` applied
-- **Status:** pending
+  - [x] All tests pass
+  - [x] Migration `AddVehicles` applied
+- **Status:** done
 
 #### S22 — List and view vehicles (API)
 
@@ -2074,8 +2074,8 @@ None by user decision; the Slice Map is the only ordering.
 | S16 | Components call the generated `AuthService` and storage directly | features | no | declined (2026-09-08) |
 | S17 | Shared `problem-details.ts` mapper for server field errors | `shared/` | yes | adopted (recommended): applyProblemDetails and serverError in shared/; an AuthApi facade over the generated functions was added for the auth screens (2026-09-08) |
 | S17 | Inline mapping in each component | components | no | declined (2026-09-08) |
-| S21 | Mapping entity → DTO with a static `VehicleDto.From(vehicle)` | `VehicleDto` | yes | pending (developer) |
-| S21 | Mapping library (AutoMapper or Mapster) | Application | no | pending (developer) |
+| S21 | Mapping entity → DTO with a static `VehicleDto.From(vehicle)` | `VehicleDto` | yes | adopted (recommended): VehicleDto.From (2026-09-08) |
+| S21 | Mapping library (AutoMapper or Mapster) | Application | no | declined (2026-09-08) |
 | S24 | Facade per feature (`VehiclesFacade`) holding signals and calling the generated client | `features/vehicles` | yes | pending (developer) |
 | S24 | Components call the generated client directly | components | no | pending (developer) |
 | S27 | Domain method `Vehicle.AdvanceMileage` (Tell, Don't Ask) | `Vehicle` | yes | pending (developer) |

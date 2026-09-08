@@ -1,4 +1,5 @@
 using Maintenance.Domain.Users;
+using Maintenance.Domain.Vehicles;
 using Microsoft.EntityFrameworkCore;
 
 namespace Maintenance.Infrastructure.Persistence;
@@ -12,6 +13,8 @@ public class MaintenanceDbContext(DbContextOptions<MaintenanceDbContext> options
     public DbSet<User> Users => Set<User>();
 
     public DbSet<UserToken> UserTokens => Set<UserToken>();
+
+    public DbSet<Vehicle> Vehicles => Set<Vehicle>();
 
     protected override void OnModelCreating(ModelBuilder modelBuilder)
     {

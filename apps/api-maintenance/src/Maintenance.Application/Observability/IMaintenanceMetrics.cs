@@ -20,6 +20,8 @@ public interface IMaintenanceMetrics
 
     void Reset();
 
+    void VehicleCreated();
+
     void EmailSent();
 
     void EmailFailed();

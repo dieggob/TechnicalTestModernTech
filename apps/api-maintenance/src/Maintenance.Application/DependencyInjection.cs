@@ -1,5 +1,6 @@
 using FluentValidation;
 using Maintenance.Application.Auth;
+using Maintenance.Application.Vehicles;
 using Microsoft.Extensions.DependencyInjection;
 
 namespace Maintenance.Application;
@@ -12,6 +13,7 @@ public static class DependencyInjection
     public static IServiceCollection AddApplication(this IServiceCollection services)
     {
         services.AddScoped<AuthService>();
+        services.AddScoped<VehicleService>();
 
         var validatorInterface = typeof(IValidator<>);
         var validators = typeof(DependencyInjection).Assembly.GetTypes()
