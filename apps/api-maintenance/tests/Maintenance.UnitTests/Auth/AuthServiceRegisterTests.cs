@@ -31,7 +31,8 @@ public class AuthServiceRegisterTests
         _service = new AuthService(_users, _tokens, _hasher, _tokenGenerator, _emailSender, _clock,
             Options.Create(new TokenOptions { Lifetime = TimeSpan.FromMinutes(30) }),
             Options.Create(new ClientOptions { BaseUrl = "http://client.test" }),
-            new RegisterRequestValidator(), _metrics, NullLogger<AuthService>.Instance);
+            new RegisterRequestValidator(), new VerifyEmailRequestValidator(), new ResendVerificationRequestValidator(),
+            _metrics, NullLogger<AuthService>.Instance);
     }
 
     [Fact]

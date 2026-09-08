@@ -27,4 +27,7 @@ public sealed class User
 
     /// <summary>Trimmed and lower-cased, so lookups and the unique index agree on one form.</summary>
     public static string NormalizeEmail(string email) => email.Trim().ToLowerInvariant();
+
+    /// <summary>Verification happens once; there is no transition back.</summary>
+    public void MarkEmailVerified() => EmailVerified = true;
 }

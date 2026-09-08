@@ -9,7 +9,7 @@ namespace Maintenance.Api.Controllers;
 [Produces("application/json")]
 public sealed class AuthController(AuthService auth) : ControllerBase
 {
-    /// <summary>Creates an account. A verification email follows (from slice S10).</summary>
+    /// <summary>Creates an account and emails a verification link.</summary>
     [HttpPost("register")]
     [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status201Created)]
     [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
@@ -18,5 +18,25 @@ public sealed class AuthController(AuthService auth) : ControllerBase
     {
         await auth.RegisterAsync(request, cancellationToken);
         return StatusCode(StatusCodes.Status201Created, new MessageResponse("Account created. Check your email to verify the address."));
+    }
+
+    /// <summary>Verifies the email address behind an emailed link. Each link works once.</summary>
+    [HttpPost("verify-email")]
+    [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status200OK)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<MessageResponse>> VerifyEmail(VerifyEmailRequest request, CancellationToken cancellationToken)
+    {
+        await auth.VerifyEmailAsync(request, cancellationToken);
+        return Ok(new MessageResponse("Email address verified."));
+    }
+
+    /// <summary>Sends a fresh verification link. The response is the same for any email.</summary>
+    [HttpPost("resend-verification")]
+    [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status202Accepted)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    public async Task<ActionResult<MessageResponse>> ResendVerification(ResendVerificationRequest request, CancellationToken cancellationToken)
+    {
+        await auth.ResendVerificationAsync(request, cancellationToken);
+        return Accepted(new MessageResponse("If that address needs verification, a new link is on its way."));
     }
 }

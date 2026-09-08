@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 25 pending, 0 in progress, 10 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 24 pending, 0 in progress, 11 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -769,7 +769,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S08 | Add JSON console logging, request logging, and the metrics meter | Foundation | S07 | S | done |
 | S09 | Sign up creates an account (API) | AC 1 (sign up) | S07, S08 | M | done |
 | S10 | Sign up issues a verification link and records emails (API) | AC 8 (verification email, 30 minutes) | S09 | M | done |
-| S11 | Verify email and resend the link (API) | AC 8 | S10 | S | pending |
+| S11 | Verify email and resend the link (API) | AC 8 | S10 | S | done |
 | S12 | Log in with JWT sessions and rate limiting (API) | AC 1 (log in) | S09 | M | pending |
 | S13 | Protect endpoints: bearer authorization, CORS, and the verification flag | AC 1 (isolation), AC "flag can require verification" | S12 | M | pending |
 | S14 | Request a password reset (API) | AC 9 (reset link, 30 minutes) | S11, S12 | S | pending |
@@ -1258,14 +1258,14 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | `IClock` abstraction for `now` | `Application/Time/IClock.cs` | Expiry tests without waiting; one seam for every time rule | One more interface | yes | pending (developer) |
-  | Call `DateTime.UtcNow` directly | services | No abstraction | Expiry tests must manipulate token rows directly | no | pending (developer) |
+  | `IClock` abstraction for `now` | `Application/Time/IClock.cs` | Expiry tests without waiting; one seam for every time rule | One more interface | yes | adopted (recommended); introduced in S10, TestClock in the integration factory (2026-09-08) |
+  | Call `DateTime.UtcNow` directly | services | No abstraction | Expiry tests must manipulate token rows directly | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — the same token lookup path serves verify and, later, reset; SOLID — one method per behaviour on `AuthService`; YAGNI — no resend cooldown beyond the rate limiter.
 - **Definition of done:**
-  - [ ] Both test files pass
-  - [ ] `verifications` counter increments on success
-- **Status:** pending
+  - [x] Both test files pass
+  - [x] `verifications` counter increments on success
+- **Status:** done
 
 #### S12 — Log in with JWT sessions and rate limiting (API)
 
@@ -2062,8 +2062,8 @@ None by user decision; the Slice Map is the only ordering.
 | S10 | Null Object: `LoggingEmailSender` as the only `IEmailSender` | `Infrastructure/Email` | yes | adopted (recommended); records the last 50 messages; Development-only GET /api/v1/dev/emails reads them (2026-09-08) |
 | S10 | Separate `InMemoryEmailSender` registered only in tests | `IntegrationTests` | no | declined (2026-09-08) |
 | S10 | Domain factory `UserToken.Issue` holding the expiry rule | `UserToken` | yes | adopted (recommended); IClock introduced here rather than S11 (2026-09-08) |
-| S11 | `IClock` abstraction for `now` | `Application/Time/IClock.cs` | yes | pending (developer) |
-| S11 | Call `DateTime.UtcNow` directly | services | no | pending (developer) |
+| S11 | `IClock` abstraction for `now` | `Application/Time/IClock.cs` | yes | adopted (recommended); introduced in S10, TestClock in the integration factory (2026-09-08) |
+| S11 | Call `DateTime.UtcNow` directly | services | no | declined (2026-09-08) |
 | S12 | Framework rate limiter with one named policy | `AuthRateLimitPolicy` | yes | pending (developer) |
 | S12 | Custom middleware counting attempts in memory | `Api/RateLimiting` | no | pending (developer) |
 | S13 | ASP.NET authorization requirement + handler | `EmailVerifiedHandler` | yes | pending (developer) |

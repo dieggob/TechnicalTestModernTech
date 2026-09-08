@@ -5,6 +5,9 @@ namespace Maintenance.Infrastructure.Persistence.Repositories;
 
 public sealed class UserRepository(MaintenanceDbContext context) : IUserRepository
 {
+    public Task<User?> FindByIdAsync(Guid id, CancellationToken cancellationToken) =>
+        context.Users.SingleOrDefaultAsync(user => user.Id == id, cancellationToken);
+
     public Task<User?> FindByEmailAsync(string email, CancellationToken cancellationToken)
     {
         var normalized = User.NormalizeEmail(email);

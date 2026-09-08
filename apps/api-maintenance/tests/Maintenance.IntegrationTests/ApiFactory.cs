@@ -1,3 +1,4 @@
+using Maintenance.Application.Time;
 using Maintenance.Infrastructure.Persistence;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -8,13 +9,15 @@ using Microsoft.Extensions.DependencyInjection;
 namespace Maintenance.IntegrationTests;
 
 /// <summary>
-/// Boots the real API pipeline in-process against a private SQLite in-memory database and
-/// adds the test-only endpoints. The connection stays open for the factory's lifetime; an
-/// in-memory SQLite database disappears when its last connection closes.
+/// Boots the real API pipeline in-process against a private SQLite in-memory database, with a
+/// controllable clock and the test-only endpoints. The connection stays open for the factory's
+/// lifetime; an in-memory SQLite database disappears when its last connection closes.
 /// </summary>
 public class ApiFactory : WebApplicationFactory<Program>
 {
     private readonly SqliteConnection _connection = new("Data Source=:memory:");
+
+    public TestClock Clock { get; } = new();
 
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
@@ -25,6 +28,8 @@ public class ApiFactory : WebApplicationFactory<Program>
         {
             services.RemoveAll<DbContextOptions<MaintenanceDbContext>>();
             services.AddDbContext<MaintenanceDbContext>(options => options.UseSqlite(_connection));
+            services.RemoveAll<IClock>();
+            services.AddSingleton<IClock>(Clock);
             services.AddTransient<IStartupFilter, TestEndpoints.StartupFilter>();
         });
     }
