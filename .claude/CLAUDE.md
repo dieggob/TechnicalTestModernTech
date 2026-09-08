@@ -6,7 +6,7 @@ This repository is a monorepo. Everything needed to build, run, test, and docume
 
 ```text
 apps/api-maintenance/   ASP.NET Core 8 Web API, Clean Architecture: src/Maintenance.{Domain,Application,Infrastructure,Api}, tests/Maintenance.{UnitTests,IntegrationTests}
-apps/web/               Angular 22 client (standalone, zoneless, signals, PrimeNG, Vitest); generated API client in src/app/api/ (never edit by hand)
+apps/web/               Angular 22 client (standalone, zoneless, signals, PrimeNG 21.1.9 MIT via .npmrc legacy-peer-deps, Vitest); generated API client in src/app/api/ (never edit by hand)
 apps/e2e/               Playwright journeys against running apps (Google Chrome via channel: chrome); tests/support/ holds ApiHelper and page objects
 docker/                 docker-compose.yml, .env.example, api-maintenance/Dockerfile, web/Dockerfile + nginx.conf (SPA fallback, CSP, /api proxy)
 docs/                   plans/ (working plan), designs/ (technical design + HTML), implementation/ (stack, layout, slice plan with progress), adr/

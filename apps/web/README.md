@@ -1,6 +1,6 @@
 # web
 
-Angular 22 client for the Vehicle Maintenance Tracker: standalone components, zoneless change detection, signals, PrimeNG (Aura theme), Vitest.
+Angular 22 client for the Vehicle Maintenance Tracker: standalone components, zoneless change detection, signals, PrimeNG 21.1.9 with the Aura theme (the last MIT release; `.npmrc` sets `legacy-peer-deps` because it declares Angular 21 peers and runs on Angular 22), Vitest.
 
 | Folder | Holds |
 |---|---|

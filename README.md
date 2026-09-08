@@ -32,7 +32,7 @@ This is a monorepo: one folder holds everything needed to build, run, test, and 
 | Folder | Contents |
 |---|---|
 | `apps/api-maintenance/` | ASP.NET Core 8 Web API in Clean Architecture (`Maintenance.Domain`, `.Application`, `.Infrastructure`, `.Api`), EF Core with SQLite, xUnit unit and integration tests |
-| `apps/web/` | Angular 22 client (standalone, zoneless, signals) with PrimeNG and Vitest; the API client under `src/app/api/` is generated |
+| `apps/web/` | Angular 22 client (standalone, zoneless, signals) with PrimeNG 21 (MIT) and Vitest; the API client under `src/app/api/` is generated |
 | `apps/e2e/` | Playwright browser journeys against running apps |
 | `docker/` | Dockerfiles, `nginx.conf`, and the docker compose stack for a local run |
 | `docs/` | Working plan, technical design, implementation design with tracked progress, architecture decision records |
@@ -140,6 +140,11 @@ scripts/compose-down.sh
 
 Other scripts, including `migrate.sh` for EF Core migrations and `generate-api-client.sh` for the Angular API client, are listed in [scripts/README.md](scripts/README.md).
 
+## Dependency notes
+
+- **PrimeNG stays on 21.1.9.** PrimeNG 22 moved to the PrimeUI license with a key check and shows an "Invalid PrimeUI License" badge without one; 21.1.9 is the last MIT release. It declares Angular 21 as its peer range but runs on Angular 22, which every suite verifies, so [apps/web/.npmrc](apps/web/.npmrc) sets `legacy-peer-deps=true` and `npm ci` resolves without flags. Upgrading PrimeNG beyond 21.x reopens the licensing decision, recorded in the implementation design.
+- **Production stylesheet.** The production build keeps critical-CSS inlining off (`inlineCritical: false` in `angular.json`), because the inlining trick loads the stylesheet through an inline `onload` handler that the Content Security Policy sent by Nginx blocks.
+
 ## Configuration
 
 The API reads standard ASP.NET Core configuration: `appsettings.json` holds the defaults, `dotnet user-secrets` the local signing key, and environment variables override both (`A__B` maps to section `A`, key `B`). The same names appear in [apps/api-maintenance/.env.example](apps/api-maintenance/.env.example) and [docker/.env.example](docker/.env.example).
@@ -172,6 +177,8 @@ Compose adds `API_PORT` and `WEB_PORT` (defaults 5000 and 4200) in `docker/.env`
 | `429` on login during a script or tool run | The auth rate limit (10 per minute per address) was hit. Wait a minute or raise `RateLimits__AuthPermitLimit` for that run |
 | `403` with code `EmailNotVerified` | `Auth__RequireEmailVerification` is `true`; verify the address or set the flag back to `false` |
 | Playwright cannot find a browser | Install Google Chrome; the suite uses `channel: chrome` and does not download browsers |
+| `npm ERESOLVE` mentioning `primeng` | You ran npm outside `apps/web`, where `.npmrc` sets `legacy-peer-deps`; run it in that folder, or pass `--legacy-peer-deps` |
+| Pages render without layout, labels beside inputs | An old production build; rebuild with `scripts/compose-up.sh` or `scripts/test.sh`. Builds since S36 serve the stylesheet as a plain link |
 
 ## Documentation
 
