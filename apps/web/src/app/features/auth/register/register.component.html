@@ -1,0 +1,41 @@
+<section class="auth-card">
+  <h1>Create your account</h1>
+
+  @if (successMessage(); as message) {
+    <p-message severity="success" data-testid="register-success">{{ message }}</p-message>
+    <p>Already verified? <a routerLink="/login">Log in</a>.</p>
+  } @else {
+    <form [formGroup]="form" (ngSubmit)="submit()" novalidate>
+      <div class="field">
+        <label for="email">Email</label>
+        <input pInputText id="email" type="email" formControlName="email" autocomplete="email" />
+        @if (form.controls.email.touched && form.controls.email.hasError('required')) {
+          <small class="error" data-testid="email-error">Email is required.</small>
+        } @else if (form.controls.email.touched && form.controls.email.hasError('email')) {
+          <small class="error" data-testid="email-error">Email is not a valid address.</small>
+        } @else if (serverError('email'); as message) {
+          <small class="error" data-testid="email-error">{{ message }}</small>
+        }
+      </div>
+
+      <div class="field">
+        <label for="password">Password</label>
+        <input pInputText id="password" type="password" formControlName="password" autocomplete="new-password" />
+        @if (form.controls.password.touched && form.controls.password.hasError('required')) {
+          <small class="error" data-testid="password-error">Password is required.</small>
+        } @else if (form.controls.password.touched && form.controls.password.hasError('minlength')) {
+          <small class="error" data-testid="password-error">Password must be at least 8 characters.</small>
+        } @else if (serverError('password'); as message) {
+          <small class="error" data-testid="password-error">{{ message }}</small>
+        }
+      </div>
+
+      @if (formError(); as message) {
+        <p-message severity="error" data-testid="form-error">{{ message }}</p-message>
+      }
+
+      <p-button type="submit" label="Create account" [loading]="submitting()" />
+    </form>
+    <p>Already have an account? <a routerLink="/login">Log in</a>.</p>
+  }
+</section>

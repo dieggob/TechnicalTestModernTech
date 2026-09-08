@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 19 pending, 0 in progress, 16 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 18 pending, 0 in progress, 17 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -775,7 +775,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S14 | Request a password reset (API) | AC 9 (reset link, 30 minutes) | S11, S12 | S | done |
 | S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | done |
 | S16 | Generate the API client and add auth state to the Angular app | Foundation for client slices | S12, S13, S03 | M | done |
-| S17 | Sign up screen (client) | AC 1, AC 8 | S16, S04 | S | pending |
+| S17 | Sign up screen (client) | AC 1, AC 8 | S16, S04 | S | done |
 | S18 | Log in screen with the verification banner and resend (client) | AC 1, AC 8 ("prompted to verify") | S17 | S | pending |
 | S19 | Verify email page (client) | AC 8 | S18 | S | pending |
 | S20 | Forgot and reset password screens (client) | AC 9 | S19 | S | pending |
@@ -1496,13 +1496,13 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Shared `problem-details.ts` mapper for server field errors | `shared/` | Every form binds server errors the same way | A tiny abstraction introduced at its first use because the second use (S18) is one slice away | yes | pending (developer) |
-  | Inline mapping in each component | components | No shared code | Duplicated in every form | no | pending (developer) |
+  | Shared `problem-details.ts` mapper for server field errors | `shared/` | Every form binds server errors the same way | A tiny abstraction introduced at its first use because the second use (S18) is one slice away | yes | adopted (recommended): applyProblemDetails and serverError in shared/; an AuthApi facade over the generated functions was added for the auth screens (2026-09-08) |
+  | Inline mapping in each component | components | No shared code | Duplicated in every form | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — one ProblemDetails mapper; SOLID — the component knows the form, the mapper knows the error shape; YAGNI — no password strength meter beyond the server rule.
 - **Definition of done:**
-  - [ ] Journey and specs pass
-- **Status:** pending
+  - [x] Journey and specs pass
+- **Status:** done
 
 #### S18 — Log in screen with the verification banner and resend (client)
 
@@ -2072,8 +2072,8 @@ None by user decision; the Slice Map is the only ordering.
 | S15 | Purge inline during `ResetPasswordAsync` | `AuthService` | no | declined (2026-09-08) |
 | S16 | Facade: `AuthState` as the single entry point for auth in the client | `core/auth/auth-state.ts` | yes | adopted (recommended): AuthState signals over TokenStorage; interceptor and guard read it (2026-09-08) |
 | S16 | Components call the generated `AuthService` and storage directly | features | no | declined (2026-09-08) |
-| S17 | Shared `problem-details.ts` mapper for server field errors | `shared/` | yes | pending (developer) |
-| S17 | Inline mapping in each component | components | no | pending (developer) |
+| S17 | Shared `problem-details.ts` mapper for server field errors | `shared/` | yes | adopted (recommended): applyProblemDetails and serverError in shared/; an AuthApi facade over the generated functions was added for the auth screens (2026-09-08) |
+| S17 | Inline mapping in each component | components | no | declined (2026-09-08) |
 | S21 | Mapping entity → DTO with a static `VehicleDto.From(vehicle)` | `VehicleDto` | yes | pending (developer) |
 | S21 | Mapping library (AutoMapper or Mapster) | Application | no | pending (developer) |
 | S24 | Facade per feature (`VehiclesFacade`) holding signals and calling the generated client | `features/vehicles` | yes | pending (developer) |

@@ -1,1 +1,31 @@
-/* You can add global styles to this file, and also import other style files */
+/* Global styles: layout helpers shared by every screen. Components own the rest. */
+body {
+  margin: 0;
+  font-family: system-ui, -apple-system, 'Segoe UI', Roboto, sans-serif;
+  background: var(--p-surface-50, #f8fafc);
+  color: var(--p-text-color, #1f2937);
+}
+
+.auth-card {
+  max-width: 28rem;
+  margin: 2rem auto;
+  padding: 2rem;
+  background: var(--p-surface-0, #fff);
+  border-radius: 0.75rem;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.field {
+  display: flex;
+  flex-direction: column;
+  gap: 0.35rem;
+  margin-bottom: 1rem;
+}
+
+.field input {
+  width: 100%;
+}
+
+.error {
+  color: var(--p-red-600, #dc2626);
+}
