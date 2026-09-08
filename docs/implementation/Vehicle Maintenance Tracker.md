@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 1 pending, 0 in progress, 34 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 0 pending, 0 in progress, 35 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -793,7 +793,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S32 | Add and edit maintenance record form (client) | AC 4, AC 5, AC 6, AC 10, AC 11, AC 12 | S31, S29 | S | done |
 | S33 | Delete a maintenance record (client) | AC 10 | S32, S30 | S | done |
 | S34 | Run the whole stack under docker compose | Phase 1 delivery decision (docker compose) | S33 | M | done |
-| S35 | Complete documentation and Claude configuration | Phase 2 Conventions | S34 | S | pending |
+| S35 | Complete documentation and Claude configuration | Phase 2 Conventions | S34 | S | done |
 
 ### Milestones
 
@@ -2043,8 +2043,8 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — README links to this document for decisions instead of repeating them; YAGNI — no wiki.
 - **Definition of done:**
-  - [ ] A clean clone reaches a passing `scripts/test.sh` by following the README alone
-- **Status:** pending
+  - [x] A clean clone reaches a passing `scripts/test.sh` by following the README alone
+- **Status:** done
 
 ### Pattern Proposals Register
 
