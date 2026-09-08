@@ -16,6 +16,8 @@ public interface IMaintenanceMetrics
 
     void FailedLogin();
 
+    void ResetRequest();
+
     void EmailSent();
 
     void EmailFailed();

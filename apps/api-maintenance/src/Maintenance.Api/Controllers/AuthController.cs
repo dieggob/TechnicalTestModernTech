@@ -55,4 +55,16 @@ public sealed class AuthController(AuthService auth) : ControllerBase
     [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
     public async Task<ActionResult<AuthResult>> Login(LoginRequest request, CancellationToken cancellationToken) =>
         Ok(await auth.LoginAsync(request, cancellationToken));
+
+    /// <summary>Emails a password-reset link to a registered address. The response is the same for any email.</summary>
+    [HttpPost("forgot-password")]
+    [EnableRateLimiting(AuthRateLimitPolicy.Name)]
+    [ProducesResponseType(typeof(MessageResponse), StatusCodes.Status202Accepted)]
+    [ProducesResponseType(typeof(ValidationProblemDetails), StatusCodes.Status400BadRequest)]
+    [ProducesResponseType(StatusCodes.Status429TooManyRequests)]
+    public async Task<ActionResult<MessageResponse>> ForgotPassword(ForgotPasswordRequest request, CancellationToken cancellationToken)
+    {
+        await auth.RequestPasswordResetAsync(request, cancellationToken);
+        return Accepted(new MessageResponse("If that address is registered, a reset link is on its way."));
+    }
 }

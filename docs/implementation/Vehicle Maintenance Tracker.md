@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 22 pending, 0 in progress, 13 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 20 pending, 1 in progress, 14 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -772,8 +772,8 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S11 | Verify email and resend the link (API) | AC 8 | S10 | S | done |
 | S12 | Log in with JWT sessions and rate limiting (API) | AC 1 (log in) | S09 | M | done |
 | S13 | Protect endpoints: bearer authorization, CORS, and the verification flag | AC 1 (isolation), AC "flag can require verification" | S12 | M | done |
-| S14 | Request a password reset (API) | AC 9 (reset link, 30 minutes) | S11, S12 | S | pending |
-| S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | pending |
+| S14 | Request a password reset (API) | AC 9 (reset link, 30 minutes) | S11, S12 | S | done |
+| S15 | Set a new password from the reset link and purge stale tokens (API) | AC 9 | S14 | S | in progress |
 | S16 | Generate the API client and add auth state to the Angular app | Foundation for client slices | S12, S13, S03 | M | pending |
 | S17 | Sign up screen (client) | AC 1, AC 8 | S16, S04 | S | pending |
 | S18 | Log in screen with the verification banner and resend (client) | AC 1, AC 8 ("prompted to verify") | S17 | S | pending |
@@ -1380,9 +1380,9 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — reuses the S10 token path with a different purpose; SOLID — nothing new to inject; YAGNI — no reset-attempt history.
 - **Definition of done:**
-  - [ ] Both tests pass
-  - [ ] Endpoint carries the `auth` rate-limit policy
-- **Status:** pending
+  - [x] Both tests pass
+  - [x] Endpoint carries the `auth` rate-limit policy
+- **Status:** done
 
 #### S15 — Set a new password from the reset link and purge stale tokens (API)
 
@@ -1423,7 +1423,7 @@ None by user decision; the Slice Map is the only ordering.
 - **Definition of done:**
   - [ ] Both tests pass
   - [ ] Start-up log line reports purged count
-- **Status:** pending
+- **Status:** in progress
 
 #### S16 — Generate the API client and add auth state to the Angular app
 

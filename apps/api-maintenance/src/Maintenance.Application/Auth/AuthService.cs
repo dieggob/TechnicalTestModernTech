@@ -27,6 +27,7 @@ public sealed class AuthService(
     IValidator<VerifyEmailRequest> verifyValidator,
     IValidator<ResendVerificationRequest> resendValidator,
     IValidator<LoginRequest> loginValidator,
+    IValidator<ForgotPasswordRequest> forgotPasswordValidator,
     IMaintenanceMetrics metrics,
     ILogger<AuthService> logger)
 {
@@ -98,6 +99,27 @@ public sealed class AuthService(
         var session = tokenIssuer.Issue(user);
         metrics.Login();
         return new AuthResult(session.Token, user.Id, user.EmailVerified, session.ExpiresAt);
+    }
+
+    /// <summary>
+    /// Always succeeds from the caller's view; only a registered email actually gets a reset link,
+    /// so the endpoint cannot be used to enumerate accounts.
+    /// </summary>
+    public async Task RequestPasswordResetAsync(ForgotPasswordRequest request, CancellationToken cancellationToken)
+    {
+        ValidationRunner.Validate(forgotPasswordValidator, request);
+
+        var user = await users.FindByEmailAsync(request.Email, cancellationToken);
+        if (user is null)
+        {
+            return;
+        }
+
+        var reset = await IssueTokenAsync(user, TokenPurpose.PasswordReset, cancellationToken);
+        await users.SaveChangesAsync(cancellationToken);
+        metrics.ResetRequest();
+
+        await SendAsync(() => emailSender.SendPasswordResetAsync(user.Email, clientOptions.Value.ResetPasswordLink(reset.Raw), CancellationToken.None), user.Email);
     }
 
     /// <summary>

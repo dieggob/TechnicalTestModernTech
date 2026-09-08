@@ -17,6 +17,7 @@ public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
     private readonly Counter<long> _verifications;
     private readonly Counter<long> _logins;
     private readonly Counter<long> _failedLogins;
+    private readonly Counter<long> _resetRequests;
     private readonly Counter<long> _emailsSent;
     private readonly Counter<long> _emailsFailed;
 
@@ -27,6 +28,7 @@ public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
         _verifications = _meter.CreateCounter<long>("maintenance.verifications", description: "Email addresses verified");
         _logins = _meter.CreateCounter<long>("maintenance.logins", description: "Successful logins");
         _failedLogins = _meter.CreateCounter<long>("maintenance.failed_logins", description: "Rejected login attempts");
+        _resetRequests = _meter.CreateCounter<long>("maintenance.reset_requests", description: "Password reset links issued");
         _emailsSent = _meter.CreateCounter<long>("maintenance.emails_sent", description: "Emails handed to the sender");
         _emailsFailed = _meter.CreateCounter<long>("maintenance.emails_failed", description: "Emails the sender rejected");
     }
@@ -41,6 +43,8 @@ public sealed class MaintenanceMetrics : IMaintenanceMetrics, IDisposable
     public void Login() => _logins.Add(1);
 
     public void FailedLogin() => _failedLogins.Add(1);
+
+    public void ResetRequest() => _resetRequests.Add(1);
 
     public void EmailSent() => _emailsSent.Add(1);
 
