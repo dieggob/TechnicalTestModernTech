@@ -714,7 +714,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 31 pending, 0 in progress, 4 done, 0 blocked (updated 2026-09-07)
+- **Progress:** 30 pending, 0 in progress, 5 done, 0 blocked (updated 2026-09-07)
 
 ### Principles
 
@@ -755,7 +755,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S02 | Create the API solution that starts and answers /health | Foundation | S01 | M | done |
 | S03 | Create the Angular client that renders and runs one spec | Foundation | S01 | S | done |
 | S04 | Create the Playwright suite with one smoke test | Foundation | S03 | S | done |
-| S05 | Add the repository scripts for setup, dev, and test | Foundation | S02, S03, S04 | S | pending |
+| S05 | Add the repository scripts for setup, dev, and test | Foundation | S02, S03, S04 | S | done |
 | S06 | Wire EF Core with SQLite, start-up migration, and the database health check | Foundation | S02 | M | pending |
 | S07 | Establish the error model: ProblemDetails, validation errors, and status mapping | Foundation | S06 | M | pending |
 | S08 | Add JSON console logging, request logging, and the metrics meter | Foundation | S07 | S | pending |
@@ -981,10 +981,10 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — scripts delegate to the per-app commands rather than re-implementing them; YAGNI — only the three scripts needed today, the other three arrive with the slices that need them.
 - **Definition of done:**
-  - [ ] `scripts/test.sh` runs all three suites and exits 0
-  - [ ] `scripts/dev.sh` starts both apps
-  - [ ] README documents the three scripts
-- **Status:** pending
+  - [x] `scripts/test.sh` runs all three suites and exits 0
+  - [x] `scripts/dev.sh` starts both apps
+  - [x] README documents the three scripts
+- **Status:** done
 
 #### S06 — Wire EF Core with SQLite, start-up migration, and the database health check
 

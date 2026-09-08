@@ -21,9 +21,16 @@ The folder map, conventions, and commands are described in [.claude/CLAUDE.md](.
 
 ## Getting started
 
-Tooling: .NET SDK 8.0 (pinned in `global.json`), Node.js 24 via nvm (pinned in `.nvmrc`), Docker with the Compose plugin for the container stack.
+Tooling installed by hand once: .NET SDK 8.0 at `~/.dotnet` (pinned in `global.json`), nvm (Node 24 is pinned in `.nvmrc`), and Docker with the Compose plugin for the container stack. Everything else is scripted:
 
-The setup, run, and test scripts arrive in `scripts/` as the implementation progresses; see the implementation plan for the current state.
+```bash
+scripts/setup.sh          # once per machine: PATH, nvm install, restore, npm ci, e2e .env
+scripts/dev.sh            # API on http://localhost:5000 and client on http://localhost:4200
+scripts/test.sh           # dotnet test, ng test, then Playwright against fresh apps
+scripts/test.sh --no-e2e  # the two unit suites only
+```
+
+Per app: `dotnet test` in `apps/api-maintenance`, `npm test` in `apps/web`, `npx playwright test` in `apps/e2e` (with the apps running). See [scripts/README.md](scripts/README.md) for the full list.
 
 ## Documentation
 
