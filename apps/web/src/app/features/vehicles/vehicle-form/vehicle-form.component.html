@@ -1,0 +1,79 @@
+<p-dialog
+  [(visible)]="visible"
+  [modal]="true"
+  [draggable]="false"
+  [style]="{ width: '32rem', maxWidth: '95vw' }"
+  [header]="editing ? 'Edit vehicle' : 'Add a vehicle'"
+  data-testid="vehicle-dialog"
+>
+  <form [formGroup]="form" (ngSubmit)="submit()" novalidate id="vehicle-form">
+    <div class="field">
+      <label for="make">Make</label>
+      <input pInputText id="make" formControlName="make" />
+      @if (hasClientError('make')) {
+        <small class="error" data-testid="make-error">Make is required (up to 100 characters).</small>
+      } @else if (serverError('make'); as message) {
+        <small class="error" data-testid="make-error">{{ message }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="model">Model</label>
+      <input pInputText id="model" formControlName="model" />
+      @if (hasClientError('model')) {
+        <small class="error" data-testid="model-error">Model is required (up to 100 characters).</small>
+      } @else if (serverError('model'); as message) {
+        <small class="error" data-testid="model-error">{{ message }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="year">Year</label>
+      <input pInputText id="year" type="number" formControlName="year" />
+      @if (hasClientError('year')) {
+        <small class="error" data-testid="year-error">Year must be between 1886 and next year.</small>
+      } @else if (serverError('year'); as message) {
+        <small class="error" data-testid="year-error">{{ message }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="vin">VIN</label>
+      <input pInputText id="vin" formControlName="vin" autocapitalize="characters" />
+      @if (hasClientError('vin')) {
+        <small class="error" data-testid="vin-error">VIN is required: letters and digits, up to 17 characters.</small>
+      } @else if (serverError('vin'); as message) {
+        <small class="error" data-testid="vin-error">{{ message }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="licensePlate">License plate</label>
+      <input pInputText id="licensePlate" formControlName="licensePlate" />
+      @if (hasClientError('licensePlate')) {
+        <small class="error" data-testid="licensePlate-error">License plate is required (up to 20 characters).</small>
+      } @else if (serverError('licensePlate'); as message) {
+        <small class="error" data-testid="licensePlate-error">{{ message }}</small>
+      }
+    </div>
+
+    <div class="field">
+      <label for="currentMileage">Current mileage</label>
+      <input pInputText id="currentMileage" type="number" formControlName="currentMileage" min="0" />
+      @if (hasClientError('currentMileage')) {
+        <small class="error" data-testid="currentMileage-error">Mileage cannot be negative.</small>
+      } @else if (serverError('currentMileage'); as message) {
+        <small class="error" data-testid="currentMileage-error">{{ message }}</small>
+      }
+    </div>
+
+    @if (formError(); as message) {
+      <p-message severity="error" data-testid="form-error">{{ message }}</p-message>
+    }
+  </form>
+
+  <ng-template #footer>
+    <p-button label="Cancel" [text]="true" (onClick)="cancel()" />
+    <p-button [label]="editing ? 'Save changes' : 'Add vehicle'" [loading]="submitting()" (onClick)="submit()" data-testid="vehicle-submit" />
+  </ng-template>
+</p-dialog>

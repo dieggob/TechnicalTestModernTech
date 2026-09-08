@@ -6,6 +6,7 @@
 load_toolchain
 
 trap stop_apps EXIT INT TERM
+require_port_free 5000 && require_port_free 4200
 start_api
 start_web
 wait_for_url "$API_URL/health"

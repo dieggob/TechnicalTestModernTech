@@ -37,13 +37,24 @@ load_toolchain() {
 API_PID=""
 WEB_PID=""
 
+# Apps start in their own process group (setsid) so stop_apps can kill the whole tree:
+# `npx ng serve` and `dotnet run` both spawn grandchildren that would otherwise outlive us
+# and keep their ports.
 start_api() {
-  (cd "$API_DIR" && exec dotnet run --project src/Maintenance.Api --launch-profile http) >"$LOG_DIR/api.log" 2>&1 &
+  setsid bash -c "cd '$API_DIR' && exec dotnet run --project src/Maintenance.Api --launch-profile http" >"$LOG_DIR/api.log" 2>&1 &
   API_PID=$!
 }
 
+# start_web [dev|static]: the dev server for humans, or a production build served statically
+# with an /api proxy (scripts/lib/serve-web.mjs) for deterministic browser tests.
 start_web() {
-  (cd "$WEB_DIR" && exec npx ng serve --port 4200) >"$LOG_DIR/web.log" 2>&1 &
+  local mode="${1:-dev}"
+  if [ "$mode" = "static" ]; then
+    (cd "$WEB_DIR" && npx ng build >"$LOG_DIR/web-build.log" 2>&1) || { tail -20 "$LOG_DIR/web-build.log" >&2; echo "ng build failed (see $LOG_DIR/web-build.log)" >&2; return 1; }
+    setsid node "$REPO_ROOT/scripts/lib/serve-web.mjs" "$WEB_DIR/dist/web/browser" 4200 "$API_URL" >"$LOG_DIR/web.log" 2>&1 &
+  else
+    setsid bash -c "cd '$WEB_DIR' && exec npx ng serve --port 4200" >"$LOG_DIR/web.log" 2>&1 &
+  fi
   WEB_PID=$!
 }
 
@@ -61,9 +72,20 @@ wait_for_url() {
 stop_apps() {
   for pid in "$WEB_PID" "$API_PID"; do
     if [ -n "$pid" ] && kill -0 "$pid" 2>/dev/null; then
-      pkill -P "$pid" 2>/dev/null || true
-      kill "$pid" 2>/dev/null || true
+      kill -TERM -- "-$pid" 2>/dev/null || kill -TERM "$pid" 2>/dev/null || true
     fi
   done
+  sleep 1
+  for pid in "$WEB_PID" "$API_PID"; do
+    [ -n "$pid" ] && kill -KILL -- "-$pid" 2>/dev/null || true
+  done
   API_PID=""; WEB_PID=""
+}
+
+# Fails fast when a port is already taken by a stray process instead of silently testing the wrong server.
+require_port_free() {
+  if ss -ltn 2>/dev/null | grep -q ":$1 "; then
+    echo "port $1 is already in use; stop the process holding it (ss -ltnp | grep :$1)" >&2
+    return 1
+  fi
 }

@@ -42,3 +42,8 @@ body {
   gap: 1rem;
   margin-bottom: 1rem;
 }
+
+.row-actions {
+  white-space: nowrap;
+  text-align: right;
+}

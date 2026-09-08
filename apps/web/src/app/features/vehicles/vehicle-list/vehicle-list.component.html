@@ -1,6 +1,7 @@
 <section class="page">
   <header class="page-header">
     <h1 data-testid="vehicles-heading">Your vehicles</h1>
+    <p-button label="Add vehicle" icon="pi pi-plus" (onClick)="add()" data-testid="add-vehicle" />
   </header>
 
   @if (facade.error(); as message) {
@@ -16,6 +17,7 @@
         <th>VIN</th>
         <th>Plate</th>
         <th>Mileage</th>
+        <th></th>
       </tr>
     </ng-template>
     <ng-template #body let-vehicle>
@@ -26,12 +28,17 @@
         <td>{{ vehicle.vin }}</td>
         <td>{{ vehicle.licensePlate }}</td>
         <td>{{ vehicle.currentMileage }}</td>
+        <td class="row-actions">
+          <p-button icon="pi pi-pencil" [text]="true" [rounded]="true" ariaLabel="Edit" (onClick)="edit(vehicle)" [attr.data-testid]="'edit-' + vehicle.vin" />
+        </td>
       </tr>
     </ng-template>
     <ng-template #emptymessage>
       <tr>
-        <td colspan="6" data-testid="vehicles-empty">You have no vehicles yet.</td>
+        <td colspan="7" data-testid="vehicles-empty">You have no vehicles yet.</td>
       </tr>
     </ng-template>
   </p-table>
+
+  <app-vehicle-form [(visible)]="formVisible" [vehicle]="editing()" />
 </section>

@@ -4,13 +4,12 @@ import { RouterLink } from '@angular/router';
 import { ButtonModule } from 'primeng/button';
 import { InputTextModule } from 'primeng/inputtext';
 import { MessageModule } from 'primeng/message';
-import { PasswordModule } from 'primeng/password';
 import { applyProblemDetails, serverError } from '../../../shared/problem-details';
 import { AuthApi } from '../auth-api';
 
 @Component({
   selector: 'app-register',
-  imports: [ReactiveFormsModule, RouterLink, ButtonModule, InputTextModule, PasswordModule, MessageModule],
+  imports: [ReactiveFormsModule, RouterLink, ButtonModule, InputTextModule, MessageModule],
   templateUrl: './register.component.html',
 })
 export class RegisterComponent {

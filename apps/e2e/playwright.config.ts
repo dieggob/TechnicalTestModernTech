@@ -26,7 +26,10 @@ export const apiBaseUrl = process.env['API_BASE_URL'] ?? 'http://localhost:5000'
 
 export default defineConfig({
   testDir: './tests',
+  globalSetup: './tests/support/global-setup.ts',
   fullyParallel: true,
+  workers: 4,
+  expect: { timeout: 10_000 },
   forbidOnly: !!process.env['CI'],
   retries: 0,
   reporter: [['list'], ['html', { open: 'never' }]],

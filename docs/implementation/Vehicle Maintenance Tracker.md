@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 11 pending, 0 in progress, 24 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 10 pending, 0 in progress, 25 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -783,7 +783,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S22 | List and view vehicles (API) | AC 1 (isolation), AC 2, AC 3 | S21 | S | done |
 | S23 | Update and delete a vehicle (API) | AC 2 ("manage") | S22 | S | done |
 | S24 | Vehicle list screen (client) | AC 2, AC 3 | S22, S18 | S | done |
-| S25 | Create and edit vehicle form (client) | AC 2, AC 3 | S24, S23 | S | pending |
+| S25 | Create and edit vehicle form (client) | AC 2, AC 3 | S24, S23 | S | done |
 | S26 | Delete a vehicle with confirmation (client) | AC 2 | S25 | S | pending |
 | S27 | Log a maintenance record and advance mileage (API) | AC 4, AC 5, AC 6, AC 11, AC 12 | S23 | M | pending |
 | S28 | View maintenance history (API) | AC 7 | S27 | S | pending |
@@ -1746,8 +1746,8 @@ None by user decision; the Slice Map is the only ordering.
 - **Pattern proposals:** none needed
 - **Principle checks:** DRY — one form for both modes; YAGNI — no VIN decoding.
 - **Definition of done:**
-  - [ ] Journeys and specs pass
-- **Status:** pending
+  - [x] Journeys and specs pass
+- **Status:** done
 
 #### S26 — Delete a vehicle with confirmation (client)
 
