@@ -17,3 +17,13 @@ export type { DevEmails$Plain$Params as DevEmails$Plain$Params } from './fn/dev/
 export { devEmails$Plain as devEmails$Plain } from './fn/dev/dev-emails-plain';
 export type { DevEmails$Params as DevEmails$Params } from './fn/dev/dev-emails';
 export { devEmails as devEmails } from './fn/dev/dev-emails';
+export type { VehicleList$Params as VehicleList$Params } from './fn/vehicle/vehicle-list';
+export { vehicleList as vehicleList } from './fn/vehicle/vehicle-list';
+export type { VehicleCreate$Params as VehicleCreate$Params } from './fn/vehicle/vehicle-create';
+export { vehicleCreate as vehicleCreate } from './fn/vehicle/vehicle-create';
+export type { VehicleGet$Params as VehicleGet$Params } from './fn/vehicle/vehicle-get';
+export { vehicleGet as vehicleGet } from './fn/vehicle/vehicle-get';
+export type { VehicleUpdate$Params as VehicleUpdate$Params } from './fn/vehicle/vehicle-update';
+export { vehicleUpdate as vehicleUpdate } from './fn/vehicle/vehicle-update';
+export type { VehicleDelete$Params as VehicleDelete$Params } from './fn/vehicle/vehicle-delete';
+export { vehicleDelete as vehicleDelete } from './fn/vehicle/vehicle-delete';

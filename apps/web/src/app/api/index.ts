@@ -16,6 +16,8 @@ export type { RegisterRequest } from './models/register-request';
 export type { ResendVerificationRequest } from './models/resend-verification-request';
 export type { ResetPasswordRequest } from './models/reset-password-request';
 export type { ValidationProblemDetails } from './models/validation-problem-details';
+export type { VehicleDto } from './models/vehicle-dto';
+export type { VehicleInput } from './models/vehicle-input';
 export type { VerifyEmailRequest } from './models/verify-email-request';
 
 export type { AuthRegister$Params as AuthRegister$Params } from './fn/auth/auth-register';
@@ -34,3 +36,13 @@ export type { DevEmails$Plain$Params as DevEmails$Plain$Params } from './fn/dev/
 export { devEmails$Plain as devEmails$Plain } from './fn/dev/dev-emails-plain';
 export type { DevEmails$Params as DevEmails$Params } from './fn/dev/dev-emails';
 export { devEmails as devEmails } from './fn/dev/dev-emails';
+export type { VehicleList$Params as VehicleList$Params } from './fn/vehicle/vehicle-list';
+export { vehicleList as vehicleList } from './fn/vehicle/vehicle-list';
+export type { VehicleCreate$Params as VehicleCreate$Params } from './fn/vehicle/vehicle-create';
+export { vehicleCreate as vehicleCreate } from './fn/vehicle/vehicle-create';
+export type { VehicleGet$Params as VehicleGet$Params } from './fn/vehicle/vehicle-get';
+export { vehicleGet as vehicleGet } from './fn/vehicle/vehicle-get';
+export type { VehicleUpdate$Params as VehicleUpdate$Params } from './fn/vehicle/vehicle-update';
+export { vehicleUpdate as vehicleUpdate } from './fn/vehicle/vehicle-update';
+export type { VehicleDelete$Params as VehicleDelete$Params } from './fn/vehicle/vehicle-delete';
+export { vehicleDelete as vehicleDelete } from './fn/vehicle/vehicle-delete';

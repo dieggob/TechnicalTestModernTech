@@ -29,3 +29,16 @@ body {
 .error {
   color: var(--p-red-600, #dc2626);
 }
+
+.page {
+  max-width: 64rem;
+  margin: 0 auto;
+}
+
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-bottom: 1rem;
+}

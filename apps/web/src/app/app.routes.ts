@@ -29,6 +29,6 @@ export const routes: Routes = [
     path: 'vehicles',
     canActivate: [authGuard],
     loadComponent: () =>
-      import('./features/vehicles/vehicles-placeholder.component').then((m) => m.VehiclesPlaceholderComponent),
+      import('./features/vehicles/vehicle-list/vehicle-list.component').then((m) => m.VehicleListComponent),
   },
 ];

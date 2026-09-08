@@ -11,4 +11,6 @@ export type { RegisterRequest } from './models/register-request';
 export type { ResendVerificationRequest } from './models/resend-verification-request';
 export type { ResetPasswordRequest } from './models/reset-password-request';
 export type { ValidationProblemDetails } from './models/validation-problem-details';
+export type { VehicleDto } from './models/vehicle-dto';
+export type { VehicleInput } from './models/vehicle-input';
 export type { VerifyEmailRequest } from './models/verify-email-request';

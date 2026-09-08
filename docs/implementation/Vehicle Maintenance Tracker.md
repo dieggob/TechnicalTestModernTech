@@ -722,7 +722,7 @@ Plan written on 2026-09-07 from the working plan's acceptance criteria, the desi
 - **Delivery unit:** one commit per slice on `main`, message prefixed with the slice number
 - **Test timing:** test first, per slice
 - **Client pairing:** API slice then client slice, consecutive
-- **Progress:** 12 pending, 0 in progress, 23 done, 0 blocked (updated 2026-09-08)
+- **Progress:** 11 pending, 0 in progress, 24 done, 0 blocked (updated 2026-09-08)
 
 ### Principles
 
@@ -782,7 +782,7 @@ The working plan's acceptance criteria as cited by the slices (numbering follows
 | S21 | Register a vehicle (API) | AC 2, AC 3, AC "VIN unique per user" | S13 | M | done |
 | S22 | List and view vehicles (API) | AC 1 (isolation), AC 2, AC 3 | S21 | S | done |
 | S23 | Update and delete a vehicle (API) | AC 2 ("manage") | S22 | S | done |
-| S24 | Vehicle list screen (client) | AC 2, AC 3 | S22, S18 | S | pending |
+| S24 | Vehicle list screen (client) | AC 2, AC 3 | S22, S18 | S | done |
 | S25 | Create and edit vehicle form (client) | AC 2, AC 3 | S24, S23 | S | pending |
 | S26 | Delete a vehicle with confirmation (client) | AC 2 | S25 | S | pending |
 | S27 | Log a maintenance record and advance mileage (API) | AC 4, AC 5, AC 6, AC 11, AC 12 | S23 | M | pending |
@@ -1714,13 +1714,13 @@ None by user decision; the Slice Map is the only ordering.
 
   | Pattern | Where | Why | Why not | Recommended | Decision |
   |---|---|---|---|---|---|
-  | Facade per feature (`VehiclesFacade`) holding signals and calling the generated client | `features/vehicles` | Components stay presentational; one place for loading and error state | One class per feature | yes | pending (developer) |
-  | Components call the generated client directly | components | Fewer files | Loading and error handling duplicated per screen | no | pending (developer) |
+  | Facade per feature (`VehiclesFacade`) holding signals and calling the generated client | `features/vehicles` | Components stay presentational; one place for loading and error state | One class per feature | yes | adopted (recommended): VehiclesFacade with signals over the generated functions (2026-09-08) |
+  | Components call the generated client directly | components | Fewer files | Loading and error handling duplicated per screen | no | declined (2026-09-08) |
 
 - **Principle checks:** DRY — one facade per feature; SOLID — the table component only renders inputs; YAGNI — no sorting or filtering until asked.
 - **Definition of done:**
-  - [ ] Journey and specs pass
-- **Status:** pending
+  - [x] Journey and specs pass
+- **Status:** done
 
 #### S25 — Create and edit vehicle form (client)
 
@@ -2076,8 +2076,8 @@ None by user decision; the Slice Map is the only ordering.
 | S17 | Inline mapping in each component | components | no | declined (2026-09-08) |
 | S21 | Mapping entity → DTO with a static `VehicleDto.From(vehicle)` | `VehicleDto` | yes | adopted (recommended): VehicleDto.From (2026-09-08) |
 | S21 | Mapping library (AutoMapper or Mapster) | Application | no | declined (2026-09-08) |
-| S24 | Facade per feature (`VehiclesFacade`) holding signals and calling the generated client | `features/vehicles` | yes | pending (developer) |
-| S24 | Components call the generated client directly | components | no | pending (developer) |
+| S24 | Facade per feature (`VehiclesFacade`) holding signals and calling the generated client | `features/vehicles` | yes | adopted (recommended): VehiclesFacade with signals over the generated functions (2026-09-08) |
+| S24 | Components call the generated client directly | components | no | declined (2026-09-08) |
 | S27 | Domain method `Vehicle.AdvanceMileage` (Tell, Don't Ask) | `Vehicle` | yes | pending (developer) |
 | S27 | Rule inside `MaintenanceService` | service | no | pending (developer) |
 | S27 | Explicit `IUnitOfWork.BeginTransactionAsync` abstraction | `Application/Persistence` | yes | pending (developer) |

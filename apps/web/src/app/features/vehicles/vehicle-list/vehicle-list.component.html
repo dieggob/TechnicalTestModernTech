@@ -1,0 +1,37 @@
+<section class="page">
+  <header class="page-header">
+    <h1 data-testid="vehicles-heading">Your vehicles</h1>
+  </header>
+
+  @if (facade.error(); as message) {
+    <p-message severity="error" data-testid="vehicles-error">{{ message }}</p-message>
+  }
+
+  <p-table [value]="facade.vehicles()" [loading]="facade.loading()" dataKey="id" data-testid="vehicles-table">
+    <ng-template #header>
+      <tr>
+        <th>Make</th>
+        <th>Model</th>
+        <th>Year</th>
+        <th>VIN</th>
+        <th>Plate</th>
+        <th>Mileage</th>
+      </tr>
+    </ng-template>
+    <ng-template #body let-vehicle>
+      <tr [attr.data-testid]="'vehicle-row-' + vehicle.vin">
+        <td>{{ vehicle.make }}</td>
+        <td>{{ vehicle.model }}</td>
+        <td>{{ vehicle.year }}</td>
+        <td>{{ vehicle.vin }}</td>
+        <td>{{ vehicle.licensePlate }}</td>
+        <td>{{ vehicle.currentMileage }}</td>
+      </tr>
+    </ng-template>
+    <ng-template #emptymessage>
+      <tr>
+        <td colspan="6" data-testid="vehicles-empty">You have no vehicles yet.</td>
+      </tr>
+    </ng-template>
+  </p-table>
+</section>

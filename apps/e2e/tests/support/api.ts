@@ -1,6 +1,15 @@
 import { APIRequestContext, expect } from '@playwright/test';
 import { apiBaseUrl } from '../../playwright.config';
 
+export interface VehicleInput {
+  make: string;
+  model: string;
+  year: number;
+  vin: string;
+  licensePlate: string;
+  currentMileage: number;
+}
+
 /** Talks to the API directly for test setup and for reading the Development-only recorded emails. */
 export class ApiHelper {
   constructor(private readonly request: APIRequestContext) {}
@@ -18,6 +27,28 @@ export class ApiHelper {
   async login(email: string, password = 'Secret123'): Promise<{ token: string; userId: string }> {
     const response = await this.request.post(`${apiBaseUrl}/api/v1/auth/login`, { data: { email, password } });
     expect(response.status(), 'login').toBe(200);
+    return response.json();
+  }
+
+  /** Registers a vehicle for the account whose token is given; returns the created vehicle. */
+  async createVehicle(
+    token: string,
+    vehicle: Partial<VehicleInput> = {},
+  ): Promise<{ id: string; vin: string }> {
+    const data: VehicleInput = {
+      make: 'Toyota',
+      model: 'Corolla',
+      year: 2020,
+      vin: `VIN${Date.now().toString().slice(-8)}${Math.floor(Math.random() * 1e6).toString().padStart(6, '0')}`,
+      licensePlate: 'ABC-123',
+      currentMileage: 45000,
+      ...vehicle,
+    };
+    const response = await this.request.post(`${apiBaseUrl}/api/v1/vehicles`, {
+      data,
+      headers: { Authorization: `Bearer ${token}` },
+    });
+    expect(response.status(), 'create vehicle').toBe(201);
     return response.json();
   }
 
